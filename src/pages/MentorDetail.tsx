@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
@@ -656,4 +657,103 @@ const MentorDetail = () => {
         
         {/* Similar Mentors */}
         <section className="py-16 bg-stargaze-50 dark:bg-stargaze-900/50">
-          <div className
+          <div className="container mx-auto px-6">
+            <AnimatedSection animation="fade-up" threshold={0.1}>
+              <div className="text-center mb-10">
+                <h2 className="text-3xl font-bold text-stargaze-900 dark:text-white mb-3">
+                  Similar Mentors
+                </h2>
+                <p className="text-stargaze-600 dark:text-stargaze-400 max-w-2xl mx-auto">
+                  Discover other experts who might be a good fit for your needs
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {mentorsData
+                  .filter(m => m.id !== mentor.id)
+                  .slice(0, 3)
+                  .map((similarMentor) => (
+                    <div 
+                      key={similarMentor.id}
+                      className="bg-white dark:bg-stargaze-800 rounded-xl shadow-subtle overflow-hidden group"
+                    >
+                      <Link to={`/mentor/${similarMentor.id}`}>
+                        <div className="aspect-[3/2] relative overflow-hidden">
+                          <img 
+                            src={similarMentor.image} 
+                            alt={similarMentor.name} 
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                          {similarMentor.available && (
+                            <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
+                              Available
+                            </div>
+                          )}
+                        </div>
+                      </Link>
+                      <div className="p-5">
+                        <Link to={`/mentor/${similarMentor.id}`}>
+                          <h3 className="text-lg font-bold text-stargaze-900 dark:text-white mb-1 group-hover:text-primary transition-colors">
+                            {similarMentor.name}
+                          </h3>
+                        </Link>
+                        <p className="text-sm text-stargaze-600 dark:text-stargaze-400 mb-3">
+                          {similarMentor.role} at {similarMentor.company}
+                        </p>
+                        
+                        <div className="flex mb-4 items-center">
+                          <div className="flex items-center mr-3">
+                            <Star className="h-4 w-4 text-amber-500" fill="currentColor" />
+                            <span className="ml-1 text-sm font-medium">{similarMentor.rating}</span>
+                          </div>
+                          <span className="text-xs text-stargaze-500 dark:text-stargaze-400">
+                            {similarMentor.sessions} sessions
+                          </span>
+                        </div>
+                        
+                        <div className="mb-4 flex flex-wrap gap-2">
+                          {similarMentor.expertise.slice(0, 2).map((skill, index) => (
+                            <span 
+                              key={index} 
+                              className="inline-block px-2 py-1 text-xs rounded-full bg-primary/10 text-primary"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {similarMentor.expertise.length > 2 && (
+                            <span className="inline-block px-2 py-1 text-xs rounded-full bg-stargaze-100 dark:bg-stargaze-700 text-stargaze-600 dark:text-stargaze-300">
+                              +{similarMentor.expertise.length - 2} more
+                            </span>
+                          )}
+                        </div>
+                        
+                        <Link to={`/mentor/${similarMentor.id}`}>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="w-full justify-center border border-stargaze-200 dark:border-stargaze-700"
+                          >
+                            View Profile
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+              
+              <div className="text-center mt-10">
+                <Link to="/mentors">
+                  <Button>Browse All Mentors</Button>
+                </Link>
+              </div>
+            </AnimatedSection>
+          </div>
+        </section>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+};
+
+export default MentorDetail;
