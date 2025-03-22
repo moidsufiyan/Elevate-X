@@ -1,6 +1,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "./Button";
+import { Link } from "react-router-dom";
 import { MessageSquare, Star } from "lucide-react";
 
 interface MentorCardProps {
@@ -31,30 +32,34 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
       )}
     >
       {/* Image Container */}
-      <div className="relative aspect-[4/5] overflow-hidden">
-        <img 
-          src={mentor.image} 
-          alt={mentor.name} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        {mentor.available && (
-          <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-            Available
-          </div>
-        )}
-        
-        {mentor.rating && (
-          <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-stargaze-800/90 backdrop-blur-sm text-xs px-2 py-1 rounded-full shadow-md flex items-center gap-1">
-            <Star className="h-3 w-3 text-amber-500" fill="currentColor" />
-            <span className="text-stargaze-900 dark:text-white font-medium">{mentor.rating}</span>
-          </div>
-        )}
-      </div>
+      <Link to={`/mentor/${mentor.id}`} className="block">
+        <div className="relative aspect-[4/5] overflow-hidden">
+          <img 
+            src={mentor.image} 
+            alt={mentor.name} 
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          {mentor.available && (
+            <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
+              Available
+            </div>
+          )}
+          
+          {mentor.rating && (
+            <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-stargaze-800/90 backdrop-blur-sm text-xs px-2 py-1 rounded-full shadow-md flex items-center gap-1">
+              <Star className="h-3 w-3 text-amber-500" fill="currentColor" />
+              <span className="text-stargaze-900 dark:text-white font-medium">{mentor.rating}</span>
+            </div>
+          )}
+        </div>
+      </Link>
 
       {/* Content */}
       <div className="relative p-5">
-        <h4 className="text-xl font-bold text-stargaze-900 dark:text-white">{mentor.name}</h4>
-        <p className="text-stargaze-600 dark:text-stargaze-400 mb-2">{mentor.role} at {mentor.company}</p>
+        <Link to={`/mentor/${mentor.id}`} className="block">
+          <h4 className="text-xl font-bold text-stargaze-900 dark:text-white group-hover:text-primary transition-colors">{mentor.name}</h4>
+          <p className="text-stargaze-600 dark:text-stargaze-400 mb-2">{mentor.role} at {mentor.company}</p>
+        </Link>
         
         {/* Expertise Tags */}
         <div className="mb-4 flex flex-wrap gap-2">
@@ -83,14 +88,16 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
         )}
 
         {/* CTA Button */}
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="w-full justify-center mt-2 border border-stargaze-200 dark:border-stargaze-700"
-          leftIcon={<MessageSquare className="h-4 w-4" />}
-        >
-          Connect
-        </Button>
+        <Link to={`/mentor/${mentor.id}`}>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-full justify-center mt-2 border border-stargaze-200 dark:border-stargaze-700"
+            leftIcon={<MessageSquare className="h-4 w-4" />}
+          >
+            Connect
+          </Button>
+        </Link>
       </div>
     </div>
   );
