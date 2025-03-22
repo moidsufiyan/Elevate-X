@@ -3,14 +3,13 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "./Button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, Bell, Search } from "lucide-react";
 
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "Mentors", path: "#mentors" },
-  { name: "Features", path: "#features" },
-  { name: "Resources", path: "#resources" },
-  { name: "Community", path: "#community" },
+  { name: "Mentors", path: "/mentors" },
+  { name: "Resources", path: "/resources" },
+  { name: "Community", path: "/community" },
 ];
 
 export const Navbar = () => {
@@ -52,20 +51,37 @@ export const Navbar = () => {
         <div className="hidden md:flex items-center space-x-8">
           <div className="flex items-center space-x-6">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.path}
+                to={link.path}
                 className="animated-underline text-sm font-medium text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors"
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
+          
+          {/* Action Buttons */}
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm">
-              Log in
-            </Button>
-            <Button size="sm">Sign up</Button>
+            <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
+              <Search className="h-5 w-5" />
+            </button>
+            <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
+              <Bell className="h-5 w-5" />
+            </button>
+            <Link to="/profile">
+              <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
+                <User className="h-5 w-5" />
+              </button>
+            </Link>
+            <Link to="/auth">
+              <Button variant="ghost" size="sm">
+                Log in
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button size="sm">Sign up</Button>
+            </Link>
           </div>
         </div>
 
@@ -92,21 +108,38 @@ export const Navbar = () => {
         <div className="container mx-auto px-6 py-8 flex flex-col space-y-8">
           <div className="flex flex-col space-y-6">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.path}
+                to={link.path}
                 className="text-lg font-medium text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
+          <div className="flex items-center space-x-4 mb-6">
+            <button className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300">
+              <Search className="h-5 w-5" />
+            </button>
+            <button className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300">
+              <Bell className="h-5 w-5" />
+            </button>
+            <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+              <button className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300">
+                <User className="h-5 w-5" />
+              </button>
+            </Link>
+          </div>
           <div className="flex flex-col space-y-3">
-            <Button variant="ghost" className="w-full justify-center">
-              Log in
-            </Button>
-            <Button className="w-full justify-center">Sign up</Button>
+            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button variant="ghost" className="w-full justify-center">
+                Log in
+              </Button>
+            </Link>
+            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button className="w-full justify-center">Sign up</Button>
+            </Link>
           </div>
         </div>
       </div>

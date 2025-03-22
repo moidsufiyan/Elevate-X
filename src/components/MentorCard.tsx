@@ -1,7 +1,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "./Button";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Star } from "lucide-react";
 
 interface MentorCardProps {
   mentor: {
@@ -12,6 +12,9 @@ interface MentorCardProps {
     expertise: string[];
     image: string;
     available: boolean;
+    bio?: string;
+    rating?: number;
+    sessions?: number;
   };
   className?: string;
 }
@@ -39,6 +42,13 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
             Available
           </div>
         )}
+        
+        {mentor.rating && (
+          <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-stargaze-800/90 backdrop-blur-sm text-xs px-2 py-1 rounded-full shadow-md flex items-center gap-1">
+            <Star className="h-3 w-3 text-amber-500" fill="currentColor" />
+            <span className="text-stargaze-900 dark:text-white font-medium">{mentor.rating}</span>
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -57,6 +67,20 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
             </span>
           ))}
         </div>
+        
+        {/* Bio (if provided) */}
+        {mentor.bio && (
+          <p className="text-sm text-stargaze-600 dark:text-stargaze-400 mb-4 line-clamp-3">
+            {mentor.bio}
+          </p>
+        )}
+        
+        {/* Sessions Count (if provided) */}
+        {mentor.sessions && (
+          <div className="text-xs text-stargaze-500 dark:text-stargaze-400 mb-4">
+            {mentor.sessions} mentoring sessions completed
+          </div>
+        )}
 
         {/* CTA Button */}
         <Button 
