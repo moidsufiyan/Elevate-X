@@ -5,6 +5,7 @@ import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { MentorShowcase } from "@/components/MentorShowcase";
 import { Footer } from "@/components/Footer";
+import { AnimatedSection } from "@/components/AnimatedSection";
 
 const Index = () => {
   useEffect(() => {
@@ -27,19 +28,37 @@ const Index = () => {
     };
 
     document.addEventListener('click', handleAnchorClick);
-    return () => document.removeEventListener('click', handleAnchorClick);
+    
+    // Add a class to body when page is loaded for global animations
+    document.body.classList.add('page-loaded');
+    
+    return () => {
+      document.removeEventListener('click', handleAnchorClick);
+      document.body.classList.remove('page-loaded');
+    };
   }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main>
-        <Hero />
-        <Features />
-        <MentorShowcase />
+        <AnimatedSection animation="fade-in" duration="normal" delay={100}>
+          <Hero />
+        </AnimatedSection>
+        
+        <AnimatedSection animation="fade-up" duration="normal" delay={200}>
+          <Features />
+        </AnimatedSection>
+        
+        <AnimatedSection animation="fade-up" duration="normal" delay={300} staggerChildren>
+          <MentorShowcase />
+        </AnimatedSection>
+        
         {/* Additional sections can be added here */}
       </main>
-      <Footer />
+      <AnimatedSection animation="fade-in" duration="slow" delay={400}>
+        <Footer />
+      </AnimatedSection>
     </div>
   );
 };
