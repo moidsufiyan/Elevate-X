@@ -14,6 +14,8 @@ import Auth from "./pages/Auth";
 import StartupProfile from "./pages/StartupProfile";
 import MentorProfile from "./pages/MentorProfile";
 import MentorDashboard from "./pages/MentorDashboard";
+import MentorshipMatching from "./pages/MentorshipMatching";
+import Communities from "./pages/Communities";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,10 +32,12 @@ const App = () => (
           <Route path="/mentor/:id" element={<MentorDetail />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/communities" element={<Communities />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/startup-profile" element={<StartupProfile />} />
           <Route path="/mentor-profile" element={<MentorProfile />} />
           <Route path="/mentor-dashboard" element={<MentorDashboard />} />
+          <Route path="/mentorship-matching" element={<MentorshipMatching />} />
           <Route path="/auth" element={<Auth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

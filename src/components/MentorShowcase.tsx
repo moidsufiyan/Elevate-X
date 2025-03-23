@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AnimatedSection } from "./AnimatedSection";
 import { MentorCard } from "./MentorCard";
 import { Button } from "./Button";
+import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Sample mentor data
@@ -74,6 +75,10 @@ export const MentorShowcase = () => {
           <p className="max-w-2xl mx-auto text-stargaze-600 dark:text-stargaze-300 text-lg">
             Connect with experienced professionals who are passionate about helping entrepreneurs succeed.
           </p>
+          <div className="flex flex-wrap justify-center gap-3 mt-6">
+            <Button as={Link} to="/mentors">Browse All Mentors</Button>
+            <Button as={Link} to="/mentorship-matching" variant="outline">Find Perfect Match</Button>
+          </div>
         </AnimatedSection>
         
         <div className="relative">
@@ -116,7 +121,7 @@ export const MentorShowcase = () => {
           
           {/* View All Button */}
           <div className="text-center mt-8">
-            <Button>View All Mentors</Button>
+            <Button as={Link} to="/mentors">View All Mentors</Button>
           </div>
         </div>
       </div>
