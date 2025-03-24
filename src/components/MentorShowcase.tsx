@@ -76,8 +76,12 @@ export const MentorShowcase = () => {
             Connect with experienced professionals who are passionate about helping entrepreneurs succeed.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mt-6">
-            <Button as={Link} to="/mentors">Browse All Mentors</Button>
-            <Button as={Link} to="/mentorship-matching" variant="outline">Find Perfect Match</Button>
+            <Link to="/mentors">
+              <Button>Browse All Mentors</Button>
+            </Link>
+            <Link to="/mentorship-matching">
+              <Button variant="outline">Find Perfect Match</Button>
+            </Link>
           </div>
         </AnimatedSection>
         
@@ -121,7 +125,9 @@ export const MentorShowcase = () => {
           
           {/* View All Button */}
           <div className="text-center mt-8">
-            <Button as={Link} to="/mentors">View All Mentors</Button>
+            <Link to="/mentors">
+              <Button>View All Mentors</Button>
+            </Link>
           </div>
         </div>
       </div>
