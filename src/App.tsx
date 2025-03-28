@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Mentors from "./pages/Mentors";
 import MentorDetail from "./pages/MentorDetail";
+import MentorBooking from "./pages/MentorBooking";
 import Resources from "./pages/Resources";
 import Community from "./pages/Community";
 import Profile from "./pages/Profile";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/mentors" element={<Mentors />} />
           <Route path="/mentor/:id" element={<MentorDetail />} />
+          <Route path="/mentor/:id/book" element={<MentorBooking />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/community" element={<Community />} />
           <Route path="/communities" element={<Communities />} />
