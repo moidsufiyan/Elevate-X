@@ -17,7 +17,7 @@ const mentors = [
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=776&q=80",
     available: true,
     tags: ["Marketing Expert", "Tech Founder"],
-    badges: [{ label: "Top Mentor", variant: "default" }],
+    badges: [{ label: "Top Mentor", variant: "default" as const }],
   },
   {
     id: "2",
@@ -38,7 +38,7 @@ const mentors = [
     image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     available: true,
     tags: ["Angel Investor", "Growth Strategy"],
-    badges: [{ label: "Featured", variant: "secondary" }],
+    badges: [{ label: "Featured", variant: "secondary" as const }],
   },
   {
     id: "4",
