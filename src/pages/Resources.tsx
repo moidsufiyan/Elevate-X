@@ -1,11 +1,12 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
-import { Search, BookOpen, FileText, Video, Download, Star, ArrowRight, Calendar } from "lucide-react";
+import { Search, BookOpen, FileText, Video, Download, Star, ArrowRight, Calendar, Bookmark, BookmarkCheck } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 // Resource data
 const resources = [
@@ -19,6 +20,7 @@ const resources = [
     downloadCount: 3752,
     rating: 4.8,
     premium: true,
+    pdfUrl: "/resources/ultimate-pitch-deck-template.pdf",
   },
   {
     id: "2",
@@ -30,6 +32,7 @@ const resources = [
     downloadCount: 2856,
     rating: 4.7,
     premium: false,
+    pdfUrl: "/resources/user-research-handbook.pdf",
   },
   {
     id: "3",
@@ -41,6 +44,7 @@ const resources = [
     downloadCount: 1843,
     rating: 4.9,
     premium: true,
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   },
   {
     id: "4",
@@ -52,6 +56,7 @@ const resources = [
     downloadCount: 4215,
     rating: 4.6,
     premium: true,
+    pdfUrl: "/resources/startup-financial-model.pdf",
   },
   {
     id: "5",
@@ -63,6 +68,7 @@ const resources = [
     downloadCount: 3156,
     rating: 4.7,
     premium: false,
+    pdfUrl: "/resources/growth-hacking-strategies.pdf",
   },
   {
     id: "6",
@@ -74,6 +80,7 @@ const resources = [
     downloadCount: 1589,
     rating: 4.5,
     premium: false,
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   },
 ];
 
@@ -81,7 +88,13 @@ const resources = [
 const categories = ["All", "Fundraising", "Marketing", "Product Development", "Finance", "Operations", "Legal"];
 const types = ["All Types", "Guide", "Template", "Video"];
 
-const ResourceCard = ({ resource }: { resource: typeof resources[0] }) => {
+const ResourceCard = ({ resource, onBookmarkToggle, isBookmarked }: { 
+  resource: typeof resources[0]; 
+  onBookmarkToggle: (id: string) => void;
+  isBookmarked: boolean;
+}) => {
+  const { toast } = useToast();
+  
   const getTypeIcon = () => {
     switch (resource.type) {
       case "guide":
@@ -92,6 +105,37 @@ const ResourceCard = ({ resource }: { resource: typeof resources[0] }) => {
         return <Video className="h-4 w-4" />;
       default:
         return <FileText className="h-4 w-4" />;
+    }
+  };
+
+  const handleResourceAction = () => {
+    if (resource.premium) {
+      toast({
+        title: "Premium Content",
+        description: "This is a premium resource. Please upgrade your account to access it.",
+      });
+      return;
+    }
+
+    if (resource.type === "video" && resource.videoUrl) {
+      window.open(resource.videoUrl, "_blank");
+      toast({
+        title: "Video Opening",
+        description: "Opening video in a new tab.",
+      });
+    } else if (resource.pdfUrl) {
+      // Simulate PDF download
+      toast({
+        title: "Download Started",
+        description: `${resource.title} is being downloaded.`,
+      });
+      // In a real app, you would trigger an actual download here
+      const link = document.createElement("a");
+      link.href = resource.pdfUrl;
+      link.download = resource.title;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
   
@@ -105,6 +149,27 @@ const ResourceCard = ({ resource }: { resource: typeof resources[0] }) => {
         "flex flex-col"
       )}
     >
+      {/* Bookmark Button */}
+      <button 
+        onClick={(e) => {
+          e.stopPropagation();
+          onBookmarkToggle(resource.id);
+          toast({
+            title: isBookmarked ? "Removed from Bookmarks" : "Added to Bookmarks",
+            description: isBookmarked ? 
+              `${resource.title} has been removed from your bookmarks.` : 
+              `${resource.title} has been added to your bookmarks.`,
+          });
+        }}
+        className="absolute top-3 right-3 z-10 bg-white/90 dark:bg-stargaze-800/90 p-2 rounded-full shadow-md transition-transform hover:scale-110"
+      >
+        {isBookmarked ? (
+          <BookmarkCheck className="h-5 w-5 text-primary" />
+        ) : (
+          <Bookmark className="h-5 w-5 text-stargaze-500 dark:text-stargaze-400" />
+        )}
+      </button>
+      
       {/* Image Container */}
       <div className="relative aspect-video overflow-hidden">
         <img 
@@ -113,11 +178,11 @@ const ResourceCard = ({ resource }: { resource: typeof resources[0] }) => {
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         {resource.premium && (
-          <div className="absolute top-3 right-3 bg-stargaze-accent text-white text-xs px-2 py-1 rounded-full shadow-md">
+          <div className="absolute top-3 left-3 bg-stargaze-accent text-white text-xs px-2 py-1 rounded-full shadow-md">
             Premium
           </div>
         )}
-        <div className="absolute top-3 left-3 bg-white/90 dark:bg-stargaze-800/90 backdrop-blur-sm text-xs px-2 py-1 rounded-full shadow-md flex items-center gap-1">
+        <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-stargaze-800/90 backdrop-blur-sm text-xs px-2 py-1 rounded-full shadow-md flex items-center gap-1">
           {getTypeIcon()}
           <span className="capitalize">{resource.type}</span>
         </div>
@@ -151,8 +216,9 @@ const ResourceCard = ({ resource }: { resource: typeof resources[0] }) => {
           variant={resource.premium ? "primary" : "outline"} 
           className="w-full justify-center"
           rightIcon={<ArrowRight className="h-4 w-4" />}
+          onClick={handleResourceAction}
         >
-          {resource.premium ? "Unlock Resource" : "Download Now"}
+          {resource.premium ? "Unlock Resource" : resource.type === "video" ? "Watch Now" : "Download Now"}
         </Button>
       </div>
     </div>
@@ -163,13 +229,40 @@ const Resources = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedType, setSelectedType] = useState("All Types");
+  const [bookmarkedResources, setBookmarkedResources] = useState<string[]>([]);
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
   
-  // Filter resources based on search query, category, and type
+  // Load bookmarks from localStorage on component mount
+  useEffect(() => {
+    const savedBookmarks = localStorage.getItem("bookmarkedResources");
+    if (savedBookmarks) {
+      setBookmarkedResources(JSON.parse(savedBookmarks));
+    }
+  }, []);
+  
+  // Save bookmarks to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem("bookmarkedResources", JSON.stringify(bookmarkedResources));
+  }, [bookmarkedResources]);
+  
+  // Toggle bookmark
+  const toggleBookmark = (id: string) => {
+    setBookmarkedResources(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(bookmarkId => bookmarkId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+  
+  // Filter resources based on search query, category, type, and bookmarks
   const filteredResources = resources.filter((resource) => {
     const matchesSearch = 
       resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       resource.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      resource.category.toLowerCase().includes(searchQuery.toLowerCase());
+      resource.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      resource.type.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesCategory = 
       selectedCategory === "All" ||
@@ -179,7 +272,11 @@ const Resources = () => {
       selectedType === "All Types" ||
       resource.type === selectedType.toLowerCase();
     
-    return matchesSearch && matchesCategory && matchesType;
+    const matchesBookmarkFilter = 
+      !showBookmarkedOnly ||
+      bookmarkedResources.includes(resource.id);
+    
+    return matchesSearch && matchesCategory && matchesType && matchesBookmarkFilter;
   });
   
   return (
@@ -258,6 +355,27 @@ const Resources = () => {
                     </button>
                   ))}
                 </div>
+
+                {/* Bookmarks Filter */}
+                <div className="flex items-center justify-center">
+                  <button
+                    onClick={() => setShowBookmarkedOnly(!showBookmarkedOnly)}
+                    className={cn(
+                      "px-3 py-1 rounded-full text-sm font-medium transition-all flex items-center gap-1",
+                      showBookmarkedOnly
+                        ? "bg-primary text-white"
+                        : "bg-white dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-100 dark:hover:bg-stargaze-700",
+                      "border border-stargaze-200 dark:border-stargaze-700",
+                    )}
+                  >
+                    {showBookmarkedOnly ? (
+                      <BookmarkCheck className="h-4 w-4" />
+                    ) : (
+                      <Bookmark className="h-4 w-4" />
+                    )}
+                    {showBookmarkedOnly ? "Bookmarked" : "All Resources"}
+                  </button>
+                </div>
               </div>
             </AnimatedSection>
           </div>
@@ -275,7 +393,11 @@ const Resources = () => {
                     delay={100 + index * 50}
                     className="h-full"
                   >
-                    <ResourceCard resource={resource} />
+                    <ResourceCard 
+                      resource={resource} 
+                      onBookmarkToggle={toggleBookmark}
+                      isBookmarked={bookmarkedResources.includes(resource.id)}
+                    />
                   </AnimatedSection>
                 ))}
               </div>
