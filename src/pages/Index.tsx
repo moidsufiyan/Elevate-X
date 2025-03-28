@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { MentorShowcase } from "@/components/MentorShowcase";
+import { StartupShowcase } from "@/components/StartupShowcase";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 
@@ -54,9 +55,11 @@ const Index = () => {
           <MentorShowcase />
         </AnimatedSection>
         
-        {/* Additional sections can be added here */}
+        <AnimatedSection animation="fade-up" duration="normal" delay={400} staggerChildren>
+          <StartupShowcase />
+        </AnimatedSection>
       </main>
-      <AnimatedSection animation="fade-in" duration="slow" delay={400}>
+      <AnimatedSection animation="fade-in" duration="slow" delay={500}>
         <Footer />
       </AnimatedSection>
     </div>

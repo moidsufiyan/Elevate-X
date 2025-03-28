@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "./Button";
 import { Menu, X, User, Bell, Search } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -41,14 +42,14 @@ export const Navbar = () => {
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link
           to="/"
-          className="flex items-center space-x-2 text-2xl font-bold tracking-tight"
+          className="flex items-center space-x-2 text-2xl font-bold tracking-tight animate-fade-in"
         >
           <span className="text-primary">Startup</span>
-          <span>Stargaze</span>
+          <span className="dark:text-white">Stargaze</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden md:flex items-center space-x-8 animate-fade-in">
           <div className="flex items-center space-x-6">
             {navLinks.map((link) => (
               <Link
@@ -69,33 +70,39 @@ export const Navbar = () => {
             <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
               <Bell className="h-5 w-5" />
             </button>
+            <ThemeToggle />
             <Link to="/profile">
               <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
                 <User className="h-5 w-5" />
               </button>
             </Link>
             <Link to="/auth">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="animate-fade-in">
                 Log in
               </Button>
             </Link>
             <Link to="/auth">
-              <Button size="sm">Sign up</Button>
+              <Button size="sm" className="hover-lift">
+                Sign up
+              </Button>
             </Link>
           </div>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button
-          className="block md:hidden"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? (
-            <X className="h-6 w-6 text-stargaze-600 dark:text-stargaze-300" />
-          ) : (
-            <Menu className="h-6 w-6 text-stargaze-600 dark:text-stargaze-300" />
-          )}
-        </button>
+        <div className="flex items-center space-x-3 md:hidden">
+          <ThemeToggle />
+          <button
+            className="block"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6 text-stargaze-600 dark:text-stargaze-300" />
+            ) : (
+              <Menu className="h-6 w-6 text-stargaze-600 dark:text-stargaze-300" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
