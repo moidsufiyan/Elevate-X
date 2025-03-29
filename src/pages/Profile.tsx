@@ -1,9 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/Button";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { 
   User, 
@@ -16,8 +17,14 @@ import {
   Star, 
   Settings, 
   Edit, 
-  ChevronRight 
+  ChevronRight,
+  Linkedin,
+  Twitter,
+  Bell,
+  BellDot,
+  Link as LinkIcon
 } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 // Mock user data
 const userData = {
@@ -33,6 +40,46 @@ const userData = {
   joinDate: "January 2023",
   interests: ["SaaS", "Product Management", "Growth Strategy", "UI/UX Design", "AI & Machine Learning"],
   connections: 142,
+  socialLinks: {
+    linkedin: "alexchen",
+    twitter: "@alexchendev",
+    personalWebsite: "https://alexchen.dev"
+  },
+  notifications: [
+    {
+      id: "1",
+      type: "mentorship",
+      title: "New mentorship request from Sarah Johnson",
+      read: false,
+      timestamp: "2023-09-18T14:23:00Z"
+    },
+    {
+      id: "2",
+      type: "comment",
+      title: "Jane replied to your discussion about SaaS pricing models",
+      read: true,
+      timestamp: "2023-09-16T10:00:00Z"
+    },
+    {
+      id: "3",
+      type: "follow",
+      title: "Michael Garcia started following you",
+      read: true,
+      timestamp: "2023-09-12T09:15:00Z"
+    }
+  ],
+  profileCompletion: {
+    profilePicture: true,
+    bio: true,
+    location: true,
+    interests: true,
+    company: true,
+    website: true,
+    socialLinks: true,
+    education: false,
+    skills: false,
+    achievements: false
+  },
   activities: [
     {
       id: "1",
@@ -96,6 +143,23 @@ const profileTabs = ["Activity", "Connections", "Resources", "Sessions"];
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("Activity");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState(userData.notifications);
+  
+  // Calculate profile completion percentage
+  const calculateProfileCompletion = () => {
+    const fields = Object.values(userData.profileCompletion);
+    const completedFields = fields.filter(field => field === true).length;
+    return Math.round((completedFields / fields.length) * 100);
+  };
+  
+  const profileCompletionPercentage = calculateProfileCompletion();
+  
+  const unreadNotificationsCount = notifications.filter(n => !n.read).length;
+  
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
   
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -152,10 +216,108 @@ const Profile = () => {
                   <span>Joined {userData.joinDate}</span>
                 </div>
               </div>
+              
+              {/* Social Media Links */}
+              <div className="flex gap-3 mt-3">
+                {userData.socialLinks.linkedin && (
+                  <a 
+                    href={`https://linkedin.com/in/${userData.socialLinks.linkedin}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-stargaze-600 dark:text-stargaze-400 hover:text-primary dark:hover:text-primary transition-colors"
+                    aria-label="LinkedIn Profile"
+                  >
+                    <Linkedin className="h-5 w-5" />
+                  </a>
+                )}
+                {userData.socialLinks.twitter && (
+                  <a 
+                    href={`https://twitter.com/${userData.socialLinks.twitter}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-stargaze-600 dark:text-stargaze-400 hover:text-primary dark:hover:text-primary transition-colors"
+                    aria-label="Twitter Profile"
+                  >
+                    <Twitter className="h-5 w-5" />
+                  </a>
+                )}
+                {userData.socialLinks.personalWebsite && (
+                  <a 
+                    href={userData.socialLinks.personalWebsite}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-stargaze-600 dark:text-stargaze-400 hover:text-primary dark:hover:text-primary transition-colors"
+                    aria-label="Personal Website"
+                  >
+                    <LinkIcon className="h-5 w-5" />
+                  </a>
+                )}
+              </div>
             </div>
             
             {/* Action Buttons */}
             <div className="flex gap-3 mt-3 md:mt-0">
+              {/* Notification Button */}
+              <div className="relative">
+                <button 
+                  className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-200 dark:hover:bg-stargaze-700 transition-colors"
+                  onClick={() => setShowNotifications(!showNotifications)}
+                >
+                  {unreadNotificationsCount > 0 ? (
+                    <BellDot className="h-5 w-5" />
+                  ) : (
+                    <Bell className="h-5 w-5" />
+                  )}
+                </button>
+                
+                {/* Notification Dropdown */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-stargaze-900 shadow-lg rounded-lg overflow-hidden z-50 border border-stargaze-100 dark:border-stargaze-800">
+                    <div className="p-3 border-b border-stargaze-100 dark:border-stargaze-800 flex justify-between items-center">
+                      <h3 className="font-medium text-stargaze-900 dark:text-white">Notifications</h3>
+                      {unreadNotificationsCount > 0 && (
+                        <button 
+                          onClick={markAllAsRead}
+                          className="text-xs text-primary hover:underline"
+                        >
+                          Mark all as read
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className="max-h-80 overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                          <div 
+                            key={notification.id}
+                            className={cn(
+                              "p-3 border-b border-stargaze-100 dark:border-stargaze-800 hover:bg-stargaze-50 dark:hover:bg-stargaze-800/50",
+                              !notification.read && "bg-stargaze-50 dark:bg-stargaze-800/50"
+                            )}
+                          >
+                            <p className="text-sm text-stargaze-900 dark:text-white mb-1">
+                              {notification.title}
+                            </p>
+                            <p className="text-xs text-stargaze-500 dark:text-stargaze-400">
+                              {new Date(notification.timestamp).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-3 text-center text-stargaze-600 dark:text-stargaze-400">
+                          No notifications
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
               <Button 
                 variant="outline" 
                 size="sm"
@@ -171,6 +333,39 @@ const Profile = () => {
               </Button>
             </div>
           </div>
+          
+          {/* Profile Completion Progress */}
+          <AnimatedSection animation="fade-up" className="mb-8">
+            <div className="bg-white dark:bg-stargaze-900 border border-stargaze-100 dark:border-stargaze-800 rounded-xl shadow-subtle p-6">
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-lg font-medium text-stargaze-900 dark:text-white">
+                  Profile Completion
+                </h2>
+                <span className="text-sm font-medium text-stargaze-900 dark:text-white">
+                  {profileCompletionPercentage}%
+                </span>
+              </div>
+              <Progress value={profileCompletionPercentage} className="h-2 mb-4" />
+              
+              {profileCompletionPercentage < 100 && (
+                <Alert className="mt-3 bg-stargaze-50 dark:bg-stargaze-800/30">
+                  <AlertTitle>Complete your profile</AlertTitle>
+                  <AlertDescription className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                    Adding more details to your profile helps mentors and startups connect with you better.
+                    {!userData.profileCompletion.education && (
+                      <span className="block mt-1">• Add your education details</span>
+                    )}
+                    {!userData.profileCompletion.skills && (
+                      <span className="block mt-1">• Add your key skills</span>
+                    )}
+                    {!userData.profileCompletion.achievements && (
+                      <span className="block mt-1">• Add your achievements</span>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          </AnimatedSection>
           
           {/* Bio & Interests */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
