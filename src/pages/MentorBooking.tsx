@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
@@ -12,8 +12,34 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { format } from "date-fns";
-import { ArrowLeft, ChevronRight, Clock, CreditCard, Calendar as CalendarIcon, MessageSquare, Star } from "lucide-react";
+import { format, isToday, isBefore, addDays } from "date-fns";
+import { 
+  ArrowLeft, 
+  ChevronRight, 
+  Clock, 
+  CreditCard, 
+  Calendar as CalendarIcon, 
+  MessageSquare, 
+  Star,
+  Video,
+  Users,
+  MonitorSmartphone
+} from "lucide-react";
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 // Sample mentor data
 const mentorData = {
@@ -40,7 +66,6 @@ const mentorData = {
   }
 };
 
-// This would be replaced with actual future dates in a real app
 const getAvailableDates = () => {
   const today = new Date();
   const availableDates: Date[] = [];
@@ -59,12 +84,42 @@ const getAvailableDates = () => {
   return availableDates;
 };
 
+// Generate dynamic time slots for the selected date
+const generateTimeSlots = (date: Date | null): string[] => {
+  if (!date) return [];
+  
+  // Generate time slots from 9 AM to 5 PM
+  const slots = [];
+  const today = new Date();
+  const isDateToday = isToday(date);
+  
+  // Start time (9 AM)
+  let hour = 9;
+  
+  // If it's today, only show times after current time + 1 hour buffer
+  if (isDateToday) {
+    hour = Math.max(hour, today.getHours() + 1);
+  }
+  
+  // Generate hourly slots until 5 PM
+  while (hour < 17) {
+    slots.push(`${hour}:00`);
+    hour++;
+  }
+  
+  return slots;
+};
+
 const MentorBooking = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [selectedSessionType, setSelectedSessionType] = useState<string | null>(null);
+  const [meetingMode, setMeetingMode] = useState<string>("video");
   const [notes, setNotes] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   
   // In a real app, fetch mentor data based on ID
   const mentor = mentorData;
@@ -74,10 +129,8 @@ const MentorBooking = () => {
   // Format selected date as string key for the availableTimeSlots object
   const formattedSelectedDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : null;
   
-  // Get time slots for the selected date
-  const timeSlots = formattedSelectedDate && mentor.availableTimeSlots[formattedSelectedDate] 
-    ? mentor.availableTimeSlots[formattedSelectedDate] 
-    : [];
+  // Get time slots for the selected date - using dynamic generation
+  const timeSlots = selectedDate ? generateTimeSlots(selectedDate) : [];
   
   // Find selected session type details
   const selectedSession = mentor.sessionTypes.find(session => session.id === selectedSessionType);
@@ -85,23 +138,45 @@ const MentorBooking = () => {
   // Calculate total price
   const totalPrice = selectedSession ? selectedSession.price : 0;
   
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedDate(date);
+    setSelectedTimeSlot(null); // Reset time slot when date changes
+  };
+  
   const handleSubmit = () => {
     if (!selectedDate || !selectedTimeSlot || !selectedSessionType) {
       toast.error("Please complete all booking details");
       return;
     }
     
-    // In a real app, this would call an API to book the session
-    toast.success("Session booked successfully!");
+    setIsConfirmOpen(true);
+  };
+  
+  const confirmBooking = () => {
+    setIsLoading(true);
     
-    // Redirect or show confirmation would happen here
-    console.log({
-      mentorId: mentor.id,
-      date: selectedDate,
-      timeSlot: selectedTimeSlot,
-      sessionType: selectedSessionType,
-      notes
-    });
+    // In a real app, this would call an API to book the session
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsConfirmOpen(false);
+      
+      // Show success message
+      toast.success("Session booked successfully!");
+      
+      // Log booking details (would be sent to backend in real app)
+      console.log({
+        mentorId: mentor.id,
+        date: selectedDate,
+        timeSlot: selectedTimeSlot,
+        sessionType: selectedSessionType,
+        meetingMode,
+        notes
+      });
+      
+      // Redirect to a confirmation page or mentor dashboard
+      // For now, just navigate back to mentor profile
+      navigate(`/mentor/${id}`);
+    }, 1500);
   };
 
   return (
@@ -186,14 +261,12 @@ const MentorBooking = () => {
                           <Calendar
                             mode="single"
                             selected={selectedDate}
-                            onSelect={setSelectedDate}
+                            onSelect={handleDateSelect}
                             disabled={(date) => {
-                              // Disable past dates and dates not in availableDates
-                              return date < new Date() || !availableDates.some(
-                                availableDate => availableDate.toDateString() === date.toDateString()
-                              );
+                              // Disable past dates and weekends
+                              return isBefore(date, addDays(new Date(), 1)) || date.getDay() === 0 || date.getDay() === 6;
                             }}
-                            className="rounded-md"
+                            className="rounded-md pointer-events-auto"
                           />
                         </div>
                       </div>
@@ -242,7 +315,75 @@ const MentorBooking = () => {
               <AnimatedSection animation="fade-up" delay={200}>
                 <Card>
                   <CardHeader>
-                    <CardTitle>3. Session Details</CardTitle>
+                    <CardTitle>3. Meeting Mode</CardTitle>
+                    <CardDescription>
+                      Choose how you'd like to conduct your mentoring session.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div 
+                        className={`flex flex-col items-center border rounded-lg p-4 cursor-pointer transition-all ${
+                          meetingMode === "video" ? 'border-primary ring-2 ring-primary/20' : 'border-stargaze-200 dark:border-stargaze-800'
+                        }`}
+                        onClick={() => setMeetingMode("video")}
+                      >
+                        <Video className="h-8 w-8 mb-2 text-primary" />
+                        <span className="font-medium text-stargaze-900 dark:text-white">Video Call</span>
+                        <span className="text-xs text-stargaze-500 text-center mt-1">Google Meet or Zoom</span>
+                      </div>
+                      
+                      <div 
+                        className={`flex flex-col items-center border rounded-lg p-4 cursor-pointer transition-all ${
+                          meetingMode === "inperson" ? 'border-primary ring-2 ring-primary/20' : 'border-stargaze-200 dark:border-stargaze-800'
+                        }`}
+                        onClick={() => setMeetingMode("inperson")}
+                      >
+                        <Users className="h-8 w-8 mb-2 text-primary" />
+                        <span className="font-medium text-stargaze-900 dark:text-white">In Person</span>
+                        <span className="text-xs text-stargaze-500 text-center mt-1">Face to face meeting</span>
+                      </div>
+                      
+                      <div 
+                        className={`flex flex-col items-center border rounded-lg p-4 cursor-pointer transition-all ${
+                          meetingMode === "hybrid" ? 'border-primary ring-2 ring-primary/20' : 'border-stargaze-200 dark:border-stargaze-800'
+                        }`}
+                        onClick={() => setMeetingMode("hybrid")}
+                      >
+                        <MonitorSmartphone className="h-8 w-8 mb-2 text-primary" />
+                        <span className="font-medium text-stargaze-900 dark:text-white">Hybrid</span>
+                        <span className="text-xs text-stargaze-500 text-center mt-1">Combination of both</span>
+                      </div>
+                    </div>
+                    
+                    {meetingMode === "video" && (
+                      <div className="mt-4">
+                        <Select defaultValue="zoom">
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select platform" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="zoom">Zoom</SelectItem>
+                            <SelectItem value="meet">Google Meet</SelectItem>
+                            <SelectItem value="teams">Microsoft Teams</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                    
+                    {meetingMode === "inperson" && (
+                      <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-md text-amber-800 dark:text-amber-300 text-sm">
+                        <p>In-person meetings are subject to mentor availability and location. Details will be confirmed after booking.</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </AnimatedSection>
+              
+              <AnimatedSection animation="fade-up" delay={250}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>4. Session Details</CardTitle>
                     <CardDescription>
                       Provide any additional information that would help the mentor prepare for your session.
                     </CardDescription>
@@ -261,7 +402,7 @@ const MentorBooking = () => {
             
             {/* Right Column - Booking Summary */}
             <div className="lg:col-span-1">
-              <AnimatedSection animation="fade-up" delay={250}>
+              <AnimatedSection animation="fade-up" delay={300}>
                 <div className="sticky top-24">
                   <Card>
                     <CardHeader>
@@ -316,6 +457,12 @@ const MentorBooking = () => {
                             {selectedSession ? `${selectedSession.duration} minutes` : "N/A"}
                           </span>
                         </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-stargaze-600 dark:text-stargaze-400">Meeting Mode:</span>
+                          <span className="font-medium capitalize">
+                            {meetingMode}
+                          </span>
+                        </div>
                       </div>
                       
                       <Separator />
@@ -351,6 +498,72 @@ const MentorBooking = () => {
           </div>
         </div>
       </main>
+      
+      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirm your booking</DialogTitle>
+            <DialogDescription>
+              Please review the details of your session before confirming.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="flex items-center space-x-3">
+              <img 
+                src={mentor.image} 
+                alt={mentor.name} 
+                className="h-12 w-12 rounded-full object-cover"
+              />
+              <div>
+                <h4 className="font-medium">{mentor.name}</h4>
+                <p className="text-sm text-muted-foreground">{mentor.role}</p>
+              </div>
+            </div>
+            
+            <Separator />
+            
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Session:</span>
+                <span className="font-medium">{selectedSession?.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Date & Time:</span>
+                <span className="font-medium">
+                  {selectedDate && `${format(selectedDate, "MMMM d, yyyy")} at ${selectedTimeSlot}`}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Duration:</span>
+                <span className="font-medium">{selectedSession?.duration} minutes</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Meeting Mode:</span>
+                <span className="font-medium capitalize">{meetingMode}</span>
+              </div>
+              <div className="flex justify-between font-medium">
+                <span>Total:</span>
+                <span className="text-primary">${totalPrice}</span>
+              </div>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsConfirmOpen(false)}>Cancel</Button>
+            <Button onClick={confirmBooking} disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                'Confirm & Pay'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       
       <Footer />
     </div>
