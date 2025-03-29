@@ -4,58 +4,18 @@ import { AnimatedSection } from "./AnimatedSection";
 import { MentorCard } from "./MentorCard";
 import { Button } from "./Button";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
-// Sample mentor data
-const mentors = [
-  {
-    id: "1",
-    name: "Sarah Johnson",
-    role: "CEO",
-    company: "TechVentures",
-    expertise: ["SaaS", "Leadership", "Funding"],
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=776&q=80",
-    available: true,
-    tags: ["Marketing Expert", "Tech Founder"],
-    badges: [{ label: "Top Mentor", variant: "default" as const }],
-  },
-  {
-    id: "2",
-    name: "Michael Chen",
-    role: "CTO",
-    company: "InnovateLabs",
-    expertise: ["AI", "Machine Learning", "Product Strategy"],
-    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-    available: false,
-    tags: ["AI Expert", "Product Specialist"],
-  },
-  {
-    id: "3",
-    name: "Elena Rodriguez",
-    role: "Venture Partner",
-    company: "Summit Capital",
-    expertise: ["Investment", "Scaling", "Market Analysis"],
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    available: true,
-    tags: ["Angel Investor", "Growth Strategy"],
-    badges: [{ label: "Featured", variant: "secondary" as const }],
-  },
-  {
-    id: "4",
-    name: "David Park",
-    role: "Marketing Director",
-    company: "Growth Accelerator",
-    expertise: ["Growth Marketing", "Brand Strategy", "Digital Ads"],
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    available: true,
-    tags: ["Marketing Expert", "Growth Hacker"],
-  },
-];
+import { ChevronLeft, ChevronRight, Loader } from "lucide-react";
+import { useMentors } from "@/hooks/use-mentors";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const MentorShowcase = () => {
   // For a real implementation, this would handle pagination or scrolling
   const [currentSlide, setCurrentSlide] = useState(0);
-  const maxSlides = Math.ceil(mentors.length / 4) - 1;
+  
+  // Fetch mentors data using React Query
+  const { data: mentors, isLoading, error } = useMentors();
+  
+  const maxSlides = mentors ? Math.ceil(mentors.length / 4) - 1 : 0;
   
   const handlePrevSlide = () => {
     setCurrentSlide((prev) => Math.max(prev - 1, 0));
@@ -65,6 +25,45 @@ export const MentorShowcase = () => {
     setCurrentSlide((prev) => Math.min(prev + 1, maxSlides));
   };
   
+  // Show loading state while data is being fetched
+  if (isLoading) {
+    return (
+      <section id="mentors" className="py-24 relative overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Meet Our Mentors</h2>
+            <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
+              Learn from Industry Experts
+            </h3>
+            <div className="flex justify-center">
+              <Loader className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+  
+  // Show error state if fetch fails
+  if (error) {
+    return (
+      <section id="mentors" className="py-24 relative overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-sm font-semibold text-destructive uppercase tracking-wider mb-3">Error</h2>
+            <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
+              Could not load mentors
+            </h3>
+            <p className="text-stargaze-600 dark:text-stargaze-400">
+              Please try again later or contact support if the problem persists.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+  
+  // If we have mentors data, display them
   return (
     <section id="mentors" className="py-24 relative overflow-hidden">
       {/* Background Elements */}
@@ -94,7 +93,7 @@ export const MentorShowcase = () => {
         <div className="relative">
           {/* Mentors Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {mentors.map((mentor, index) => (
+            {mentors && mentors.slice(0, 4).map((mentor, index) => (
               <AnimatedSection
                 key={mentor.id}
                 threshold={0.1}
