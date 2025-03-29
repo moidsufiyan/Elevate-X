@@ -14,7 +14,7 @@ import {
   EyeIcon, 
   EyeOffIcon, 
   GithubIcon, 
-  GoogleIcon, 
+  MailIcon, // Using MailIcon instead of GoogleIcon
   LinkedinIcon,
   ArrowLeft,
   Loader2
@@ -303,7 +303,7 @@ const Auth = () => {
                     
                     <div className="grid grid-cols-3 gap-2">
                       <Button variant="outline" type="button" className="w-full">
-                        <GoogleIcon className="h-4 w-4" />
+                        <MailIcon className="h-4 w-4" />
                       </Button>
                       <Button variant="outline" type="button" className="w-full">
                         <GithubIcon className="h-4 w-4" />
@@ -462,7 +462,7 @@ const Auth = () => {
                     
                     <div className="grid grid-cols-3 gap-2">
                       <Button variant="outline" type="button" className="w-full">
-                        <GoogleIcon className="h-4 w-4" />
+                        <MailIcon className="h-4 w-4" />
                       </Button>
                       <Button variant="outline" type="button" className="w-full">
                         <GithubIcon className="h-4 w-4" />
