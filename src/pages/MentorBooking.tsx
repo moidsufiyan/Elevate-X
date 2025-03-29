@@ -23,7 +23,8 @@ import {
   Star,
   Video,
   Users,
-  MonitorSmartphone
+  MonitorSmartphone,
+  Loader2
 } from "lucide-react";
 import { 
   Dialog,
