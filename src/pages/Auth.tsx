@@ -1,250 +1,487 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { Button } from "@/components/Button";
-import { cn } from "@/lib/utils";
-import { Mail, Lock, User, ArrowRight, Github, Linkedin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+import { 
+  EyeIcon, 
+  EyeOffIcon, 
+  GithubIcon, 
+  GoogleIcon, 
+  LinkedinIcon,
+  ArrowLeft,
+  Loader2
+} from "lucide-react";
 
-// Auth modes
-type AuthMode = "signin" | "signup";
+// Form validation schemas
+const loginSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
+});
+
+const signupSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
+  confirmPassword: z.string(),
+  accountType: z.enum(["founder", "mentor", "investor"])
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
 
 const Auth = () => {
-  const [mode, setMode] = useState<AuthMode>("signin");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [role, setRole] = useState("entrepreneur");
+  const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [accountType, setAccountType] = useState<"founder" | "mentor" | "investor">("founder");
+  const { toast } = useToast();
+  const navigate = useNavigate();
   
-  const handleSubmit = (e: React.FormEvent) => {
+  // Form state
+  const [loginForm, setLoginForm] = useState({
+    email: "",
+    password: "",
+  });
+  
+  const [signupForm, setSignupForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    accountType: "founder" as "founder" | "mentor" | "investor",
+  });
+  
+  // Validation errors
+  const [loginErrors, setLoginErrors] = useState<{ [key: string]: string }>({});
+  const [signupErrors, setSignupErrors] = useState<{ [key: string]: string }>({});
+  
+  // Handle login form input changes
+  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginForm(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error for this field when user types
+    if (loginErrors[name]) {
+      setLoginErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+  
+  // Handle signup form input changes
+  const handleSignupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSignupForm(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error for this field when user types
+    if (signupErrors[name]) {
+      setSignupErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+  
+  // Handle login form submission
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would connect to your authentication service
-    console.log("Form submitted:", { mode, email, password, name, role });
+    setIsSubmitting(true);
+    
+    try {
+      // Validate form
+      loginSchema.parse(loginForm);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Show success and redirect
+      toast({
+        title: "Login successful",
+        description: "Redirecting you to the dashboard...",
+      });
+      
+      navigate("/profile");
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Format Zod validation errors
+        const formattedErrors: { [key: string]: string } = {};
+        error.errors.forEach(err => {
+          if (err.path) {
+            formattedErrors[err.path[0]] = err.message;
+          }
+        });
+        setLoginErrors(formattedErrors);
+      } else {
+        // Handle API errors or other issues
+        toast({
+          title: "Login failed",
+          description: "Invalid email or password. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  // Handle signup form submission
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      // Set account type from state
+      const formWithAccountType = {
+        ...signupForm,
+        accountType,
+      };
+      
+      // Validate form
+      signupSchema.parse(formWithAccountType);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Show success and redirect
+      toast({
+        title: "Account created successfully",
+        description: "Redirecting you to complete your profile...",
+      });
+      
+      // Redirect based on account type
+      if (accountType === "founder") {
+        navigate("/startup-profile");
+      } else if (accountType === "mentor") {
+        navigate("/mentor-profile");
+      } else {
+        navigate("/profile");
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Format Zod validation errors
+        const formattedErrors: { [key: string]: string } = {};
+        error.errors.forEach(err => {
+          if (err.path) {
+            formattedErrors[err.path[0]] = err.message;
+          }
+        });
+        setSignupErrors(formattedErrors);
+      } else {
+        // Handle API errors or other issues
+        toast({
+          title: "Signup failed",
+          description: "There was an error creating your account. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left Side - Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
-        <div className="w-full max-w-md">
-          <AnimatedSection animation="fade-up">
-            <Link to="/" className="flex items-center mb-8 text-2xl font-bold tracking-tight">
-              <span className="text-primary">Startup</span>
-              <span>Stargaze</span>
-            </Link>
-            
-            <h1 className="text-3xl font-bold mb-2 text-stargaze-900 dark:text-white">
-              {mode === "signin" ? "Welcome back" : "Join our community"}
-            </h1>
-            <p className="text-stargaze-600 dark:text-stargaze-300 mb-8">
-              {mode === "signin" 
-                ? "Sign in to access your account and continue your journey."
-                : "Create an account to connect with mentors and grow your startup."
-              }
-            </p>
-            
-            <div className="flex gap-4 mb-6">
-              <button
-                type="button"
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg",
-                  "border border-stargaze-200 dark:border-stargaze-700",
-                  "text-stargaze-700 dark:text-stargaze-300",
-                  "hover:bg-stargaze-50 dark:hover:bg-stargaze-800 transition-colors"
-                )}
+    <div className="min-h-screen flex flex-col bg-stargaze-50 dark:bg-stargaze-950">
+      <div className="container flex flex-1 items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <AnimatedSection className="w-full max-w-md">
+          <Link to="/" className="flex items-center text-primary mb-8 ml-1">
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back to Home
+          </Link>
+          
+          <Card className="border-stargaze-200 dark:border-stargaze-800 shadow-lg">
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-2xl font-bold text-center">
+                {activeTab === "login" ? "Sign in to your account" : "Create an account"}
+              </CardTitle>
+              <CardDescription className="text-center">
+                {activeTab === "login" 
+                  ? "Enter your credentials to access your account" 
+                  : "Fill in the details below to create your account"
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Tabs 
+                value={activeTab} 
+                onValueChange={(value) => setActiveTab(value as "login" | "signup")}
+                className="w-full"
               >
-                <Github className="h-5 w-5" />
-                <span className="text-sm">GitHub</span>
-              </button>
-              <button
-                type="button"
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg",
-                  "border border-stargaze-200 dark:border-stargaze-700",
-                  "text-stargaze-700 dark:text-stargaze-300",
-                  "hover:bg-stargaze-50 dark:hover:bg-stargaze-800 transition-colors"
-                )}
-              >
-                <Linkedin className="h-5 w-5" />
-                <span className="text-sm">LinkedIn</span>
-              </button>
-            </div>
-            
-            <div className="relative flex items-center justify-center mb-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-stargaze-200 dark:border-stargaze-700"></div>
-              </div>
-              <div className="relative bg-white dark:bg-stargaze-950 px-4 text-sm text-stargaze-500 dark:text-stargaze-400">
-                or continue with
-              </div>
-            </div>
-            
-            <form onSubmit={handleSubmit}>
-              {mode === "signup" && (
-                <div className="mb-4">
-                  <label htmlFor="name" className="block text-sm font-medium text-stargaze-700 dark:text-stargaze-300 mb-1">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-stargaze-400 h-5 w-5" />
-                    <input
-                      id="name"
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="John Doe"
-                      className={cn(
-                        "w-full pl-10 pr-4 py-2.5 rounded-lg",
-                        "bg-white dark:bg-stargaze-900",
-                        "border border-stargaze-200 dark:border-stargaze-700",
-                        "text-stargaze-900 dark:text-stargaze-200",
-                        "focus:outline-none focus:ring-2 focus:ring-primary",
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="login">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
+                
+                {/* Login Form */}
+                <TabsContent value="login">
+                  <form onSubmit={handleLogin} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="login-email">Email</Label>
+                      <Input
+                        id="login-email"
+                        name="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={loginForm.email}
+                        onChange={handleLoginChange}
+                        className={loginErrors.email ? "border-red-500" : ""}
+                      />
+                      {loginErrors.email && (
+                        <p className="text-xs text-red-500">{loginErrors.email}</p>
                       )}
-                      required
-                    />
-                  </div>
-                </div>
-              )}
-              
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium text-stargaze-700 dark:text-stargaze-300 mb-1">
-                  Email
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-stargaze-400 h-5 w-5" />
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className={cn(
-                      "w-full pl-10 pr-4 py-2.5 rounded-lg",
-                      "bg-white dark:bg-stargaze-900",
-                      "border border-stargaze-200 dark:border-stargaze-700",
-                      "text-stargaze-900 dark:text-stargaze-200",
-                      "focus:outline-none focus:ring-2 focus:ring-primary",
-                    )}
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="mb-4">
-                <label htmlFor="password" className="block text-sm font-medium text-stargaze-700 dark:text-stargaze-300 mb-1">
-                  Password
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-stargaze-400 h-5 w-5" />
-                  <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className={cn(
-                      "w-full pl-10 pr-4 py-2.5 rounded-lg",
-                      "bg-white dark:bg-stargaze-900",
-                      "border border-stargaze-200 dark:border-stargaze-700",
-                      "text-stargaze-900 dark:text-stargaze-200",
-                      "focus:outline-none focus:ring-2 focus:ring-primary",
-                    )}
-                    required
-                  />
-                </div>
-              </div>
-              
-              {mode === "signup" && (
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-stargaze-700 dark:text-stargaze-300 mb-2">
-                    I am a:
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {["entrepreneur", "mentor", "investor"].map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => setRole(option)}
-                        className={cn(
-                          "py-2 px-4 rounded-lg text-sm capitalize transition-colors",
-                          role === option
-                            ? "bg-primary text-white"
-                            : "bg-white dark:bg-stargaze-900 text-stargaze-700 dark:text-stargaze-300 border border-stargaze-200 dark:border-stargaze-700"
-                        )}
-                      >
-                        {option}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {mode === "signin" && (
-                <div className="flex justify-end mb-6">
-                  <a href="#" className="text-sm text-primary hover:underline">
-                    Forgot your password?
-                  </a>
-                </div>
-              )}
-              
-              <Button
-                type="submit"
-                className="w-full justify-center mb-4"
-                rightIcon={<ArrowRight className="h-4 w-4" />}
-              >
-                {mode === "signin" ? "Sign In" : "Create Account"}
-              </Button>
-              
-              <p className="text-center text-sm text-stargaze-600 dark:text-stargaze-400">
-                {mode === "signin" ? "Don't have an account? " : "Already have an account? "}
-                <button
-                  type="button"
-                  onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-                  className="text-primary hover:underline font-medium"
-                >
-                  {mode === "signin" ? "Sign Up" : "Sign In"}
-                </button>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="login-password">Password</Label>
+                        <Link 
+                          to="/auth/reset" 
+                          className="text-xs text-primary hover:underline"
+                        >
+                          Forgot password?
+                        </Link>
+                      </div>
+                      <div className="relative">
+                        <Input
+                          id="login-password"
+                          name="password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={loginForm.password}
+                          onChange={handleLoginChange}
+                          className={loginErrors.password ? "border-red-500 pr-10" : "pr-10"}
+                        />
+                        <button 
+                          type="button"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stargaze-500 hover:text-stargaze-700"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOffIcon className="h-4 w-4" />
+                          ) : (
+                            <EyeIcon className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                      {loginErrors.password && (
+                        <p className="text-xs text-red-500">{loginErrors.password}</p>
+                      )}
+                    </div>
+                    
+                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Signing in...
+                        </>
+                      ) : (
+                        "Sign In"
+                      )}
+                    </Button>
+                    
+                    <div className="relative my-4">
+                      <div className="absolute inset-0 flex items-center">
+                        <Separator />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-card px-2 text-muted-foreground">
+                          Or continue with
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button variant="outline" type="button" className="w-full">
+                        <GoogleIcon className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" type="button" className="w-full">
+                        <GithubIcon className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" type="button" className="w-full">
+                        <LinkedinIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </form>
+                </TabsContent>
+                
+                {/* Signup Form */}
+                <TabsContent value="signup">
+                  <form onSubmit={handleSignup} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-name">Full Name</Label>
+                      <Input
+                        id="signup-name"
+                        name="name"
+                        type="text"
+                        placeholder="John Doe"
+                        value={signupForm.name}
+                        onChange={handleSignupChange}
+                        className={signupErrors.name ? "border-red-500" : ""}
+                      />
+                      {signupErrors.name && (
+                        <p className="text-xs text-red-500">{signupErrors.name}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email">Email</Label>
+                      <Input
+                        id="signup-email"
+                        name="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={signupForm.email}
+                        onChange={handleSignupChange}
+                        className={signupErrors.email ? "border-red-500" : ""}
+                      />
+                      {signupErrors.email && (
+                        <p className="text-xs text-red-500">{signupErrors.email}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password">Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="signup-password"
+                          name="password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={signupForm.password}
+                          onChange={handleSignupChange}
+                          className={signupErrors.password ? "border-red-500 pr-10" : "pr-10"}
+                        />
+                        <button 
+                          type="button"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stargaze-500 hover:text-stargaze-700"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOffIcon className="h-4 w-4" />
+                          ) : (
+                            <EyeIcon className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                      {signupErrors.password && (
+                        <p className="text-xs text-red-500">{signupErrors.password}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-confirm-password">Confirm Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="signup-confirm-password"
+                          name="confirmPassword"
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={signupForm.confirmPassword}
+                          onChange={handleSignupChange}
+                          className={signupErrors.confirmPassword ? "border-red-500 pr-10" : "pr-10"}
+                        />
+                        <button 
+                          type="button"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stargaze-500 hover:text-stargaze-700"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOffIcon className="h-4 w-4" />
+                          ) : (
+                            <EyeIcon className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                      {signupErrors.confirmPassword && (
+                        <p className="text-xs text-red-500">{signupErrors.confirmPassword}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label>Account Type</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Button 
+                          type="button"
+                          variant={accountType === "founder" ? "default" : "outline"}
+                          className="w-full"
+                          onClick={() => setAccountType("founder")}
+                        >
+                          Founder
+                        </Button>
+                        <Button 
+                          type="button"
+                          variant={accountType === "mentor" ? "default" : "outline"}
+                          className="w-full"
+                          onClick={() => setAccountType("mentor")}
+                        >
+                          Mentor
+                        </Button>
+                        <Button 
+                          type="button"
+                          variant={accountType === "investor" ? "default" : "outline"}
+                          className="w-full"
+                          onClick={() => setAccountType("investor")}
+                        >
+                          Investor
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Creating Account...
+                        </>
+                      ) : (
+                        "Create Account"
+                      )}
+                    </Button>
+                    
+                    <div className="relative my-4">
+                      <div className="absolute inset-0 flex items-center">
+                        <Separator />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-card px-2 text-muted-foreground">
+                          Or continue with
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button variant="outline" type="button" className="w-full">
+                        <GoogleIcon className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" type="button" className="w-full">
+                        <GithubIcon className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" type="button" className="w-full">
+                        <LinkedinIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </form>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-4">
+              <p className="text-xs text-center text-stargaze-500">
+                By continuing, you agree to our <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
               </p>
-            </form>
-          </AnimatedSection>
-        </div>
-      </div>
-      
-      {/* Right Side - Image */}
-      <div className="hidden md:block md:w-1/2 bg-stargaze-100 dark:bg-stargaze-900 relative overflow-hidden">
-        <div className="absolute inset-0 bg-primary opacity-10"></div>
-        <img
-          src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-          alt="Startup team working together"
-          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
-        />
-        <div className="absolute inset-0 flex items-center justify-center p-12">
-          <div className="bg-white/80 dark:bg-stargaze-900/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg max-w-md">
-            <h2 className="text-2xl font-bold mb-4 text-stargaze-900 dark:text-white">
-              Connect. Learn. Grow.
-            </h2>
-            <p className="text-stargaze-700 dark:text-stargaze-300 mb-6">
-              Join a community of entrepreneurs, mentors, and investors who are passionate about building successful startups and making a positive impact.
-            </p>
-            <div className="space-y-4">
-              {[
-                "Access to expert mentors with proven track records",
-                "Connect with fellow entrepreneurs and share experiences",
-                "Learn from comprehensive resources and guides",
-                "Get feedback on your ideas and growth strategies",
-              ].map((benefit, index) => (
-                <div key={index} className="flex items-start gap-2">
-                  <div className="h-5 w-5 rounded-full bg-primary/20 text-primary flex items-center justify-center mt-0.5">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <span className="text-sm text-stargaze-700 dark:text-stargaze-300">{benefit}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+            </CardFooter>
+          </Card>
+        </AnimatedSection>
       </div>
     </div>
   );

@@ -3,569 +3,716 @@ import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { 
   User, 
-  Mail, 
-  Briefcase, 
-  MapPin, 
-  Globe, 
-  Calendar, 
-  MessageCircle, 
-  Star, 
   Settings, 
-  Edit, 
-  ChevronRight,
-  Linkedin,
+  Bell, 
+  Briefcase, 
+  BookOpen, 
+  MessageSquare, 
+  Calendar,
+  CheckCircle2,
+  PenLine,
+  Globe,
   Twitter,
-  Bell,
-  BellDot,
-  Link as LinkIcon
+  Linkedin,
+  Link,
+  Plus,
+  ChevronRight,
+  Activity,
+  AlertCircle
 } from "lucide-react";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
 
-// Mock user data
+// Sample user data
 const userData = {
-  id: "1",
-  name: "Alex Chen",
-  role: "Entrepreneur",
-  avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-  coverPhoto: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-  bio: "Serial entrepreneur with a passion for SaaS and B2B solutions. Currently building my third startup in the productivity space.",
-  company: "ProductFlow.io",
+  name: "Alex Johnson",
+  email: "alex.johnson@example.com",
+  title: "Founder & CEO",
+  company: "TechFlow Solutions",
   location: "San Francisco, CA",
-  website: "alexchen.dev",
-  joinDate: "January 2023",
-  interests: ["SaaS", "Product Management", "Growth Strategy", "UI/UX Design", "AI & Machine Learning"],
-  connections: 142,
-  socialLinks: {
-    linkedin: "alexchen",
-    twitter: "@alexchendev",
-    personalWebsite: "https://alexchen.dev"
-  },
-  notifications: [
-    {
-      id: "1",
-      type: "mentorship",
-      title: "New mentorship request from Sarah Johnson",
-      read: false,
-      timestamp: "2023-09-18T14:23:00Z"
-    },
-    {
-      id: "2",
-      type: "comment",
-      title: "Jane replied to your discussion about SaaS pricing models",
-      read: true,
-      timestamp: "2023-09-16T10:00:00Z"
-    },
-    {
-      id: "3",
-      type: "follow",
-      title: "Michael Garcia started following you",
-      read: true,
-      timestamp: "2023-09-12T09:15:00Z"
-    }
-  ],
-  profileCompletion: {
-    profilePicture: true,
+  bio: "Serial entrepreneur building innovative solutions for the future. Previously founded two successful startups in the B2B SaaS space.",
+  avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1780&q=80",
+  website: "https://alexjohnson.com",
+  twitter: "alexjtech",
+  linkedin: "alexjohnson",
+  profileSections: {
+    basicInfo: true,
+    companyDetails: true,
     bio: true,
-    location: true,
-    interests: true,
-    company: true,
-    website: true,
-    socialLinks: true,
-    education: false,
-    skills: false,
-    achievements: false
+    expertise: false,
+    socialMedia: true,
+    profilePicture: true
   },
-  activities: [
-    {
-      id: "1",
-      type: "discussion",
-      title: "What's the best way to validate a SaaS idea?",
-      timestamp: "2023-09-15T14:23:00Z",
-      engagement: "24 replies",
-    },
-    {
-      id: "2",
-      type: "mentor",
-      title: "Scheduled mentorship session with Sarah Johnson",
-      timestamp: "2023-09-10T10:00:00Z",
-      engagement: "60 min session",
-    },
-    {
-      id: "3",
-      type: "resource",
-      title: "Downloaded 'Ultimate Pitch Deck Template'",
-      timestamp: "2023-09-05T09:15:00Z",
-      engagement: "",
-    },
-    {
-      id: "4",
-      type: "discussion",
-      title: "Replied to 'Marketing strategies that worked for your B2B startup'",
-      timestamp: "2023-09-01T16:30:00Z",
-      engagement: "5 likes",
-    },
-  ],
-  upcomingSessions: [
-    {
-      id: "1",
-      mentorName: "Elena Rodriguez",
-      mentorAvatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      date: "2023-09-22T13:00:00Z",
-      duration: 45,
-      topic: "Fundraising Strategy",
-    },
-  ],
-  savedResources: [
-    {
-      id: "1",
-      title: "User Research Handbook",
-      type: "guide",
-      category: "Product Development",
-      image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    },
-    {
-      id: "2",
-      title: "Growth Hacking Strategies",
-      type: "guide",
-      category: "Marketing",
-      image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    },
-  ],
+  expertise: ["Product Strategy", "SaaS", "Fundraising"],
+  connections: 143,
+  mentorshipRequests: 2,
+  helpfulReplies: 27
 };
 
-// Tabs for profile
-const profileTabs = ["Activity", "Connections", "Resources", "Sessions"];
+// Sample notification data
+const notifications = [
+  {
+    id: "1",
+    type: "mentorship",
+    title: "New Mentorship Request",
+    message: "Sarah Johnson would like to schedule a mentorship session with you.",
+    time: "2 hours ago",
+    read: false
+  },
+  {
+    id: "2",
+    type: "message",
+    title: "New Message",
+    message: "Michael Chen replied to your question about fundraising strategies.",
+    time: "5 hours ago",
+    read: false
+  },
+  {
+    id: "3",
+    type: "community",
+    title: "Community Update",
+    message: "Your post in SaaS Founders received 12 new replies.",
+    time: "1 day ago",
+    read: true
+  },
+  {
+    id: "4",
+    type: "mentorship",
+    title: "Session Reminder",
+    message: "Your mentorship session with Elena Rodriguez is scheduled for tomorrow at 2:00 PM.",
+    time: "1 day ago",
+    read: true
+  },
+  {
+    id: "5",
+    type: "system",
+    title: "Profile Completion",
+    message: "Complete your profile to get more visibility in the mentor matching system.",
+    time: "3 days ago",
+    read: true
+  }
+];
+
+// Sample activity data
+const activityData = [
+  {
+    id: "1",
+    type: "community",
+    title: "Posted in SaaS Founders",
+    content: "How do you approach pricing for enterprise customers vs. SMBs?",
+    time: "2 days ago",
+    engagement: "8 replies"
+  },
+  {
+    id: "2",
+    type: "mentorship",
+    title: "Mentorship Session Completed",
+    content: "Session with David Park on Operations Optimization",
+    time: "1 week ago",
+    engagement: "5/5 rating"
+  },
+  {
+    id: "3",
+    type: "resource",
+    title: "Downloaded Resource",
+    content: "Ultimate Pitch Deck Template",
+    time: "1 week ago",
+    engagement: ""
+  },
+  {
+    id: "4",
+    type: "community",
+    title: "Replied in E-commerce Growth",
+    content: "Shared your experience with customer retention strategies.",
+    time: "2 weeks ago",
+    engagement: "3 upvotes"
+  }
+];
+
+// Sample upcoming sessions
+const upcomingSessions = [
+  {
+    id: "1",
+    title: "Growth Marketing Strategy",
+    with: "Sarah Johnson",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=776&q=80",
+    date: "July 15, 2023",
+    time: "10:00 AM - 11:00 AM PST"
+  }
+];
+
+// Calculate profile completion percentage
+const calculateProfileCompletion = (profile) => {
+  const totalSections = Object.keys(profile.profileSections).length;
+  const completedSections = Object.values(profile.profileSections).filter(Boolean).length;
+  return Math.round((completedSections / totalSections) * 100);
+};
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState("Activity");
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState(userData.notifications);
+  const [activeTab, setActiveTab] = useState("profile");
+  const [user, setUser] = useState(userData);
+  const [profileCompletionPercentage, setProfileCompletionPercentage] = useState(0);
+  const [userNotifications, setUserNotifications] = useState(notifications);
+  const [isEditingSocial, setIsEditingSocial] = useState(false);
+  const [socialInputs, setSocialInputs] = useState({
+    website: user.website || "",
+    twitter: user.twitter || "",
+    linkedin: user.linkedin || ""
+  });
   
-  // Calculate profile completion percentage
-  const calculateProfileCompletion = () => {
-    const fields = Object.values(userData.profileCompletion);
-    const completedFields = fields.filter(field => field === true).length;
-    return Math.round((completedFields / fields.length) * 100);
+  // Calculate profile completion on component mount
+  useEffect(() => {
+    const percentage = calculateProfileCompletion(user);
+    setProfileCompletionPercentage(percentage);
+  }, [user]);
+  
+  // Handle notification read status
+  const markAllNotificationsAsRead = () => {
+    setUserNotifications(prev => 
+      prev.map(notification => ({
+        ...notification,
+        read: true
+      }))
+    );
+    toast.success("All notifications marked as read");
   };
   
-  const profileCompletionPercentage = calculateProfileCompletion();
-  
-  const unreadNotificationsCount = notifications.filter(n => !n.read).length;
-  
-  const markAllAsRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  // Handle social media update
+  const handleSocialInputChange = (field, value) => {
+    setSocialInputs(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
   
+  const saveSocialMedia = () => {
+    setUser(prev => ({
+      ...prev,
+      website: socialInputs.website,
+      twitter: socialInputs.twitter,
+      linkedin: socialInputs.linkedin,
+      profileSections: {
+        ...prev.profileSections,
+        socialMedia: true
+      }
+    }));
+    
+    setIsEditingSocial(false);
+    
+    // Recalculate profile completion
+    const updatedUser = {
+      ...user,
+      website: socialInputs.website,
+      twitter: socialInputs.twitter,
+      linkedin: socialInputs.linkedin,
+      profileSections: {
+        ...user.profileSections,
+        socialMedia: true
+      }
+    };
+    const percentage = calculateProfileCompletion(updatedUser);
+    setProfileCompletionPercentage(percentage);
+    
+    toast.success("Social media links updated successfully");
+  };
+  
+  // Count unread notifications
+  const unreadCount = userNotifications.filter(n => !n.read).length;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       
-      <main>
-        {/* Cover Photo */}
-        <div className="h-60 md:h-80 w-full relative bg-stargaze-100 dark:bg-stargaze-800 overflow-hidden">
-          {userData.coverPhoto && (
-            <img 
-              src={userData.coverPhoto} 
-              alt="Cover" 
-              className="w-full h-full object-cover"
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-        </div>
-        
-        {/* Profile Header */}
-        <div className="container mx-auto px-6 relative">
-          <div className="flex flex-col md:flex-row gap-6 items-start md:items-end -mt-20 md:-mt-16 mb-6 relative z-10">
-            {/* Avatar */}
-            <div className="rounded-full border-4 border-white dark:border-stargaze-900 overflow-hidden w-32 h-32 md:w-40 md:h-40 bg-white dark:bg-stargaze-800 shadow-lg">
-              <img 
-                src={userData.avatar} 
-                alt={userData.name} 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            
-            {/* Profile Info */}
-            <div className="flex-grow">
-              <h1 className="text-3xl md:text-4xl font-bold text-stargaze-900 dark:text-white mb-1">
-                {userData.name}
-              </h1>
-              <p className="text-stargaze-600 dark:text-stargaze-300 text-lg mb-3">
-                {userData.role} at {userData.company}
-              </p>
-              <div className="flex flex-wrap gap-3 items-center text-sm text-stargaze-600 dark:text-stargaze-400">
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  <span>{userData.location}</span>
-                </div>
-                {userData.website && (
-                  <div className="flex items-center gap-1">
-                    <Globe className="h-4 w-4" />
-                    <a href={`https://${userData.website}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                      {userData.website}
-                    </a>
-                  </div>
-                )}
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>Joined {userData.joinDate}</span>
-                </div>
-              </div>
-              
-              {/* Social Media Links */}
-              <div className="flex gap-3 mt-3">
-                {userData.socialLinks.linkedin && (
-                  <a 
-                    href={`https://linkedin.com/in/${userData.socialLinks.linkedin}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-stargaze-600 dark:text-stargaze-400 hover:text-primary dark:hover:text-primary transition-colors"
-                    aria-label="LinkedIn Profile"
-                  >
-                    <Linkedin className="h-5 w-5" />
-                  </a>
-                )}
-                {userData.socialLinks.twitter && (
-                  <a 
-                    href={`https://twitter.com/${userData.socialLinks.twitter}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-stargaze-600 dark:text-stargaze-400 hover:text-primary dark:hover:text-primary transition-colors"
-                    aria-label="Twitter Profile"
-                  >
-                    <Twitter className="h-5 w-5" />
-                  </a>
-                )}
-                {userData.socialLinks.personalWebsite && (
-                  <a 
-                    href={userData.socialLinks.personalWebsite}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-stargaze-600 dark:text-stargaze-400 hover:text-primary dark:hover:text-primary transition-colors"
-                    aria-label="Personal Website"
-                  >
-                    <LinkIcon className="h-5 w-5" />
-                  </a>
-                )}
-              </div>
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="flex gap-3 mt-3 md:mt-0">
-              {/* Notification Button */}
-              <div className="relative">
-                <button 
-                  className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-200 dark:hover:bg-stargaze-700 transition-colors"
-                  onClick={() => setShowNotifications(!showNotifications)}
-                >
-                  {unreadNotificationsCount > 0 ? (
-                    <BellDot className="h-5 w-5" />
-                  ) : (
-                    <Bell className="h-5 w-5" />
-                  )}
-                </button>
-                
-                {/* Notification Dropdown */}
-                {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-stargaze-900 shadow-lg rounded-lg overflow-hidden z-50 border border-stargaze-100 dark:border-stargaze-800">
-                    <div className="p-3 border-b border-stargaze-100 dark:border-stargaze-800 flex justify-between items-center">
-                      <h3 className="font-medium text-stargaze-900 dark:text-white">Notifications</h3>
-                      {unreadNotificationsCount > 0 && (
-                        <button 
-                          onClick={markAllAsRead}
-                          className="text-xs text-primary hover:underline"
-                        >
-                          Mark all as read
-                        </button>
+      <main className="pt-24 pb-16">
+        <div className="container mx-auto px-6">
+          <AnimatedSection className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Left Column - Profile Sidebar */}
+              <div className="lg:w-1/3 space-y-6">
+                {/* Profile Card */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <div className="flex justify-between items-start">
+                      <div className="flex flex-col items-center w-full">
+                        <Avatar className="h-24 w-24 mb-4">
+                          <AvatarImage src={user.avatar} alt={user.name} />
+                          <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <CardTitle className="text-2xl text-center">{user.name}</CardTitle>
+                        <p className="text-sm text-center text-stargaze-600 dark:text-stargaze-400 mt-1">
+                          {user.title} at {user.company}
+                        </p>
+                        <p className="text-xs text-center text-stargaze-500 mt-1">
+                          {user.location}
+                        </p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-2">
+                    {/* Profile Completion Progress */}
+                    <div className="mb-6">
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="text-sm font-medium">Profile Completion</h3>
+                        <span className="text-sm text-primary font-medium">{profileCompletionPercentage}%</span>
+                      </div>
+                      <Progress value={profileCompletionPercentage} className="h-2" />
+                      {profileCompletionPercentage < 100 && (
+                        <p className="text-xs text-amber-600 dark:text-amber-400 mt-2 flex items-center">
+                          <AlertCircle className="h-3 w-3 mr-1" />
+                          Complete your profile to increase visibility
+                        </p>
                       )}
                     </div>
                     
-                    <div className="max-h-80 overflow-y-auto">
-                      {notifications.length > 0 ? (
-                        notifications.map((notification) => (
-                          <div 
-                            key={notification.id}
-                            className={cn(
-                              "p-3 border-b border-stargaze-100 dark:border-stargaze-800 hover:bg-stargaze-50 dark:hover:bg-stargaze-800/50",
-                              !notification.read && "bg-stargaze-50 dark:bg-stargaze-800/50"
-                            )}
-                          >
-                            <p className="text-sm text-stargaze-900 dark:text-white mb-1">
-                              {notification.title}
-                            </p>
-                            <p className="text-xs text-stargaze-500 dark:text-stargaze-400">
-                              {new Date(notification.timestamp).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </p>
+                    {/* Incomplete Profile Sections */}
+                    {profileCompletionPercentage < 100 && (
+                      <div className="bg-stargaze-50 dark:bg-stargaze-800/40 rounded-lg p-3 mb-6">
+                        <h4 className="text-sm font-medium mb-2">Sections to Complete</h4>
+                        <ul className="space-y-2 text-sm">
+                          {!user.profileSections.expertise && (
+                            <li className="flex justify-between items-center">
+                              <span className="text-stargaze-600 dark:text-stargaze-400">Add your expertise</span>
+                              <Button variant="ghost" size="sm" className="h-7 text-xs">
+                                Add <Plus className="ml-1 h-3 w-3" />
+                              </Button>
+                            </li>
+                          )}
+                          {Object.entries(user.profileSections)
+                            .filter(([_, completed]) => !completed)
+                            .map(([section]) => (
+                              <li key={section} className="flex justify-between items-center">
+                                <span className="text-stargaze-600 dark:text-stargaze-400">
+                                  {section.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                                </span>
+                                <Button variant="ghost" size="sm" className="h-7 text-xs">
+                                  Add <Plus className="ml-1 h-3 w-3" />
+                                </Button>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {/* Social Media Links */}
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-sm font-medium">Social Links</h3>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-7"
+                          onClick={() => setIsEditingSocial(!isEditingSocial)}
+                        >
+                          {isEditingSocial ? "Cancel" : <PenLine className="h-3 w-3" />}
+                        </Button>
+                      </div>
+                      
+                      {isEditingSocial ? (
+                        <div className="space-y-3">
+                          <div className="space-y-2">
+                            <Label htmlFor="website" className="text-xs">Website</Label>
+                            <div className="flex items-center border rounded-md">
+                              <Globe className="h-4 w-4 mx-2 text-stargaze-400" />
+                              <Input
+                                id="website"
+                                value={socialInputs.website}
+                                onChange={(e) => handleSocialInputChange('website', e.target.value)}
+                                placeholder="https://your-website.com"
+                                className="border-0 flex-1"
+                              />
+                            </div>
                           </div>
-                        ))
+                          
+                          <div className="space-y-2">
+                            <Label htmlFor="twitter" className="text-xs">Twitter</Label>
+                            <div className="flex items-center border rounded-md">
+                              <Twitter className="h-4 w-4 mx-2 text-stargaze-400" />
+                              <Input
+                                id="twitter"
+                                value={socialInputs.twitter}
+                                onChange={(e) => handleSocialInputChange('twitter', e.target.value)}
+                                placeholder="username"
+                                className="border-0 flex-1"
+                              />
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label htmlFor="linkedin" className="text-xs">LinkedIn</Label>
+                            <div className="flex items-center border rounded-md">
+                              <Linkedin className="h-4 w-4 mx-2 text-stargaze-400" />
+                              <Input
+                                id="linkedin"
+                                value={socialInputs.linkedin}
+                                onChange={(e) => handleSocialInputChange('linkedin', e.target.value)}
+                                placeholder="username"
+                                className="border-0 flex-1"
+                              />
+                            </div>
+                          </div>
+                          
+                          <Button 
+                            className="w-full mt-2" 
+                            size="sm"
+                            onClick={saveSocialMedia}
+                          >
+                            Save Social Links
+                          </Button>
+                        </div>
                       ) : (
-                        <div className="p-3 text-center text-stargaze-600 dark:text-stargaze-400">
-                          No notifications
+                        <div className="space-y-2">
+                          {user.website && (
+                            <a 
+                              href={user.website.startsWith('http') ? user.website : `https://${user.website}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex items-center text-sm text-stargaze-600 dark:text-stargaze-400 hover:text-primary transition-colors"
+                            >
+                              <Globe className="h-4 w-4 mr-2" />
+                              {user.website.replace(/^https?:\/\//, '')}
+                            </a>
+                          )}
+                          
+                          {user.twitter && (
+                            <a 
+                              href={`https://twitter.com/${user.twitter}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex items-center text-sm text-stargaze-600 dark:text-stargaze-400 hover:text-primary transition-colors"
+                            >
+                              <Twitter className="h-4 w-4 mr-2" />
+                              @{user.twitter}
+                            </a>
+                          )}
+                          
+                          {user.linkedin && (
+                            <a 
+                              href={`https://linkedin.com/in/${user.linkedin}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex items-center text-sm text-stargaze-600 dark:text-stargaze-400 hover:text-primary transition-colors"
+                            >
+                              <Linkedin className="h-4 w-4 mr-2" />
+                              {user.linkedin}
+                            </a>
+                          )}
+                          
+                          {!user.website && !user.twitter && !user.linkedin && (
+                            <p className="text-sm text-stargaze-500 italic">No social links added yet</p>
+                          )}
                         </div>
                       )}
                     </div>
-                  </div>
-                )}
-              </div>
-              
-              <Button 
-                variant="outline" 
-                size="sm"
-                leftIcon={<Settings className="h-4 w-4" />}
-              >
-                Settings
-              </Button>
-              <Button 
-                size="sm"
-                leftIcon={<Edit className="h-4 w-4" />}
-              >
-                Edit Profile
-              </Button>
-            </div>
-          </div>
-          
-          {/* Profile Completion Progress */}
-          <AnimatedSection animation="fade-up" className="mb-8">
-            <div className="bg-white dark:bg-stargaze-900 border border-stargaze-100 dark:border-stargaze-800 rounded-xl shadow-subtle p-6">
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="text-lg font-medium text-stargaze-900 dark:text-white">
-                  Profile Completion
-                </h2>
-                <span className="text-sm font-medium text-stargaze-900 dark:text-white">
-                  {profileCompletionPercentage}%
-                </span>
-              </div>
-              <Progress value={profileCompletionPercentage} className="h-2 mb-4" />
-              
-              {profileCompletionPercentage < 100 && (
-                <Alert className="mt-3 bg-stargaze-50 dark:bg-stargaze-800/30">
-                  <AlertTitle>Complete your profile</AlertTitle>
-                  <AlertDescription className="text-sm text-stargaze-600 dark:text-stargaze-400">
-                    Adding more details to your profile helps mentors and startups connect with you better.
-                    {!userData.profileCompletion.education && (
-                      <span className="block mt-1">• Add your education details</span>
-                    )}
-                    {!userData.profileCompletion.skills && (
-                      <span className="block mt-1">• Add your key skills</span>
-                    )}
-                    {!userData.profileCompletion.achievements && (
-                      <span className="block mt-1">• Add your achievements</span>
-                    )}
-                  </AlertDescription>
-                </Alert>
-              )}
-            </div>
-          </AnimatedSection>
-          
-          {/* Bio & Interests */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-            <div className="lg:col-span-2">
-              <AnimatedSection animation="fade-up" className="mb-6">
-                <h2 className="text-xl font-bold mb-3 text-stargaze-900 dark:text-white">About</h2>
-                <p className="text-stargaze-600 dark:text-stargaze-300">
-                  {userData.bio}
-                </p>
-              </AnimatedSection>
-              
-              <AnimatedSection animation="fade-up" delay={100}>
-                <h2 className="text-xl font-bold mb-3 text-stargaze-900 dark:text-white">Interests</h2>
-                <div className="flex flex-wrap gap-2">
-                  {userData.interests.map((interest, index) => (
-                    <span 
-                      key={index}
-                      className="px-3 py-1 bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-700 dark:text-stargaze-300 rounded-full text-sm"
-                    >
-                      {interest}
-                    </span>
-                  ))}
-                </div>
-              </AnimatedSection>
-            </div>
-            
-            <div className="lg:col-span-1">
-              <AnimatedSection animation="fade-up" delay={200} className="bg-white dark:bg-stargaze-900 border border-stargaze-100 dark:border-stargaze-800 rounded-xl shadow-subtle p-6">
-                <h2 className="text-xl font-bold mb-4 text-stargaze-900 dark:text-white">Upcoming Sessions</h2>
+                  </CardContent>
+                  <CardFooter className="pt-0">
+                    <Button variant="outline" className="w-full">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  </CardFooter>
+                </Card>
                 
-                {userData.upcomingSessions.length > 0 ? (
-                  <div className="space-y-4">
-                    {userData.upcomingSessions.map((session) => (
-                      <div key={session.id} className="flex items-center gap-4">
-                        <img 
-                          src={session.mentorAvatar} 
-                          alt={session.mentorName} 
-                          className="w-12 h-12 rounded-full object-cover"
-                        />
-                        <div className="flex-grow">
-                          <h3 className="font-medium text-stargaze-900 dark:text-white">{session.topic}</h3>
-                          <div className="flex items-center text-sm text-stargaze-600 dark:text-stargaze-400">
-                            <span>with {session.mentorName}</span>
-                            <span className="mx-2">•</span>
-                            <span>{new Date(session.date).toLocaleDateString('en-US', { 
-                              month: 'short', 
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}</span>
+                {/* Stats Card */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Your Stats</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pb-2">
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center">
+                          <User className="h-4 w-4 mr-2 text-primary" />
+                          <span className="text-sm">Connections</span>
+                        </div>
+                        <Badge variant="outline">{user.connections}</Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center">
+                          <Briefcase className="h-4 w-4 mr-2 text-primary" />
+                          <span className="text-sm">Mentorship Requests</span>
+                        </div>
+                        <Badge variant="outline">{user.mentorshipRequests}</Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center">
+                          <MessageSquare className="h-4 w-4 mr-2 text-primary" />
+                          <span className="text-sm">Helpful Replies</span>
+                        </div>
+                        <Badge variant="outline">{user.helpfulReplies}</Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="ghost" className="w-full text-sm">View Full Statistics</Button>
+                  </CardFooter>
+                </Card>
+                
+                {/* Upcoming Sessions Card */}
+                {upcomingSessions.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Upcoming Sessions</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {upcomingSessions.map((session) => (
+                        <div key={session.id} className="flex items-start space-x-4">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={session.avatar} alt={session.with} />
+                            <AvatarFallback>{session.with.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          </Avatar>
+                          <div className="space-y-1">
+                            <h4 className="font-medium">{session.title}</h4>
+                            <p className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                              with {session.with}
+                            </p>
+                            <div className="flex items-center text-xs text-stargaze-500">
+                              <Calendar className="h-3 w-3 mr-1" />
+                              {session.date}, {session.time}
+                            </div>
                           </div>
                         </div>
-                        <ChevronRight className="h-5 w-5 text-stargaze-400" />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-stargaze-600 dark:text-stargaze-400">
-                    No upcoming sessions scheduled.
-                  </p>
+                      ))}
+                    </CardContent>
+                    <CardFooter>
+                      <Button variant="outline" className="w-full">
+                        View All Sessions
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 )}
-                
-                <div className="mt-4 pt-4 border-t border-stargaze-100 dark:border-stargaze-800">
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-center"
-                    rightIcon={<ChevronRight className="h-4 w-4" />}
-                  >
-                    Find a Mentor
-                  </Button>
-                </div>
-              </AnimatedSection>
-            </div>
-          </div>
-          
-          {/* Profile Tabs */}
-          <div className="mb-6 border-b border-stargaze-200 dark:border-stargaze-800">
-            <div className="flex overflow-x-auto">
-              {profileTabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={cn(
-                    "px-4 py-2 font-medium whitespace-nowrap",
-                    activeTab === tab
-                      ? "text-primary border-b-2 border-primary"
-                      : "text-stargaze-600 dark:text-stargaze-400 hover:text-stargaze-900 dark:hover:text-white"
-                  )}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          {/* Tab Content */}
-          <div className="mb-16">
-            {activeTab === "Activity" && (
-              <AnimatedSection animation="fade-up">
-                <h2 className="text-xl font-bold mb-6 text-stargaze-900 dark:text-white">Recent Activity</h2>
-                
-                <div className="space-y-6">
-                  {userData.activities.map((activity) => (
-                    <div 
-                      key={activity.id}
-                      className="bg-white dark:bg-stargaze-900 border border-stargaze-100 dark:border-stargaze-800 rounded-xl shadow-subtle p-6"
-                    >
-                      <div className="flex items-start gap-4">
-                        <div className="bg-stargaze-100 dark:bg-stargaze-800 p-3 rounded-full">
-                          {activity.type === "discussion" && <MessageCircle className="h-5 w-5 text-primary" />}
-                          {activity.type === "mentor" && <User className="h-5 w-5 text-primary" />}
-                          {activity.type === "resource" && <Star className="h-5 w-5 text-primary" />}
+              </div>
+              
+              {/* Right Column - Main Content */}
+              <div className="lg:w-2/3">
+                <Tabs defaultValue="profile" onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="grid grid-cols-3 mb-6">
+                    <TabsTrigger value="profile">
+                      <User className="h-4 w-4 mr-2" />
+                      Profile
+                    </TabsTrigger>
+                    <TabsTrigger value="notifications" className="relative">
+                      <Bell className="h-4 w-4 mr-2" />
+                      Notifications
+                      {unreadCount > 0 && (
+                        <span className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </TabsTrigger>
+                    <TabsTrigger value="activity">
+                      <Activity className="h-4 w-4 mr-2" />
+                      Activity
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  {/* Profile Tab */}
+                  <TabsContent value="profile">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>About Me</CardTitle>
+                        <CardDescription>
+                          Tell others about yourself and your startup journey.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-stargaze-600 dark:text-stargaze-300 mb-6">
+                          {user.bio}
+                        </p>
+                        
+                        <h3 className="text-lg font-semibold mb-3">Expertise</h3>
+                        {user.expertise && user.expertise.length > 0 ? (
+                          <div className="flex flex-wrap gap-2 mb-6">
+                            {user.expertise.map((skill) => (
+                              <Badge key={skill} variant="outline" className="bg-primary/10">
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-stargaze-500 italic mb-6">
+                            No expertise areas added yet
+                          </p>
+                        )}
+                        
+                        <h3 className="text-lg font-semibold mb-3">Company Information</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                          <div>
+                            <h4 className="text-sm font-medium text-stargaze-600 dark:text-stargaze-400">
+                              Company Name
+                            </h4>
+                            <p>{user.company}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium text-stargaze-600 dark:text-stargaze-400">
+                              Role
+                            </h4>
+                            <p>{user.title}</p>
+                          </div>
                         </div>
                         
-                        <div className="flex-grow">
-                          <p className="font-medium text-stargaze-900 dark:text-white mb-1">
-                            {activity.title}
-                          </p>
-                          <div className="flex items-center text-sm text-stargaze-600 dark:text-stargaze-400">
-                            <span>{new Date(activity.timestamp).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric'
-                            })}</span>
-                            {activity.engagement && (
-                              <>
-                                <span className="mx-2">•</span>
-                                <span>{activity.engagement}</span>
-                              </>
-                            )}
+                        <h3 className="text-lg font-semibold mb-3">Contact Information</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <h4 className="text-sm font-medium text-stargaze-600 dark:text-stargaze-400">
+                              Email
+                            </h4>
+                            <p>{user.email}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium text-stargaze-600 dark:text-stargaze-400">
+                              Location
+                            </h4>
+                            <p>{user.location}</p>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="text-center mt-8">
-                  <Button variant="outline">View All Activity</Button>
-                </div>
-              </AnimatedSection>
-            )}
-            
-            {activeTab === "Connections" && (
-              <AnimatedSection animation="fade-up">
-                <div className="text-center py-16">
-                  <p className="text-xl text-stargaze-600 dark:text-stargaze-300 mb-6">
-                    You have {userData.connections} connections
-                  </p>
-                  <Button>View All Connections</Button>
-                </div>
-              </AnimatedSection>
-            )}
-            
-            {activeTab === "Resources" && (
-              <AnimatedSection animation="fade-up">
-                <h2 className="text-xl font-bold mb-6 text-stargaze-900 dark:text-white">Saved Resources</h2>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {userData.savedResources.map((resource) => (
-                    <div 
-                      key={resource.id}
-                      className="bg-white dark:bg-stargaze-900 border border-stargaze-100 dark:border-stargaze-800 rounded-xl shadow-subtle overflow-hidden"
-                    >
-                      <div className="aspect-video">
-                        <img
-                          src={resource.image}
-                          alt={resource.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="p-4">
-                        <div className="text-xs text-stargaze-600 dark:text-stargaze-400 mb-1">
-                          {resource.category} • {resource.type}
-                        </div>
-                        <h3 className="font-medium text-stargaze-900 dark:text-white">
-                          {resource.title}
-                        </h3>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="text-center mt-8">
-                  <Button variant="outline">Find More Resources</Button>
-                </div>
-              </AnimatedSection>
-            )}
-            
-            {activeTab === "Sessions" && (
-              <AnimatedSection animation="fade-up">
-                <div className="text-center py-16">
-                  <p className="text-xl text-stargaze-600 dark:text-stargaze-300 mb-6">
-                    You have no past sessions
-                  </p>
-                  <Button>Book Your First Session</Button>
-                </div>
-              </AnimatedSection>
-            )}
-          </div>
+                      </CardContent>
+                      <CardFooter className="flex justify-between">
+                        <Button variant="outline">
+                          <PenLine className="h-4 w-4 mr-2" />
+                          Edit Details
+                        </Button>
+                        <Button>
+                          View Public Profile
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </TabsContent>
+                  
+                  {/* Notifications Tab */}
+                  <TabsContent value="notifications">
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle>Notifications</CardTitle>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-8 text-xs"
+                          onClick={markAllNotificationsAsRead}
+                          disabled={unreadCount === 0}
+                        >
+                          Mark all as read
+                        </Button>
+                      </CardHeader>
+                      <CardContent>
+                        {userNotifications.length > 0 ? (
+                          <div className="space-y-1">
+                            {userNotifications.map((notification) => (
+                              <div 
+                                key={notification.id}
+                                className={`p-3 rounded-lg border transition-colors ${
+                                  notification.read 
+                                    ? 'bg-transparent border-transparent' 
+                                    : 'bg-primary/5 border-primary/10'
+                                }`}
+                              >
+                                <div className="flex justify-between items-start">
+                                  <h3 className={`font-medium ${notification.read ? 'text-stargaze-700 dark:text-stargaze-300' : 'text-stargaze-900 dark:text-white'}`}>
+                                    {notification.title}
+                                  </h3>
+                                  <span className="text-xs text-stargaze-500">
+                                    {notification.time}
+                                  </span>
+                                </div>
+                                <p className={`text-sm ${notification.read ? 'text-stargaze-600 dark:text-stargaze-400' : 'text-stargaze-700 dark:text-stargaze-300'}`}>
+                                  {notification.message}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-12">
+                            <Bell className="h-12 w-12 text-stargaze-400 mx-auto mb-4 opacity-50" />
+                            <h3 className="text-lg font-medium text-stargaze-600 dark:text-stargaze-400">
+                              No notifications yet
+                            </h3>
+                            <p className="text-sm text-stargaze-500 max-w-sm mx-auto mt-1">
+                              You'll receive notifications about mentorship requests, community activity, and more.
+                            </p>
+                          </div>
+                        )}
+                      </CardContent>
+                      <CardFooter>
+                        <Button variant="outline" className="w-full">
+                          Notification Settings
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </TabsContent>
+                  
+                  {/* Activity Tab */}
+                  <TabsContent value="activity">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Recent Activity</CardTitle>
+                        <CardDescription>
+                          Your recent actions and interactions on the platform.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        {activityData.length > 0 ? (
+                          <div className="space-y-6">
+                            {activityData.map((activity, index) => (
+                              <div key={activity.id} className="relative pl-6 pb-6 last:pb-0">
+                                {/* Timeline connector */}
+                                {index < activityData.length - 1 && (
+                                  <div className="absolute left-2 top-2 w-0.5 h-full -ml-px bg-stargaze-200 dark:bg-stargaze-700"></div>
+                                )}
+                                
+                                {/* Timeline dot */}
+                                <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 border-primary/50 bg-primary/20"></div>
+                                
+                                <div>
+                                  <div className="flex justify-between items-start">
+                                    <h3 className="font-medium">{activity.title}</h3>
+                                    <span className="text-xs text-stargaze-500">{activity.time}</span>
+                                  </div>
+                                  <p className="text-sm text-stargaze-600 dark:text-stargaze-400 mt-1">
+                                    {activity.content}
+                                  </p>
+                                  {activity.engagement && (
+                                    <div className="flex items-center mt-2">
+                                      <Badge variant="outline" className="text-xs">
+                                        {activity.engagement}
+                                      </Badge>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-12">
+                            <Activity className="h-12 w-12 text-stargaze-400 mx-auto mb-4 opacity-50" />
+                            <h3 className="text-lg font-medium text-stargaze-600 dark:text-stargaze-400">
+                              No activity yet
+                            </h3>
+                            <p className="text-sm text-stargaze-500 max-w-sm mx-auto mt-1">
+                              Your interactions with communities, resources, and mentorship sessions will appear here.
+                            </p>
+                          </div>
+                        )}
+                      </CardContent>
+                      <CardFooter>
+                        <Button variant="outline" className="w-full">
+                          View All Activity
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </div>
+          </AnimatedSection>
         </div>
       </main>
       
