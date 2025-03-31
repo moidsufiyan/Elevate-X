@@ -6,5 +6,7 @@ export function useStartups() {
   return useQuery({
     queryKey: ["startups"],
     queryFn: fetchStartups,
+    staleTime: 60000, // 1 min cache
+    refetchOnWindowFocus: false, // Avoid unnecessary calls
   });
 }

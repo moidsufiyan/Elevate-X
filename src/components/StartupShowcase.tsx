@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { AnimatedSection } from "./AnimatedSection";
 import { StartupCard } from "./startup/StartupCard";
 import { Button } from "./Button";
@@ -6,8 +7,11 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Loader } from "lucide-react";
 import { useStartups } from "@/hooks/use-startups";
 
+// Number of startups to show on the homepage
+const MAX_STARTUPS_DISPLAY = 3;
+
 export const StartupShowcase = () => {
-  // Fetch startups data using React Query
+  // Fetch startups data using React Query with enhanced caching
   const { data: startups, isLoading, error } = useStartups();
 
   // Show loading state while data is being fetched
@@ -48,6 +52,9 @@ export const StartupShowcase = () => {
     );
   }
 
+  // Take only the first few startups to display on the homepage
+  const displayedStartups = startups && startups.slice(0, MAX_STARTUPS_DISPLAY);
+
   return (
     <section id="startups" className="py-24 relative overflow-hidden">
       {/* Background Elements */}
@@ -67,7 +74,7 @@ export const StartupShowcase = () => {
         </AnimatedSection>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {startups && startups.map((startup, index) => (
+          {displayedStartups && displayedStartups.map((startup, index) => (
             <AnimatedSection
               key={startup.id}
               threshold={0.1}
@@ -81,7 +88,7 @@ export const StartupShowcase = () => {
         <AnimatedSection threshold={0.1} delay={400} className="text-center mt-12">
           <Link to="/startup-showcase">
             <Button rightIcon={<ArrowRight className="h-4 w-4" />}>
-              View All Startups
+              View All Startups ({startups ? startups.length : 0})
             </Button>
           </Link>
         </AnimatedSection>

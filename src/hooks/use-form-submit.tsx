@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface UseFormSubmitOptions<T, R> {
   onSubmit: (data: T) => Promise<R>;
@@ -8,6 +9,7 @@ interface UseFormSubmitOptions<T, R> {
   onError?: (error: Error) => void;
   successMessage?: string;
   errorMessage?: string;
+  invalidateQueries?: string[];
 }
 
 export function useFormSubmit<T, R>({
@@ -15,26 +17,34 @@ export function useFormSubmit<T, R>({
   onSuccess,
   onError,
   successMessage = "Successfully submitted",
-  errorMessage = "An error occurred"
+  errorMessage = "An error occurred",
+  invalidateQueries = []
 }: UseFormSubmitOptions<T, R>) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
-  const handleSubmit = async (data: T) => {
-    setIsSubmitting(true);
-    
-    try {
-      const result = await onSubmit(data);
-      
+  const { 
+    mutate: handleSubmit, 
+    isPending: isSubmitting, 
+    ...rest 
+  } = useMutation({
+    mutationFn: onSubmit,
+    onSuccess: (result) => {
       // Show success toast
       toast.success(successMessage);
+      
+      // Invalidate relevant queries to refresh data
+      if (invalidateQueries.length > 0) {
+        invalidateQueries.forEach(query => {
+          queryClient.invalidateQueries({ queryKey: [query] });
+        });
+      }
       
       // Call success callback if provided
       if (onSuccess) {
         onSuccess(result);
       }
-      
-      return result;
-    } catch (err) {
+    },
+    onError: (err) => {
       // Show error toast
       toast.error(errorMessage);
       
@@ -42,15 +52,12 @@ export function useFormSubmit<T, R>({
       if (onError && err instanceof Error) {
         onError(err);
       }
-      
-      throw err;
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  });
 
   return {
     isSubmitting,
-    handleSubmit
+    handleSubmit,
+    ...rest
   };
 }
