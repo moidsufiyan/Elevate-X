@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "./Button";
 import { Menu, X, User, Bell, Search } from "lucide-react";
@@ -11,11 +11,13 @@ const navLinks = [
   { name: "Mentors", path: "/mentors" },
   { name: "Resources", path: "/resources" },
   { name: "Community", path: "/community" },
+  { name: "Startups", path: "/startup-showcase" },
 ];
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +31,15 @@ export const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
     <nav
@@ -55,7 +66,12 @@ export const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className="animated-underline text-sm font-medium text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors"
+                className={cn(
+                  "animated-underline text-sm font-medium transition-colors",
+                  isActive(link.path)
+                    ? "text-stargaze-900 dark:text-white"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
+                )}
               >
                 {link.name}
               </Link>
@@ -64,9 +80,11 @@ export const Navbar = () => {
           
           {/* Action Buttons */}
           <div className="flex items-center space-x-3">
-            <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
-              <Search className="h-5 w-5" />
-            </button>
+            <Link to="/resources">
+              <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
+                <Search className="h-5 w-5" />
+              </button>
+            </Link>
             <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
               <Bell className="h-5 w-5" />
             </button>
@@ -108,7 +126,7 @@ export const Navbar = () => {
       {/* Mobile Menu */}
       <div
         className={cn(
-          "fixed inset-0 top-[57px] bg-white/95 dark:bg-stargaze-950/95 backdrop-blur-lg z-40 transition-transform duration-300 ease-in-out transform md:hidden",
+          "fixed inset-0 top-[57px] bg-white/95 dark:bg-stargaze-950/95 backdrop-blur-lg z-40 transition-transform duration-300 ease-in-out transform md:hidden overflow-y-auto",
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -118,7 +136,12 @@ export const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-lg font-medium text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors"
+                className={cn(
+                  "text-lg font-medium transition-colors",
+                  isActive(link.path)
+                    ? "text-stargaze-900 dark:text-white"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
+                )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}
@@ -126,9 +149,11 @@ export const Navbar = () => {
             ))}
           </div>
           <div className="flex items-center space-x-4 mb-6">
-            <button className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300">
-              <Search className="h-5 w-5" />
-            </button>
+            <Link to="/resources">
+              <button className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300">
+                <Search className="h-5 w-5" />
+              </button>
+            </Link>
             <button className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300">
               <Bell className="h-5 w-5" />
             </button>

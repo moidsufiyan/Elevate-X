@@ -47,15 +47,15 @@ const Index = () => {
           <Hero />
         </AnimatedSection>
         
-        <AnimatedSection animation="fade-up" duration="normal" delay={200}>
+        <AnimatedSection animation="fade-up" duration="normal" delay={200} id="features">
           <Features />
         </AnimatedSection>
         
-        <AnimatedSection animation="fade-up" duration="normal" delay={300} staggerChildren>
+        <AnimatedSection animation="fade-up" duration="normal" delay={300} staggerChildren id="mentors">
           <MentorShowcase />
         </AnimatedSection>
         
-        <AnimatedSection animation="fade-up" duration="normal" delay={400} staggerChildren>
+        <AnimatedSection animation="fade-up" duration="normal" delay={400} staggerChildren id="startups">
           <StartupShowcase />
         </AnimatedSection>
       </main>
