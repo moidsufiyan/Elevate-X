@@ -10,6 +10,7 @@ interface AnimatedSectionProps {
   staggerChildren?: boolean;
   animation?: 'fade-up' | 'fade-in' | 'slide-in' | 'scale-in' | 'zoom-in';
   duration?: 'fast' | 'normal' | 'slow';
+  id?: string; // Add id prop to the interface
 }
 
 export const AnimatedSection = ({
@@ -20,6 +21,7 @@ export const AnimatedSection = ({
   staggerChildren = false,
   animation = 'fade-up',
   duration = 'normal',
+  id, // Add id to component props
 }: AnimatedSectionProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -79,6 +81,7 @@ export const AnimatedSection = ({
   return (
     <div
       ref={sectionRef}
+      id={id} // Pass the id to the div element
       className={cn(
         getAnimationClass(),
         getDurationClass(),
