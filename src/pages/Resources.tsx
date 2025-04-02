@@ -211,9 +211,9 @@ const ResourceCard = ({ resource, onBookmarkToggle, isBookmarked }: {
           </div>
         </div>
 
-        {/* CTA Button */}
+        {/* CTA Button - Fixed the variant here */}
         <Button 
-          variant={resource.premium ? "primary" : "outline"} 
+          variant={resource.premium ? "default" : "outline"} 
           className="w-full justify-center"
           rightIcon={<ArrowRight className="h-4 w-4" />}
           onClick={handleResourceAction}
