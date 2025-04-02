@@ -2,17 +2,29 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Button } from "./Button";
-import { Menu, X, User, Bell, Search } from "lucide-react";
+import { 
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger
+} from "@/components/ui/navigation-menu"
+import { Button } from "@/components/ui/button";
+import { 
+  Search, 
+  Bell, 
+  User, 
+  Menu, 
+  X,
+  Lightbulb,
+  Users,
+  BookOpen,
+  Award,
+  Globe,
+  ChevronRight
+} from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
-
-const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "Mentors", path: "/mentors" },
-  { name: "Resources", path: "/resources" },
-  { name: "Community", path: "/community" },
-  { name: "Startups", path: "/startup-showcase" },
-];
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -46,61 +58,175 @@ export const Navbar = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled
-          ? "py-3 bg-white/80 dark:bg-stargaze-950/80 backdrop-blur-lg shadow-subtle"
-          : "py-5 bg-transparent"
+          ? "py-2 bg-white/90 dark:bg-stargaze-950/90 backdrop-blur-lg shadow-md"
+          : "py-4 bg-transparent"
       )}
     >
-      <div className="container mx-auto px-6 flex items-center justify-between">
+      <div className="container mx-auto px-4 flex items-center justify-between">
         <Link
           to="/"
-          className="flex items-center space-x-2 text-2xl font-bold tracking-tight animate-fade-in"
+          className="flex items-center space-x-2 text-2xl font-bold tracking-tight"
         >
           <span className="text-primary">Startup</span>
           <span className="dark:text-white">Stargaze</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8 animate-fade-in">
-          <div className="flex items-center space-x-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={cn(
-                  "animated-underline text-sm font-medium transition-colors",
-                  isActive(link.path)
-                    ? "text-stargaze-900 dark:text-white"
+        <div className="hidden lg:flex items-center space-x-6">
+          {/* Main Navigation Menu */}
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link to="/" className={cn(
+                  "px-3 py-2 text-sm font-medium transition-colors",
+                  isActive("/")
+                    ? "text-primary"
                     : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
-                )}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+                )}>
+                  Home
+                </Link>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className={cn(
+                  "text-sm font-medium bg-transparent",
+                  isActive("/mentors") ? "text-primary" : "text-stargaze-600 dark:text-stargaze-300"
+                )}>
+                  Mentors
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    <div>
+                      <Link to="/mentors" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                        <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                          <Users className="h-4 w-4" /> Browse All Mentors
+                        </div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Find industry experts to guide your startup journey
+                        </p>
+                      </Link>
+                    </div>
+                    <div>
+                      <Link to="/mentor-dashboard" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                        <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                          <Award className="h-4 w-4" /> Become a Mentor
+                        </div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Share your expertise and help startups succeed
+                        </p>
+                      </Link>
+                    </div>
+                    <div>
+                      <Link to="/mentorship-matching" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                        <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                          <Lightbulb className="h-4 w-4" /> Mentorship Matching
+                        </div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Get matched with the perfect mentor for your needs
+                        </p>
+                      </Link>
+                    </div>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className={cn(
+                  "text-sm font-medium bg-transparent",
+                  isActive("/resources") ? "text-primary" : "text-stargaze-600 dark:text-stargaze-300"
+                )}>
+                  Resources
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid gap-3 p-4 w-[400px]">
+                    <Link to="/resources" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                        <BookOpen className="h-4 w-4" /> Resource Library
+                      </div>
+                      <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                        Browse our collection of guides, templates and tools
+                      </p>
+                    </Link>
+                    <Link to="/blog" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                        <BookOpen className="h-4 w-4" /> Blog
+                      </div>
+                      <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                        Insights and articles on startup trends and growth strategies
+                      </p>
+                    </Link>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className={cn(
+                  "text-sm font-medium bg-transparent",
+                  isActive("/community") ? "text-primary" : "text-stargaze-600 dark:text-stargaze-300"
+                )}>
+                  Community
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid gap-3 p-4 w-[400px]">
+                    <Link to="/community" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                        <Globe className="h-4 w-4" /> Community Hub
+                      </div>
+                      <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                        Connect with fellow founders and startup enthusiasts
+                      </p>
+                    </Link>
+                    <Link to="/communities" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                        <Users className="h-4 w-4" /> Explore Communities
+                      </div>
+                      <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                        Find specialized groups in your industry or interest area
+                      </p>
+                    </Link>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <Link to="/startup-showcase" className={cn(
+                  "px-3 py-2 text-sm font-medium transition-colors",
+                  isActive("/startup-showcase")
+                    ? "text-primary"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
+                )}>
+                  Startups
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
           
           {/* Action Buttons */}
           <div className="flex items-center space-x-3">
             <Link to="/resources">
-              <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
+              <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
                 <Search className="h-5 w-5" />
-              </button>
+                <span className="sr-only">Search</span>
+              </Button>
             </Link>
-            <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
+            <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
               <Bell className="h-5 w-5" />
-            </button>
+              <span className="sr-only">Notifications</span>
+            </Button>
             <ThemeToggle />
             <Link to="/profile">
-              <button className="text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white transition-colors">
+              <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
                 <User className="h-5 w-5" />
-              </button>
+                <span className="sr-only">Profile</span>
+              </Button>
             </Link>
             <Link to="/auth">
-              <Button variant="ghost" size="sm" className="animate-fade-in">
+              <Button variant="outline" size="sm" className="ml-2">
                 Log in
               </Button>
             </Link>
             <Link to="/auth">
-              <Button size="sm" className="hover-lift">
+              <Button size="sm">
                 Sign up
               </Button>
             </Link>
@@ -108,70 +234,216 @@ export const Navbar = () => {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <div className="flex items-center space-x-3 md:hidden">
+        <div className="flex items-center space-x-3 lg:hidden">
           <ThemeToggle />
-          <button
-            className="block"
+          <Button 
+            variant="ghost" 
+            size="icon"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (
-              <X className="h-6 w-6 text-stargaze-600 dark:text-stargaze-300" />
+              <X className="h-5 w-5 text-stargaze-600 dark:text-stargaze-300" />
             ) : (
-              <Menu className="h-6 w-6 text-stargaze-600 dark:text-stargaze-300" />
+              <Menu className="h-5 w-5 text-stargaze-600 dark:text-stargaze-300" />
             )}
-          </button>
+            <span className="sr-only">Toggle Menu</span>
+          </Button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       <div
         className={cn(
-          "fixed inset-0 top-[57px] bg-white/95 dark:bg-stargaze-950/95 backdrop-blur-lg z-40 transition-transform duration-300 ease-in-out transform md:hidden overflow-y-auto",
+          "fixed inset-0 top-[60px] bg-white/95 dark:bg-stargaze-950/95 backdrop-blur-lg z-40 transition-transform duration-300 ease-in-out transform lg:hidden overflow-y-auto",
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="container mx-auto px-6 py-8 flex flex-col space-y-8">
-          <div className="flex flex-col space-y-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={cn(
-                  "text-lg font-medium transition-colors",
-                  isActive(link.path)
-                    ? "text-stargaze-900 dark:text-white"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
-                )}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-          <div className="flex items-center space-x-4 mb-6">
-            <Link to="/resources">
-              <button className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300">
-                <Search className="h-5 w-5" />
-              </button>
+        <div className="container mx-auto px-4 py-6 flex flex-col space-y-6">
+          <div className="flex flex-col space-y-1">
+            <Link
+              to="/"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <span className="text-base font-medium">Home</span>
+              <ChevronRight className="h-4 w-4" />
             </Link>
-            <button className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300">
-              <Bell className="h-5 w-5" />
-            </button>
-            <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-              <button className="p-2 rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-600 dark:text-stargaze-300">
-                <User className="h-5 w-5" />
-              </button>
+            
+            <div className="px-3 pt-4 pb-2">
+              <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Mentors</h3>
+            </div>
+            <Link
+              to="/mentors"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/mentors")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span className="text-base font-medium">Browse All Mentors</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/mentor-dashboard"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/mentor-dashboard")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <Award className="h-4 w-4" />
+                <span className="text-base font-medium">Become a Mentor</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/mentorship-matching"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/mentorship-matching")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <Lightbulb className="h-4 w-4" />
+                <span className="text-base font-medium">Mentorship Matching</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            
+            <div className="px-3 pt-4 pb-2">
+              <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Resources</h3>
+            </div>
+            <Link
+              to="/resources"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/resources")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                <span className="text-base font-medium">Resource Library</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/blog"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/blog")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                <span className="text-base font-medium">Blog</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            
+            <div className="px-3 pt-4 pb-2">
+              <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Community</h3>
+            </div>
+            <Link
+              to="/community"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/community")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                <span className="text-base font-medium">Community Hub</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/communities"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/communities")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span className="text-base font-medium">Explore Communities</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            
+            <div className="px-3 pt-4 pb-2">
+              <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Startups</h3>
+            </div>
+            <Link
+              to="/startup-showcase"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/startup-showcase")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <span className="text-base font-medium">Startup Showcase</span>
+              <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="flex flex-col space-y-3">
-            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button variant="ghost" className="w-full justify-center">
+          
+          <div className="pt-4 flex flex-col space-y-4 border-t border-stargaze-200 dark:border-stargaze-800">
+            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+              <Button variant="outline" className="w-full justify-center">
                 Log in
               </Button>
             </Link>
-            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button className="w-full justify-center">Sign up</Button>
+            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+              <Button className="w-full justify-center">
+                Sign up
+              </Button>
             </Link>
+          </div>
+          
+          <div className="flex items-center justify-between pt-4 border-t border-stargaze-200 dark:border-stargaze-800">
+            <Link to="/profile" className="flex items-center gap-2 p-2 rounded-md hover:bg-primary/5">
+              <User className="h-5 w-5" />
+              <span className="text-sm font-medium">Profile</span>
+            </Link>
+            <div className="flex items-center gap-2">
+              <Link to="/resources">
+                <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
+                  <Search className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
+                <Bell className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

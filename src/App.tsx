@@ -24,6 +24,7 @@ import Contact from "./pages/Contact";
 import Careers from "./pages/Careers";
 import Blog from "./pages/Blog";
 import Press from "./pages/Press";
+import Sitemap from "./pages/Sitemap";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsOfService from "./pages/legal/TermsOfService";
 import CookiePolicy from "./pages/legal/CookiePolicy";
@@ -53,12 +54,13 @@ const App = () => (
           <Route path="/startup-showcase" element={<StartupShowcase />} />
           <Route path="/auth" element={<Auth />} />
           
-          {/* New Routes */}
+          {/* Page Routes */}
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/press" element={<Press />} />
+          <Route path="/sitemap" element={<Sitemap />} />
           
           {/* Legal Pages */}
           <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
