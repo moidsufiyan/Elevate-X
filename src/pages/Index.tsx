@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
@@ -6,7 +7,7 @@ import { MentorShowcase } from "@/components/MentorShowcase";
 import { StartupShowcase } from "@/components/StartupShowcase";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/Button"; // Changed this import to use custom Button
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle } from "lucide-react";
 
