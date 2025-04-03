@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
@@ -10,7 +9,6 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 const Index = () => {
   useEffect(() => {
@@ -78,8 +76,8 @@ const Index = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <Link to="/auth">
-                    <Button size="lg" className="gap-2">
-                      Get Started <ArrowRight className="h-4 w-4" />
+                    <Button size="lg" className="gap-2" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                      Get Started
                     </Button>
                   </Link>
                   <Link to="/mentors">
@@ -97,8 +95,8 @@ const Index = () => {
           <MentorShowcase />
           <div className="text-center mt-8 mb-16">
             <Link to="/mentors">
-              <Button size="lg" variant="outline" className="gap-2">
-                View All Mentors <ArrowRight className="h-4 w-4" />
+              <Button size="lg" variant="outline" className="gap-2" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                View All Mentors
               </Button>
             </Link>
           </div>
@@ -130,7 +128,7 @@ const Index = () => {
                     </div>
                   </div>
                   <blockquote className="text-stargaze-600 dark:text-stargaze-300 mb-4">
-                    "The mentorship I received through Startup Stargaze was instrumental in helping us raise our seed round. Our mentor's guidance saved us months of trial and error."
+                    "The mentorship I received through Elevate X was instrumental in helping us raise our seed round. Our mentor's guidance saved us months of trial and error."
                   </blockquote>
                   <div className="flex items-center">
                     <div className="h-10 w-10 rounded-full bg-stargaze-200 dark:bg-stargaze-700 flex items-center justify-center text-stargaze-600 dark:text-stargaze-300 font-bold">
@@ -180,7 +178,7 @@ const Index = () => {
                     </div>
                   </div>
                   <blockquote className="text-stargaze-600 dark:text-stargaze-300 mb-4">
-                    "Finding the right mentor match through Startup Stargaze changed everything for our business. Within 6 months, we doubled our revenue and expanded to new markets."
+                    "Finding the right mentor match through Elevate X changed everything for our business. Within 6 months, we doubled our revenue and expanded to new markets."
                   </blockquote>
                   <div className="flex items-center">
                     <div className="h-10 w-10 rounded-full bg-stargaze-200 dark:bg-stargaze-700 flex items-center justify-center text-stargaze-600 dark:text-stargaze-300 font-bold">
@@ -206,7 +204,7 @@ const Index = () => {
                   Why join our platform?
                 </h2>
                 <p className="text-lg text-stargaze-600 dark:text-stargaze-400 max-w-3xl mx-auto">
-                  Startup Stargaze provides everything founders need to build and scale their businesses successfully.
+                  Elevate X provides everything founders need to build and scale their businesses successfully.
                 </p>
               </div>
               
@@ -291,8 +289,8 @@ const Index = () => {
           <StartupShowcase />
           <div className="text-center mt-8 mb-20">
             <Link to="/startup-showcase">
-              <Button size="lg" variant="outline" className="gap-2">
-                View All Startups <ArrowRight className="h-4 w-4" />
+              <Button size="lg" variant="outline" className="gap-2" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                View All Startups
               </Button>
             </Link>
           </div>
@@ -306,12 +304,12 @@ const Index = () => {
                 Ready to take your startup to the next level?
               </h2>
               <p className="text-lg text-stargaze-600 dark:text-stargaze-400 mb-8">
-                Join Startup Stargaze today and get access to mentorship, resources, and a community that supports your entrepreneurial journey.
+                Join Elevate X today and get access to mentorship, resources, and a community that supports your entrepreneurial journey.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link to="/auth">
-                  <Button size="lg" className="gap-2">
-                    Join Now <ArrowRight className="h-4 w-4" />
+                  <Button size="lg" className="gap-2" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                    Join Now
                   </Button>
                 </Link>
                 <Link to="/about">

@@ -67,8 +67,8 @@ export const Navbar = () => {
           to="/"
           className="flex items-center space-x-2 text-2xl font-bold tracking-tight"
         >
-          <span className="text-primary">Startup</span>
-          <span className="dark:text-white">Stargaze</span>
+          <span className="text-primary">Elevate</span>
+          <span className="dark:text-white">X</span>
         </Link>
 
         {/* Desktop Navigation */}

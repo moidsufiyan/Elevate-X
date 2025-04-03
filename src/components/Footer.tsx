@@ -64,7 +64,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
           <div>
             <h4 className="text-xl sm:text-2xl font-bold text-stargaze-900 dark:text-white mb-4">
-              Join the Startup Stargaze community
+              Join the Elevate X community
             </h4>
             <p className="text-stargaze-600 dark:text-stargaze-400 mb-6 max-w-lg">
               Stay updated with the latest startup trends, resources, and opportunities. 
@@ -114,8 +114,8 @@ export const Footer = () => {
               to="/"
               className="inline-flex items-center space-x-2 text-xl font-bold tracking-tight mb-6"
             >
-              <span className="text-primary">Startup</span>
-              <span className="text-stargaze-900 dark:text-white">Stargaze</span>
+              <span className="text-primary">Elevate</span>
+              <span className="text-stargaze-900 dark:text-white">X</span>
             </Link>
             <p className="text-sm text-stargaze-600 dark:text-stargaze-400 mb-6 xl:max-w-xs">
               Connecting ambitious founders with expert mentors to build successful startups. Our platform empowers entrepreneurs with the guidance, resources, and community they need to thrive.
@@ -197,7 +197,7 @@ export const Footer = () => {
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-sm text-stargaze-500 dark:text-stargaze-500">
-            © {new Date().getFullYear()} Startup Stargaze. All rights reserved.
+            © {new Date().getFullYear()} Elevate X. All rights reserved.
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-stargaze-500 dark:text-stargaze-500">
