@@ -1,9 +1,12 @@
 
+// Update the App.tsx file to use the new directory structure
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Import pages from the new directory structure when possible
 import Index from "./pages/Index";
 import Mentors from "./pages/Mentors";
 import MentorDetail from "./pages/MentorDetail";
