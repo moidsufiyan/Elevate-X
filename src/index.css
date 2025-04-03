@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -34,7 +35,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -88,14 +89,14 @@
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -104,7 +105,7 @@
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -120,6 +121,15 @@
   @apply bg-black/10 border-white/10;
 }
 
+/* Card styles */
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+}
+
+.card-gradient {
+  @apply bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm;
+}
+
 /* Animated Underline */
 .animated-underline {
   position: relative;
@@ -130,8 +140,8 @@
   content: '';
   position: absolute;
   width: 0;
-  height: 1px;
-  bottom: -1px;
+  height: 2px;
+  bottom: -2px;
   left: 0;
   background-color: currentColor;
   transition: width 0.3s ease;
@@ -198,4 +208,21 @@
 /* Gradient text effect */
 .gradient-text {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600;
+}
+
+/* New styles for better UI */
+.blur-backdrop {
+  @apply backdrop-blur-md bg-white/70 dark:bg-black/70;
+}
+
+.pill {
+  @apply px-3 py-1 rounded-full text-xs font-medium;
+}
+
+.section-divider {
+  @apply my-16 border-t border-gray-200 dark:border-gray-800;
+}
+
+.frosted-panel {
+  @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200 dark:border-gray-800 rounded-2xl shadow-lg;
 }

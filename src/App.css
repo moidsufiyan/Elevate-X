@@ -1,42 +1,96 @@
+
 #root {
-  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
+/* Modern card styles */
 .card {
-  padding: 2em;
+  @apply bg-white dark:bg-gray-800 rounded-xl shadow-subtle border border-gray-100 dark:border-gray-700 overflow-hidden transition-all duration-300;
 }
 
-.read-the-docs {
-  color: #888;
+.card:hover {
+  @apply shadow-card transform -translate-y-1;
+}
+
+/* Page content container */
+.page-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Section padding */
+.section-padding {
+  @apply py-16 md:py-24;
+}
+
+/* Hero section */
+.hero-section {
+  @apply relative overflow-hidden;
+}
+
+.hero-pattern {
+  @apply absolute inset-0 z-0 opacity-30;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Button animations */
+.btn-primary {
+  @apply bg-elevate-600 hover:bg-elevate-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition-all duration-300;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium py-2 px-4 rounded-md shadow-sm transition-all duration-300;
+}
+
+.btn-outline {
+  @apply border border-elevate-600 text-elevate-600 hover:bg-elevate-50 dark:hover:bg-elevate-900/20 font-medium py-2 px-4 rounded-md transition-all duration-300;
+}
+
+/* Image animations */
+.img-hover-zoom {
+  @apply overflow-hidden;
+}
+
+.img-hover-zoom img {
+  @apply transition-transform duration-500 ease-in-out;
+}
+
+.img-hover-zoom:hover img {
+  @apply transform scale-105;
+}
+
+/* Modern badge styles */
+.badge {
+  @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+}
+
+.badge-primary {
+  @apply bg-elevate-100 text-elevate-800 dark:bg-elevate-900 dark:text-elevate-300;
+}
+
+.badge-secondary {
+  @apply bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300;
+}
+
+.badge-warning {
+  @apply bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300;
+}
+
+/* Gradient backgrounds */
+.bg-gradient-primary {
+  @apply bg-gradient-to-br from-elevate-500 to-elevate-700;
+}
+
+.bg-gradient-light {
+  @apply bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900;
+}
+
+/* Footer styling */
+.footer {
+  @apply bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800;
 }
