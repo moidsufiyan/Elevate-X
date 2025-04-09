@@ -2,8 +2,56 @@
 // Moving the data utilities to shared utils since they can be used by both frontend and backend
 import { useQuery } from '@tanstack/react-query';
 import { fetchMentors, fetchMentorById, fetchStartups } from '@/services/api';
-import { Mentor, MentorshipSession, UserPreferences } from '@/shared/types/models';
+import { Mentor, Startup, MentorshipSession, UserPreferences } from '@/shared/types/models';
 import { getRecommendedMentors } from './matching-utils';
+
+/**
+ * Adapter function to convert API Mentor to Model Mentor
+ */
+const adaptMentorFromApi = (apiMentor: any): Mentor => {
+  return {
+    id: apiMentor.id,
+    name: apiMentor.name,
+    role: apiMentor.role,
+    expertise: apiMentor.expertise || [],
+    company: apiMentor.company,
+    bio: apiMentor.bio || '',
+    avatar: apiMentor.image || apiMentor.avatar || 'https://via.placeholder.com/150',
+    rating: apiMentor.rating || 0,
+    reviews: apiMentor.reviewCount || 0,
+    sessions: apiMentor.sessions || 0,
+    availability: apiMentor.availableTimes ? [apiMentor.availableTimes] : ['Flexible'],
+    hourlyRate: 100, // Default value if not provided by API
+    featured: apiMentor.badges?.some((b: any) => b.label === 'Featured') || false
+  };
+};
+
+/**
+ * Adapter function to convert API Startup to Model Startup
+ */
+const adaptStartupFromApi = (apiStartup: any): Startup => {
+  return {
+    id: apiStartup.id,
+    name: apiStartup.name,
+    description: apiStartup.shortPitch || apiStartup.description || '',
+    industry: apiStartup.industry,
+    stage: apiStartup.fundingStage || 'Seed',
+    foundingYear: new Date().getFullYear() - 1, // Default if not provided
+    logo: apiStartup.logo,
+    founders: [
+      {
+        name: 'Founder', // Default values since API doesn't provide founder details
+        role: 'CEO',
+        avatar: 'https://via.placeholder.com/150'
+      }
+    ],
+    location: apiStartup.location || 'Global',
+    funding: apiStartup.funding || 'Bootstrapped',
+    employees: apiStartup.employees || 1,
+    website: apiStartup.website || `https://${apiStartup.name.toLowerCase().replace(/\s/g, '')}.com`,
+    featured: apiStartup.featured || false
+  };
+};
 
 /**
  * Custom hook for fetching all mentors with caching
@@ -12,8 +60,9 @@ export const useMentorsData = () => {
   return useQuery({
     queryKey: ['mentors'],
     queryFn: async () => {
-      const mentors = await fetchMentors();
-      return mentors as Mentor[]; // Ensure the returned data conforms to our Mentor type
+      const apiMentors = await fetchMentors();
+      // Map API mentors to our model format
+      return apiMentors.map(adaptMentorFromApi);
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false
@@ -27,8 +76,9 @@ export const useMentorData = (id: string) => {
   return useQuery({
     queryKey: ['mentor', id],
     queryFn: async () => {
-      const mentor = await fetchMentorById(id);
-      return mentor as Mentor; // Ensure the returned data conforms to our Mentor type
+      const apiMentor = await fetchMentorById(id);
+      // Convert API mentor to our model format
+      return adaptMentorFromApi(apiMentor);
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
@@ -42,7 +92,11 @@ export const useMentorData = (id: string) => {
 export const useStartupsData = () => {
   return useQuery({
     queryKey: ['startups'],
-    queryFn: fetchStartups,
+    queryFn: async () => {
+      const apiStartups = await fetchStartups();
+      // Map API startups to our model format
+      return apiStartups.map(adaptStartupFromApi);
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false
   });
