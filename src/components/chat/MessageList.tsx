@@ -149,7 +149,7 @@ export const MessageList = ({
               onKeyDown={handleKeyDown}
               placeholder="Type your message..."
               className="min-h-10 resize-none flex-1 mr-2"
-              maxRows={5}
+              rows={1}
             />
             <div className="flex space-x-1">
               <Button 

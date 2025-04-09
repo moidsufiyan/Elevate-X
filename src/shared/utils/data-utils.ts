@@ -11,7 +11,10 @@ import { getRecommendedMentors } from './matching-utils';
 export const useMentorsData = () => {
   return useQuery({
     queryKey: ['mentors'],
-    queryFn: fetchMentors,
+    queryFn: async () => {
+      const mentors = await fetchMentors();
+      return mentors as Mentor[]; // Ensure the returned data conforms to our Mentor type
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false
   });
@@ -23,7 +26,10 @@ export const useMentorsData = () => {
 export const useMentorData = (id: string) => {
   return useQuery({
     queryKey: ['mentor', id],
-    queryFn: () => fetchMentorById(id),
+    queryFn: async () => {
+      const mentor = await fetchMentorById(id);
+      return mentor as Mentor; // Ensure the returned data conforms to our Mentor type
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
     enabled: !!id

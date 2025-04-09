@@ -49,6 +49,7 @@ export const SessionHistoryList = ({
     );
   }
   
+  // Helper function to render the appropriate status badge
   const getStatusBadge = (session: MentorshipSession) => {
     if (session.status === 'completed') {
       return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>;
@@ -121,6 +122,19 @@ interface SessionCardProps {
 
 const SessionCard = ({ session, userRole, onViewDetails }: SessionCardProps) => {
   const isPast = new Date(session.date) < new Date();
+  
+  // Helper function to render the appropriate status badge
+  const getStatusBadge = (session: MentorshipSession) => {
+    if (session.status === 'completed') {
+      return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" /> Completed</Badge>;
+    } else if (session.status === 'cancelled') {
+      return <Badge variant="destructive"><AlertCircle className="h-3 w-3 mr-1" /> Cancelled</Badge>;
+    } else if (new Date(session.date) < new Date()) {
+      return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">Missed</Badge>;
+    } else {
+      return <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">Upcoming</Badge>;
+    }
+  };
   
   return (
     <Card key={session.id} className="overflow-hidden">

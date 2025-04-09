@@ -15,6 +15,7 @@ export interface Mentor {
   availability: string[];
   hourlyRate: number;
   featured?: boolean;
+  // Add any additional fields that might be needed from API
 }
 
 export interface Startup {
