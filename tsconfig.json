@@ -1,19 +1,24 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
   "compilerOptions": {
-    "baseUrl": ".",
+    "target": "ES2020", // Target modern JavaScript
+    "module": "ESNext", // Use ES modules
+    "moduleResolution": "Node", // Resolve modules in Node.js style
+    "esModuleInterop": true, // Enable interoperability between CommonJS and ES modules
+    "allowSyntheticDefaultImports": true, // Allow default imports from modules without default exports
+    "strict": true, // Enable strict type-checking options
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Root directory of input files
+    "baseUrl": ".", // Base directory for resolving non-relative module names
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"] // Alias for cleaner imports
     },
-    "noImplicitAny": false,
-    "noUnusedParameters": false,
-    "skipLibCheck": true,
-    "allowJs": true,
-    "noUnusedLocals": false,
-    "strictNullChecks": false
-  }
+    "noImplicitAny": false, // Allow variables with implicit "any" type
+    "noUnusedParameters": false, // Allow unused function parameters
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "allowJs": true, // Allow JavaScript files
+    "noUnusedLocals": false, // Allow unused local variables
+    "strictNullChecks": false // Disable strict null checks
+  },
+  "include": ["src"], // Include the "src" directory
+  "exclude": ["node_modules", "dist"] // Exclude "node_modules" and "dist" directories
 }
