@@ -1,7 +1,7 @@
 
 // Moving the data utilities to shared utils since they can be used by both frontend and backend
 import { useQuery } from '@tanstack/react-query';
-import { fetchMentors, fetchMentorById, fetchStartups } from '../../backend/services/api';
+import { fetchMentors, fetchMentorById, fetchStartups } from '@/services/api';
 
 /**
  * Custom hook for fetching all mentors with caching
