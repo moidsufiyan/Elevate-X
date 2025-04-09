@@ -7,14 +7,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { 
   Calendar, MessageSquare, FileText, Clock, Users, BookOpen, 
-  ChevronRight, CheckCircle, AlertCircle, HelpCircle 
+  ChevronRight, CheckCircle, AlertCircle, HelpCircle, BarChart2, 
+  DollarSign, LineChart 
 } from "lucide-react";
 import { MentorReviewRequests } from "@/components/mentor/MentorReviewRequests";
 import { MentorSessions } from "@/components/mentor/MentorSessions";
 import { MentorContentHub } from "@/components/mentor/MentorContentHub";
+import { MentorStats } from "@/components/mentor/MentorStats";
+import { useSessionHistory } from "@/shared/utils/data-utils";
+import { SessionHistoryList } from "@/components/session/SessionHistoryList";
 
 const MentorDashboard = () => {
-  const [activeTab, setActiveTab] = useState("requests");
+  const [activeTab, setActiveTab] = useState("overview");
+  const { data: sessionHistory } = useSessionHistory("mentor-1", "mentor");
   
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -82,8 +87,12 @@ const MentorDashboard = () => {
           
           {/* Main Tabs */}
           <AnimatedSection animation="fade-up" delay={200}>
-            <Tabs defaultValue="requests" onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-3 mb-8">
+            <Tabs defaultValue="overview" onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid grid-cols-4 mb-8">
+                <TabsTrigger value="overview" className="text-sm md:text-base">
+                  <BarChart2 className="h-4 w-4 mr-2 md:mr-3" />
+                  Overview
+                </TabsTrigger>
                 <TabsTrigger value="requests" className="text-sm md:text-base">
                   <MessageSquare className="h-4 w-4 mr-2 md:mr-3" />
                   Review Requests
@@ -97,6 +106,80 @@ const MentorDashboard = () => {
                   Content Hub
                 </TabsTrigger>
               </TabsList>
+              
+              <TabsContent value="overview">
+                <div className="space-y-8">
+                  <div>
+                    <h2 className="text-xl font-semibold mb-4">Performance Metrics</h2>
+                    <MentorStats />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white dark:bg-stargaze-900 rounded-xl p-6 shadow-subtle">
+                      <h3 className="text-xl font-semibold text-stargaze-900 dark:text-white mb-4 flex items-center">
+                        <DollarSign className="h-5 w-5 mr-2 text-green-500" /> 
+                        Earnings Overview
+                      </h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-stargaze-600 dark:text-stargaze-300">Current month earnings</span>
+                          <span className="font-semibold">$520</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-stargaze-600 dark:text-stargaze-300">Previous month</span>
+                          <span className="font-semibold">$640</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-stargaze-600 dark:text-stargaze-300">Total balance</span>
+                          <span className="font-semibold">$1,240</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-stargaze-600 dark:text-stargaze-300">Next payout</span>
+                          <span className="font-semibold">$520 (May 15)</span>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 pt-4 border-t border-stargaze-100 dark:border-stargaze-800">
+                        <Button>
+                          View Earnings History
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white dark:bg-stargaze-900 rounded-xl p-6 shadow-subtle">
+                      <h3 className="text-xl font-semibold text-stargaze-900 dark:text-white mb-4 flex items-center">
+                        <Calendar className="h-5 w-5 mr-2 text-blue-500" /> 
+                        Upcoming Sessions
+                      </h3>
+                      {sessionHistory?.filter(s => s.status === 'scheduled')?.length ? (
+                        <div className="space-y-4">
+                          {sessionHistory
+                            .filter(s => s.status === 'scheduled')
+                            .slice(0, 2)
+                            .map(session => (
+                              <div key={session.id} className="flex justify-between items-center border-b border-stargaze-100 dark:border-stargaze-800 pb-3">
+                                <div>
+                                  <h4 className="font-medium">{session.title}</h4>
+                                  <p className="text-sm text-stargaze-500 dark:text-stargaze-400">
+                                    {new Date(session.date).toLocaleDateString()} • {session.duration} min
+                                  </p>
+                                </div>
+                                <Button variant="outline" size="sm">
+                                  View
+                                </Button>
+                              </div>
+                            ))}
+                          <Button variant="link" className="p-0 mt-2">
+                            View all sessions <ChevronRight className="h-4 w-4 ml-1" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <p className="text-stargaze-500 dark:text-stargaze-400">No upcoming sessions scheduled.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
               
               <TabsContent value="requests">
                 <MentorReviewRequests />

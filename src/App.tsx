@@ -18,6 +18,7 @@ import Auth from "./pages/Auth";
 import StartupProfile from "./pages/StartupProfile";
 import MentorProfile from "./pages/MentorProfile";
 import MentorDashboard from "./pages/MentorDashboard";
+import FounderDashboard from "./pages/FounderDashboard";
 import MentorshipMatching from "./pages/MentorshipMatching";
 import Communities from "./pages/Communities";
 import StartupShowcase from "./pages/StartupShowcase";
@@ -53,6 +54,7 @@ const App = () => (
           <Route path="/startup-profile" element={<StartupProfile />} />
           <Route path="/mentor-profile" element={<MentorProfile />} />
           <Route path="/mentor-dashboard" element={<MentorDashboard />} />
+          <Route path="/founder-dashboard" element={<FounderDashboard />} />
           <Route path="/mentorship-matching" element={<MentorshipMatching />} />
           <Route path="/startup-showcase" element={<StartupShowcase />} />
           <Route path="/auth" element={<Auth />} />
