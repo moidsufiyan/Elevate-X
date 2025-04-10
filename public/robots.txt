@@ -1,19 +1,14 @@
-
-# Stargaze Mentors Platform Robots.txt
-User-agent: *
+User-agent: Googlebot
 Allow: /
 
-# Sitemap location
-Sitemap: https://yourwebsite.com/sitemap.xml
+User-agent: Bingbot
+Allow: /
 
-# Disallow specific admin areas
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/reset-password
+User-agent: Twitterbot
+Allow: /
 
-# Allow crawling of important public pages
-Allow: /mentors
-Allow: /blog
-Allow: /resources
-Allow: /about
-Allow: /contact
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: *
+Allow: /

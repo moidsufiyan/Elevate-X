@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
@@ -6,7 +5,6 @@ import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SEO } from "@/components/SEO";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { ArrowLeft, Calendar, User, Clock, Tag as TagIcon } from "lucide-react";
 import { BlogPost as BlogPostType } from "@/types/BlogPost";
@@ -55,10 +53,6 @@ const BlogPost = () => {
   if (!post) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <SEO 
-          title="Blog Post Not Found"
-          description="The blog post you're looking for is not available."
-        />
         <Navbar />
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-6">
@@ -80,19 +74,8 @@ const BlogPost = () => {
     );
   }
 
-  // Create a clean excerpt for SEO description (strip markdown)
-  const seoDescription = post.excerpt || post.content.substring(0, 160).replace(/[#*[\]]/g, '');
-
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SEO 
-        title={post.title}
-        description={seoDescription}
-        keywords={post.tags.join(', ')}
-        ogImage={post.image || "/blog-default.jpg"}
-        ogUrl={`https://yourwebsite.com/blog/${post.id}`}
-        ogType="article"
-      />
       <Navbar />
       
       <main className="pt-24 pb-16">

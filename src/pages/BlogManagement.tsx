@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -7,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BlogPostList } from "@/components/blog/BlogPostList";
 import { BlogPostEditor } from "@/components/blog/BlogPostEditor";
-import { SEO } from "@/components/SEO";
 import { Plus, FileText, Settings } from "lucide-react";
 import { BlogPost } from "@/types/BlogPost";
 
@@ -45,11 +43,6 @@ const BlogManagement = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SEO 
-        title="Blog Management"
-        description="Create and manage your blog posts, share your expertise with the community."
-        ogType="website"
-      />
       <Navbar />
       
       <main className="pt-24 pb-16">
