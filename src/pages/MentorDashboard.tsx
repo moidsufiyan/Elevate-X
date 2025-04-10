@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
@@ -8,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Calendar, MessageSquare, FileText, Clock, Users, BookOpen, 
   ChevronRight, CheckCircle, AlertCircle, HelpCircle, BarChart2, 
-  DollarSign, LineChart 
+  DollarSign, LineChart, Pen 
 } from "lucide-react";
 import { MentorReviewRequests } from "@/components/mentor/MentorReviewRequests";
 import { MentorSessions } from "@/components/mentor/MentorSessions";
@@ -28,12 +29,25 @@ const MentorDashboard = () => {
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <AnimatedSection className="mb-8">
-            <h1 className="text-4xl font-bold text-stargaze-900 dark:text-white mb-4">
-              Mentor Dashboard
-            </h1>
-            <p className="text-lg text-stargaze-600 dark:text-stargaze-300 max-w-3xl">
-              Manage your mentoring activities, review startup requests, and contribute your expertise to the community.
-            </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-stargaze-900 dark:text-white mb-4">
+                  Mentor Dashboard
+                </h1>
+                <p className="text-lg text-stargaze-600 dark:text-stargaze-300 max-w-3xl">
+                  Manage your mentoring activities, review startup requests, and contribute your expertise to the community.
+                </p>
+              </div>
+              
+              <div className="mt-4 sm:mt-0 space-y-2">
+                <Button asChild className="w-full sm:w-auto">
+                  <Link to="/blog-management">
+                    <Pen className="h-4 w-4 mr-2" />
+                    Manage Articles
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </AnimatedSection>
           
           {/* Quick Stats */}
@@ -75,7 +89,7 @@ const MentorDashboard = () => {
               <div className="bg-white dark:bg-stargaze-900 p-6 rounded-xl shadow-subtle border border-stargaze-100 dark:border-stargaze-800">
                 <div className="flex items-center mb-3">
                   <div className="h-10 w-10 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center mr-3">
-                    <BookOpen className="h-5 w-5" />
+                    <FileText className="h-5 w-5" />
                   </div>
                   <h3 className="font-semibold text-stargaze-900 dark:text-white">Content Contributions</h3>
                 </div>

@@ -27,6 +27,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Careers from "./pages/Careers";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import BlogManagement from "./pages/BlogManagement";
 import Press from "./pages/Press";
 import Sitemap from "./pages/Sitemap";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
@@ -54,10 +56,15 @@ const App = () => (
           <Route path="/startup-profile" element={<StartupProfile />} />
           <Route path="/mentor-profile" element={<MentorProfile />} />
           <Route path="/mentor-dashboard" element={<MentorDashboard />} />
+          <Route path="/blog-management" element={<BlogManagement />} />
           <Route path="/founder-dashboard" element={<FounderDashboard />} />
           <Route path="/mentorship-matching" element={<MentorshipMatching />} />
           <Route path="/startup-showcase" element={<StartupShowcase />} />
           <Route path="/auth" element={<Auth />} />
+          
+          {/* Blog Routes */}
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
           
           {/* Page Routes */}
           <Route path="/about" element={<About />} />
