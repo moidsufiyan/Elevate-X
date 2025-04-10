@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -8,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BlogPostList } from "@/components/blog/BlogPostList";
 import { BlogPostEditor } from "@/components/blog/BlogPostEditor";
 import { Plus, FileText, Settings } from "lucide-react";
+import { BlogPost } from "@/types/BlogPost";
 
 const BlogManagement = () => {
   const [activeTab, setActiveTab] = useState("my-posts");

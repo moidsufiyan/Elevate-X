@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { BlogPost } from "@/types/BlogPost";
 
 // Mock data
 const mockPosts: BlogPost[] = [

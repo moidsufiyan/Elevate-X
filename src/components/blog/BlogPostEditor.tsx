@@ -9,6 +9,7 @@ import { RichTextEditor } from "@/components/blog/RichTextEditor";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { useToast } from "@/components/ui/use-toast";
 import { Save, Eye, Send, ImageIcon, Tag as TagIcon } from "lucide-react";
+import { BlogPost } from "@/types/BlogPost";
 
 interface BlogPostEditorProps {
   post: BlogPost;

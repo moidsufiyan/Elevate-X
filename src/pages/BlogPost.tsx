@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
@@ -8,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { ArrowLeft, Calendar, User, Clock, Tag as TagIcon } from "lucide-react";
+import { BlogPost as BlogPostType } from "@/types/BlogPost";
 
 const BlogPost = () => {
   const { id } = useParams<{ id: string }>();
   const { posts } = useBlogPosts();
-  const [post, setPost] = useState<BlogPost | null>(null);
+  const [post, setPost] = useState<BlogPostType | null>(null);
   
   useEffect(() => {
     if (id && posts.length > 0) {
@@ -23,40 +23,27 @@ const BlogPost = () => {
     }
   }, [id, posts]);
   
-  // Function to render markdown content
   const renderMarkdown = (markdown: string) => {
-    // This is a simple markdown renderer
-    // In a production app, you would use a proper markdown parser
     let html = markdown
-      // Headers
       .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold mt-6 mb-4">$1</h1>')
       .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold mt-5 mb-3">$1</h2>')
       .replace(/^### (.*$)/gm, '<h3 class="text-xl font-bold mt-4 mb-2">$1</h3>')
-      // Bold and Italic
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      // Lists
       .replace(/^\- (.*$)/gm, '<li>$1</li>')
       .replace(/<\/li>\n<li>/g, '</li><li>')
       .replace(/<\/li>\n/g, '</li></ul>\n')
       .replace(/^\<li\>/gm, '<ul class="list-disc pl-6 mb-4"><li>')
-      // Numbered lists
       .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
       .replace(/^\<li\>/gm, '<ol class="list-decimal pl-6 mb-4"><li>')
-      // Links
       .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" class="text-primary hover:underline">$1</a>')
-      // Images
       .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" class="my-4 rounded-lg max-w-full h-auto" />')
-      // Code blocks
       .replace(/```([\s\S]*?)```/g, '<pre class="bg-muted p-4 rounded-md overflow-x-auto mb-4"><code>$1</code></pre>')
-      // Block quotes
       .replace(/^\> (.*$)/gm, '<blockquote class="border-l-4 border-primary pl-4 italic my-4">$1</blockquote>')
-      // Paragraphs
       .replace(/^(?!<[a-z]).+$/gm, function(match) {
         if (match.trim() === '') return '';
         return '<p class="mb-4">' + match + '</p>';
       })
-      // Clean up extra paragraphs around elements
       .replace(/<p><(h|ul|ol|blockquote)/g, '<$1')
       .replace(/<\/(h\d|ul|ol|blockquote)><\/p>/g, '</$1>');
     

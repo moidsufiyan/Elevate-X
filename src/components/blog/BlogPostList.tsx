@@ -23,6 +23,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { BlogPost } from "@/types/BlogPost";
 
 interface BlogPostListProps {
   onEditPost: (post: BlogPost) => void;
