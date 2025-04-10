@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight } from "lucide-react";
+import { SEO } from "@/components/SEO";
 
 const Sitemap = () => {
   const sitemapSections = [
@@ -54,6 +55,11 @@ const Sitemap = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO 
+        title="Sitemap" 
+        description="Navigate all pages and resources available on Elevate X platform." 
+        keywords="sitemap, navigation, mentor platform, startup resources"
+      />
       <Navbar />
       <main className="pt-24 pb-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
