@@ -36,6 +36,8 @@ import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsOfService from "./pages/legal/TermsOfService";
 import CookiePolicy from "./pages/legal/CookiePolicy";
 import DataProcessing from "./pages/legal/DataProcessing";
+import FileUploadGuide from "./pages/FileUploadGuide";
+import Messaging from "./pages/Messaging";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +65,8 @@ const App = () => (
           <Route path="/mentorship-matching" element={<MentorshipMatching />} />
           <Route path="/startup-showcase" element={<StartupShowcase />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/messaging" element={<Messaging />} />
+          <Route path="/file-upload-guide" element={<FileUploadGuide />} />
           
           {/* Blog Routes */}
           <Route path="/blog" element={<Blog />} />
@@ -72,7 +76,6 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/careers" element={<Careers />} />
-          <Route path="/blog" element={<Blog />} />
           <Route path="/press" element={<Press />} />
           <Route path="/sitemap" element={<Sitemap />} />
           

@@ -7,9 +7,10 @@ import { MentorShowcase } from "@/components/MentorShowcase";
 import { StartupShowcase } from "@/components/StartupShowcase";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { Button } from "@/components/Button"; // Changed this import to use custom Button
+import { Button } from "@/components/Button"; 
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import { ArrowRight, CheckCircle, Calendar, FileUp, Users, Award, Flag, Globe } from "lucide-react";
+import { SEO } from "@/components/SEO";
 
 const Index = () => {
   useEffect(() => {
@@ -44,6 +45,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO 
+        title="Elevate X | Connect with Expert Startup Mentors"
+        description="Get guidance from experienced startup mentors. Book sessions, access resources, and accelerate your entrepreneurial journey."
+        keywords="startup mentors, mentorship, entrepreneurship, founder coaching, startup advice"
+      />
       <Navbar />
       <main>
         <AnimatedSection animation="fade-in" duration="normal" delay={100}>
@@ -52,6 +58,89 @@ const Index = () => {
         
         <AnimatedSection animation="fade-up" duration="normal" delay={200} id="features">
           <Features />
+        </AnimatedSection>
+        
+        {/* Implemented Features Showcase */}
+        <AnimatedSection animation="fade-up" duration="normal" delay={250}>
+          <section className="py-24 px-4 sm:px-6 bg-white dark:bg-stargaze-950 border-t border-stargaze-100 dark:border-stargaze-800">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Platform Features</h2>
+                <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
+                  Everything You Need to Succeed
+                </h3>
+                <p className="max-w-2xl mx-auto text-stargaze-600 dark:text-stargaze-300 text-lg">
+                  Our platform provides a comprehensive suite of tools to help you connect with mentors and grow your startup.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Feature Card: Booking */}
+                <div className="bg-white dark:bg-stargaze-900 rounded-xl p-6 border border-stargaze-100 dark:border-stargaze-800 shadow-sm group hover:shadow-md transition-all">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+                    <Calendar className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-stargaze-900 dark:text-white mb-3">Calendar Booking</h3>
+                  <p className="text-stargaze-600 dark:text-stargaze-400 mb-4">
+                    Book sessions with your favorite mentors using our intuitive calendar interface.
+                  </p>
+                  <Link to="/mentor/1/book" className="inline-flex items-center text-primary hover:text-primary/80">
+                    <span>Try it now</span>
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
+                
+                {/* Feature Card: File Upload */}
+                <div className="bg-white dark:bg-stargaze-900 rounded-xl p-6 border border-stargaze-100 dark:border-stargaze-800 shadow-sm group hover:shadow-md transition-all">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+                    <FileUp className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-stargaze-900 dark:text-white mb-3">File Sharing</h3>
+                  <p className="text-stargaze-600 dark:text-stargaze-400 mb-4">
+                    Share documents, presentations, and images directly in your mentor sessions.
+                  </p>
+                  <Link to="/messaging" className="inline-flex items-center text-primary hover:text-primary/80">
+                    <span>Try messaging</span>
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
+                
+                {/* Feature Card: SEO */}
+                <div className="bg-white dark:bg-stargaze-900 rounded-xl p-6 border border-stargaze-100 dark:border-stargaze-800 shadow-sm group hover:shadow-md transition-all">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
+                    <Globe className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-stargaze-900 dark:text-white mb-3">SEO Optimized</h3>
+                  <p className="text-stargaze-600 dark:text-stargaze-400 mb-4">
+                    Our platform is fully optimized for search engines to help your profile get discovered.
+                  </p>
+                  <Link to="/sitemap" className="inline-flex items-center text-primary hover:text-primary/80">
+                    <span>View sitemap</span>
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+              
+              {/* Coming Soon Features */}
+              <div className="mt-16 text-center">
+                <h3 className="text-xl font-semibold text-stargaze-900 dark:text-white mb-6">Coming Soon</h3>
+                <div className="flex flex-wrap justify-center gap-4">
+                  <div className="px-4 py-2 bg-stargaze-100 dark:bg-stargaze-800 rounded-full flex items-center">
+                    <Users className="h-4 w-4 mr-2 text-stargaze-500 dark:text-stargaze-400" />
+                    <span className="text-sm text-stargaze-700 dark:text-stargaze-300">Community Forums</span>
+                  </div>
+                  <div className="px-4 py-2 bg-stargaze-100 dark:bg-stargaze-800 rounded-full flex items-center">
+                    <Award className="h-4 w-4 mr-2 text-stargaze-500 dark:text-stargaze-400" />
+                    <span className="text-sm text-stargaze-700 dark:text-stargaze-300">Achievement Badges</span>
+                  </div>
+                  <div className="px-4 py-2 bg-stargaze-100 dark:bg-stargaze-800 rounded-full flex items-center">
+                    <Flag className="h-4 w-4 mr-2 text-stargaze-500 dark:text-stargaze-400" />
+                    <span className="text-sm text-stargaze-700 dark:text-stargaze-300">Content Moderation</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </AnimatedSection>
         
         {/* Call to Action Section */}
@@ -154,7 +243,7 @@ const Index = () => {
                     </div>
                   </div>
                   <blockquote className="text-stargaze-600 dark:text-stargaze-300 mb-4">
-                    "The resources available through this platform helped us refine our go-to-market strategy. The community feedback was invaluable to our product development."
+                    "The file sharing feature makes it easy to collaborate with my mentor. We can review business plans and presentations in real-time during our sessions."
                   </blockquote>
                   <div className="flex items-center">
                     <div className="h-10 w-10 rounded-full bg-stargaze-200 dark:bg-stargaze-700 flex items-center justify-center text-stargaze-600 dark:text-stargaze-300 font-bold">
