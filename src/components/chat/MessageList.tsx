@@ -6,14 +6,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send, Paperclip, Image, Link2 } from 'lucide-react';
+import { Send, Paperclip, Image as ImageIcon, Link2, File, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface MessageListProps {
   messages: Message[];
   currentUser: User;
   recipient: User;
-  onSendMessage: (content: string) => void;
+  onSendMessage: (content: string, attachments?: File[]) => void;
   isLoading?: boolean;
 }
 
@@ -25,7 +25,10 @@ export const MessageList = ({
   isLoading = false
 }: MessageListProps) => {
   const [newMessage, setNewMessage] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   
   // Scroll to bottom of messages when new messages arrive
@@ -34,10 +37,11 @@ export const MessageList = ({
   }, [messages]);
   
   const handleSendMessage = () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() && selectedFiles.length === 0) return;
     
-    onSendMessage(newMessage);
+    onSendMessage(newMessage, selectedFiles.length > 0 ? selectedFiles : undefined);
     setNewMessage('');
+    setSelectedFiles([]);
     
     // Show toast confirmation
     toast({
@@ -50,6 +54,38 @@ export const MessageList = ({
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+    }
+  };
+  
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: 'file' | 'image') => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      
+      // Add file type metadata for UI rendering
+      newFiles.forEach(file => {
+        (file as any).uploadType = type;
+      });
+      
+      setSelectedFiles(prev => [...prev, ...newFiles]);
+      
+      // Reset the input to allow selecting the same file again
+      e.target.value = '';
+    }
+  };
+  
+  const removeSelectedFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const getFileIcon = (filename: string) => {
+    const extension = filename.split('.').pop()?.toLowerCase();
+    
+    if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(extension || '')) {
+      return <ImageIcon className="h-4 w-4" />;
+    } else if (['pdf', 'doc', 'docx'].includes(extension || '')) {
+      return <File className="h-4 w-4" />;
+    } else {
+      return <Paperclip className="h-4 w-4" />;
     }
   };
   
@@ -112,7 +148,7 @@ export const MessageList = ({
                       {message.attachments.map(attachment => (
                         <div key={attachment.id} className="flex items-center text-xs">
                           {attachment.type === 'image' ? (
-                            <Image className="h-3 w-3 mr-1" />
+                            <ImageIcon className="h-3 w-3 mr-1" />
                           ) : (
                             <Paperclip className="h-3 w-3 mr-1" />
                           )}
@@ -139,6 +175,47 @@ export const MessageList = ({
         <div ref={messagesEndRef} />
       </div>
       
+      {/* File inputs (hidden) */}
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        className="hidden" 
+        onChange={(e) => handleFileSelect(e, 'file')} 
+        multiple
+      />
+      
+      <input 
+        type="file" 
+        ref={imageInputRef} 
+        accept="image/*" 
+        className="hidden" 
+        onChange={(e) => handleFileSelect(e, 'image')} 
+        multiple
+      />
+      
+      {/* Selected files preview */}
+      {selectedFiles.length > 0 && (
+        <div className="px-4 py-2 border-t border-border">
+          <p className="text-xs text-muted-foreground mb-2">Selected files:</p>
+          <div className="flex flex-wrap gap-2">
+            {selectedFiles.map((file, index) => (
+              <div key={index} className="flex items-center bg-secondary rounded-full pl-2 pr-1 py-1 text-xs">
+                {getFileIcon(file.name)}
+                <span className="mx-1 max-w-32 truncate">{file.name}</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-5 w-5 rounded-full hover:bg-destructive hover:text-destructive-foreground"
+                  onClick={() => removeSelectedFile(index)}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
       {/* Message input */}
       <Card className="mt-auto border-t rounded-none">
         <CardContent className="p-3">
@@ -158,6 +235,7 @@ export const MessageList = ({
                 variant="ghost" 
                 className="h-9 w-9 rounded-full"
                 title="Add attachment"
+                onClick={() => fileInputRef.current?.click()}
               >
                 <Paperclip className="h-5 w-5" />
               </Button>
@@ -167,14 +245,15 @@ export const MessageList = ({
                 variant="ghost" 
                 className="h-9 w-9 rounded-full"
                 title="Add image"
+                onClick={() => imageInputRef.current?.click()}
               >
-                <Image className="h-5 w-5" />
+                <ImageIcon className="h-5 w-5" />
               </Button>
               <Button 
                 type="button" 
                 className="rounded-full"
                 onClick={handleSendMessage}
-                disabled={!newMessage.trim()}
+                disabled={!newMessage.trim() && selectedFiles.length === 0}
               >
                 <Send className="h-4 w-4 mr-2" />
                 Send
