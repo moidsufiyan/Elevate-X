@@ -6,7 +6,7 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 import { SEO } from "@/components/SEO";
 import { FileUp, Check, X, Image, FileText, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/Button"; // Changed to use the custom Button component
 
 const FileUploadGuide = () => {
   const [activeTab, setActiveTab] = useState<'intro' | 'howto' | 'formats'>('intro');
@@ -255,8 +255,8 @@ const FileUploadGuide = () => {
           
           <AnimatedSection delay={200} className="text-center">
             <Link to="/messaging">
-              <Button className="gap-2" size="lg">
-                Try file sharing now <ArrowRight className="h-4 w-4" />
+              <Button className="gap-2" size="lg" rightIcon={<ArrowRight className="h-4 w-4" />}>
+                Try file sharing now
               </Button>
             </Link>
           </AnimatedSection>
