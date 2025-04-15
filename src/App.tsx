@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 // Import pages from the new directory structure when possible
 import Index from "./pages/Index";
@@ -18,6 +19,7 @@ import Auth from "./pages/Auth";
 import StartupProfile from "./pages/StartupProfile";
 import MentorProfile from "./pages/MentorProfile";
 import MentorDashboard from "./pages/MentorDashboard";
+import FounderDashboard from "./pages/FounderDashboard";
 import MentorshipMatching from "./pages/MentorshipMatching";
 import Communities from "./pages/Communities";
 import StartupShowcase from "./pages/StartupShowcase";
@@ -26,18 +28,23 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Careers from "./pages/Careers";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import BlogManagement from "./pages/BlogManagement";
 import Press from "./pages/Press";
 import Sitemap from "./pages/Sitemap";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsOfService from "./pages/legal/TermsOfService";
 import CookiePolicy from "./pages/legal/CookiePolicy";
 import DataProcessing from "./pages/legal/DataProcessing";
+import FileUploadGuide from "./pages/FileUploadGuide";
+import Messaging from "./pages/Messaging";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <SEO /> {/* Default SEO tags */}
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -53,15 +60,22 @@ const App = () => (
           <Route path="/startup-profile" element={<StartupProfile />} />
           <Route path="/mentor-profile" element={<MentorProfile />} />
           <Route path="/mentor-dashboard" element={<MentorDashboard />} />
+          <Route path="/blog-management" element={<BlogManagement />} />
+          <Route path="/founder-dashboard" element={<FounderDashboard />} />
           <Route path="/mentorship-matching" element={<MentorshipMatching />} />
           <Route path="/startup-showcase" element={<StartupShowcase />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/messaging" element={<Messaging />} />
+          <Route path="/file-upload-guide" element={<FileUploadGuide />} />
+          
+          {/* Blog Routes */}
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
           
           {/* Page Routes */}
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/careers" element={<Careers />} />
-          <Route path="/blog" element={<Blog />} />
           <Route path="/press" element={<Press />} />
           <Route path="/sitemap" element={<Sitemap />} />
           

@@ -1,4 +1,5 @@
-// API service for data fetching
+
+import { toast } from "sonner";
 
 // Base URL for API requests - update this with your production API URL
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
@@ -13,15 +14,17 @@ export interface Mentor {
   company: string;
   expertise: string[];
   image: string;
+  available: boolean;
   bio?: string;
   rating?: number;
   sessions?: number;
-  reviewCount?: number;
-  availableTimes?: string;
+  tags?: string[];
   badges?: {
     label: string;
     variant?: "default" | "secondary" | "destructive" | "outline";
   }[];
+  reviewCount?: number;
+  availableTimes?: string;
 }
 
 // Startup interface
@@ -39,7 +42,13 @@ export interface Startup {
 
 // Error handling
 const handleApiError = (error: unknown, fallbackMessage: string) => {
-  console.error(`API Error: ${fallbackMessage}`, error);
+  if (error instanceof Error) {
+    console.error(`API Error: ${error.message}`);
+    toast.error(error.message);
+  } else {
+    console.error(`API Error: ${fallbackMessage}`);
+    toast.error(fallbackMessage);
+  }
   throw error;
 };
 
@@ -89,7 +98,8 @@ export const fetchMentorById = async (id: string): Promise<Mentor> => {
         role: "Unknown",
         company: "Unknown",
         expertise: [],
-        image: "https://via.placeholder.com/150?text=Mentor"
+        image: "https://via.placeholder.com/150?text=Mentor",
+        available: false
       };
     }
     

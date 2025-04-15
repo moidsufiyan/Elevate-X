@@ -22,7 +22,9 @@ import {
   BookOpen,
   Award,
   Globe,
-  ChevronRight
+  ChevronRight,
+  FileUp,
+  Calendar
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -126,6 +128,16 @@ export const Navbar = () => {
                         </p>
                       </Link>
                     </div>
+                    <div>
+                      <Link to="/mentor/1/book" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                        <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                          <Calendar className="h-4 w-4" /> Book a Session
+                        </div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Schedule time with available mentors
+                        </p>
+                      </Link>
+                    </div>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -155,6 +167,14 @@ export const Navbar = () => {
                         Insights and articles on startup trends and growth strategies
                       </p>
                     </Link>
+                    <Link to="/file-upload-guide" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                        <FileUp className="h-4 w-4" /> File Sharing Guide
+                      </div>
+                      <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                        Learn how to share documents with your mentors
+                      </p>
+                    </Link>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -182,6 +202,14 @@ export const Navbar = () => {
                       </div>
                       <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                         Find specialized groups in your industry or interest area
+                      </p>
+                    </Link>
+                    <Link to="/messaging" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <div className="flex items-center gap-2 text-sm font-medium leading-none">
+                        <FileUp className="h-4 w-4" /> Share Files
+                      </div>
+                      <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                        Upload and share documents with mentors
                       </p>
                     </Link>
                   </div>
@@ -325,6 +353,22 @@ export const Navbar = () => {
               </div>
               <ChevronRight className="h-4 w-4" />
             </Link>
+            <Link
+              to="/mentor/1/book"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/mentor/1/book")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span className="text-base font-medium">Book a Session</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
             
             <div className="px-3 pt-4 pb-2">
               <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Resources</h3>
@@ -361,6 +405,22 @@ export const Navbar = () => {
               </div>
               <ChevronRight className="h-4 w-4" />
             </Link>
+            <Link
+              to="/file-upload-guide"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/file-upload-guide")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <FileUp className="h-4 w-4" />
+                <span className="text-base font-medium">File Sharing Guide</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
             
             <div className="px-3 pt-4 pb-2">
               <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Community</h3>
@@ -394,6 +454,22 @@ export const Navbar = () => {
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 <span className="text-base font-medium">Explore Communities</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/messaging"
+              className={cn(
+                "flex items-center justify-between p-3 rounded-md",
+                isActive("/messaging")
+                  ? "bg-primary/10 text-primary"
+                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
+              )}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <FileUp className="h-4 w-4" />
+                <span className="text-base font-medium">Share Files</span>
               </div>
               <ChevronRight className="h-4 w-4" />
             </Link>

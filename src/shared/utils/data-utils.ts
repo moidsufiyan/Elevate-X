@@ -1,7 +1,9 @@
 
-// Moving the data utilities to shared utils since they can be used by both frontend and backend
 import { useQuery } from '@tanstack/react-query';
 import { fetchMentors, fetchMentorById, fetchStartups } from '@/services/api';
+import { Mentor, Startup, MentorshipSession, UserPreferences } from '@/shared/types/models';
+import { getRecommendedMentors } from './matching-utils';
+import { adaptMentorFromApi, ensureCompletePreferences } from './adapter-utils';
 
 /**
  * Custom hook for fetching all mentors with caching
@@ -9,7 +11,11 @@ import { fetchMentors, fetchMentorById, fetchStartups } from '@/services/api';
 export const useMentorsData = () => {
   return useQuery({
     queryKey: ['mentors'],
-    queryFn: fetchMentors,
+    queryFn: async () => {
+      const apiMentors = await fetchMentors();
+      // Map API mentors to our model format
+      return apiMentors.map(adaptMentorFromApi);
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false
   });
@@ -21,7 +27,11 @@ export const useMentorsData = () => {
 export const useMentorData = (id: string) => {
   return useQuery({
     queryKey: ['mentor', id],
-    queryFn: () => fetchMentorById(id),
+    queryFn: async () => {
+      const apiMentor = await fetchMentorById(id);
+      // Convert API mentor to our model format
+      return adaptMentorFromApi(apiMentor);
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
     enabled: !!id
@@ -34,9 +44,36 @@ export const useMentorData = (id: string) => {
 export const useStartupsData = () => {
   return useQuery({
     queryKey: ['startups'],
-    queryFn: fetchStartups,
+    queryFn: async () => {
+      const startups = await fetchStartups();
+      // In a real app, you would adapt these startups to match your model
+      // For now, we'll return an empty array to simulate no data being available yet
+      return [] as Startup[];
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false
+  });
+};
+
+/**
+ * Custom hook for getting recommended mentors based on startup profile and preferences
+ */
+export const useRecommendedMentors = (startupId: string, preferences: Partial<UserPreferences>) => {
+  const { data: mentors, isLoading: mentorsLoading } = useMentorsData();
+  const { data: startups, isLoading: startupsLoading } = useStartupsData();
+  
+  return useQuery({
+    queryKey: ['recommended-mentors', startupId, preferences],
+    queryFn: () => {
+      const startup = startups?.find(s => s.id === startupId);
+      if (!startup || !mentors) return [];
+      
+      // Ensure we have complete preferences
+      const completePreferences = ensureCompletePreferences(preferences);
+      return getRecommendedMentors(mentors, startup, completePreferences);
+    },
+    enabled: !!startupId && !!mentors && !!startups && !mentorsLoading && !startupsLoading,
+    staleTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
@@ -88,4 +125,38 @@ export const timeFromNow = (dateString: string): string => {
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
   if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
   return `${Math.floor(diffInSeconds / 2592000)} months ago`;
+};
+
+/**
+ * Format duration in minutes to hours and minutes
+ */
+export const formatDuration = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  
+  if (hours === 0) return `${mins} min`;
+  if (mins === 0) return `${hours} hr`;
+  return `${hours} hr ${mins} min`;
+};
+
+/**
+ * Get session history for a user (either mentor or founder)
+ */
+export const useSessionHistory = (userId: string, role: 'mentor' | 'founder') => {
+  return useQuery({
+    queryKey: ['sessions', userId, role],
+    queryFn: () => fetchSessionHistory(userId, role),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!userId
+  });
+};
+
+// Mock function for fetching session history (to be replaced with actual API call)
+const fetchSessionHistory = async (userId: string, role: 'mentor' | 'founder'): Promise<MentorshipSession[]> => {
+  // This would be an API call in production
+  // For now, we'll return empty data in a production environment
+  console.log(`Fetching session history for ${role} with ID: ${userId}`);
+  
+  // In production, return empty array as we wait for real data
+  return [];
 };

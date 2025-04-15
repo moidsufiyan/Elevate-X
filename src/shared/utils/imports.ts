@@ -7,5 +7,6 @@ export * from '@/components/Card';
 
 // Re-export shared utils
 export * from '@/utils/data-utils';
+export * from '@/shared/utils/matching-utils';
 
 // Note: As we move more files, we'll need to update this file

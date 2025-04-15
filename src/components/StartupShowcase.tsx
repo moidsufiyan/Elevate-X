@@ -4,8 +4,10 @@ import { AnimatedSection } from "./AnimatedSection";
 import { StartupCard } from "./startup/StartupCard";
 import { Button } from "./Button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Loader } from "lucide-react";
+import { ArrowRight, Loader, Building } from "lucide-react";
 import { useStartups } from "@/hooks/use-startups";
+import { EmptyState } from "@/components/ui/empty-state";
+import { startupEmptyStates } from "@/shared/utils/empty-state-utils";
 
 // Number of startups to show on the homepage
 const MAX_STARTUPS_DISPLAY = 3;
@@ -52,6 +54,9 @@ export const StartupShowcase = () => {
     );
   }
 
+  // Check if there are any startups to display
+  const hasNoStartups = !startups || startups.length === 0;
+
   // Take only the first few startups to display on the homepage
   const displayedStartups = startups && startups.slice(0, MAX_STARTUPS_DISPLAY);
 
@@ -73,25 +78,39 @@ export const StartupShowcase = () => {
           </p>
         </AnimatedSection>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {displayedStartups && displayedStartups.map((startup, index) => (
-            <AnimatedSection
-              key={startup.id}
-              threshold={0.1}
-              delay={100 + index * 100}
-            >
-              <StartupCard startup={startup} />
+        {hasNoStartups ? (
+          <AnimatedSection threshold={0.1} delay={100} className="bg-white dark:bg-stargaze-900 rounded-xl p-8 shadow-sm border border-stargaze-100 dark:border-stargaze-800">
+            <EmptyState
+              icon={<Building className="h-10 w-10 text-primary/60" />}
+              title={startupEmptyStates.noStartupsAvailable.title}
+              description={startupEmptyStates.noStartupsAvailable.description}
+              actionLabel={startupEmptyStates.noStartupsAvailable.actionLabel}
+              onAction={() => window.location.href = "/add-startup"}
+            />
+          </AnimatedSection>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {displayedStartups.map((startup, index) => (
+                <AnimatedSection
+                  key={startup.id}
+                  threshold={0.1}
+                  delay={100 + index * 100}
+                >
+                  <StartupCard startup={startup} />
+                </AnimatedSection>
+              ))}
+            </div>
+            
+            <AnimatedSection threshold={0.1} delay={400} className="text-center mt-12">
+              <Link to="/startup-showcase">
+                <Button rightIcon={<ArrowRight className="h-4 w-4" />}>
+                  View All Startups ({startups ? startups.length : 0})
+                </Button>
+              </Link>
             </AnimatedSection>
-          ))}
-        </div>
-        
-        <AnimatedSection threshold={0.1} delay={400} className="text-center mt-12">
-          <Link to="/startup-showcase">
-            <Button rightIcon={<ArrowRight className="h-4 w-4" />}>
-              View All Startups ({startups ? startups.length : 0})
-            </Button>
-          </Link>
-        </AnimatedSection>
+          </>
+        )}
       </div>
     </section>
   );

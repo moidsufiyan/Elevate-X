@@ -4,9 +4,11 @@ import { AnimatedSection } from "./AnimatedSection";
 import { MentorCard } from "./MentorCard";
 import { Button } from "./Button";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Loader } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader, Users } from "lucide-react";
 import { useMentors } from "@/hooks/use-mentors";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
+import { mentorEmptyStates } from "@/shared/utils/empty-state-utils";
 
 export const MentorShowcase = () => {
   // For a real implementation, this would handle pagination or scrolling
@@ -63,7 +65,9 @@ export const MentorShowcase = () => {
     );
   }
   
-  // If we have mentors data, display them
+  // Empty state when no mentors are available
+  const hasNoMentors = !mentors || mentors.length === 0;
+  
   return (
     <section id="mentors" className="py-24 relative overflow-hidden">
       {/* Background Elements */}
@@ -80,60 +84,77 @@ export const MentorShowcase = () => {
           <p className="max-w-2xl mx-auto text-stargaze-600 dark:text-stargaze-300 text-lg">
             Connect with experienced professionals who are passionate about helping entrepreneurs succeed.
           </p>
-          <div className="flex flex-wrap justify-center gap-3 mt-6">
-            <Link to="/mentors">
-              <Button>Browse All Mentors</Button>
-            </Link>
-            <Link to="/mentorship-matching">
-              <Button variant="outline">Find Perfect Match</Button>
-            </Link>
-          </div>
+          
+          {!hasNoMentors && (
+            <div className="flex flex-wrap justify-center gap-3 mt-6">
+              <Link to="/mentors">
+                <Button>Browse All Mentors</Button>
+              </Link>
+              <Link to="/mentorship-matching">
+                <Button variant="outline">Find Perfect Match</Button>
+              </Link>
+            </div>
+          )}
         </AnimatedSection>
         
         <div className="relative">
-          {/* Mentors Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {mentors && mentors.slice(0, 4).map((mentor, index) => (
-              <AnimatedSection
-                key={mentor.id}
-                threshold={0.1}
-                delay={100 + index * 100}
-              >
-                <MentorCard mentor={mentor} />
-              </AnimatedSection>
-            ))}
-          </div>
-          
-          {/* Navigation Buttons - For larger implementations with more mentors */}
-          <div className="flex justify-center mt-12 space-x-4">
-            <Button
-              variant="outline"
-              size="sm"
-              leftIcon={<ChevronLeft className="h-4 w-4" />}
-              onClick={handlePrevSlide}
-              disabled={currentSlide === 0}
-              className="opacity-70 hover:opacity-100"
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              rightIcon={<ChevronRight className="h-4 w-4" />}
-              onClick={handleNextSlide}
-              disabled={currentSlide >= maxSlides}
-              className="opacity-70 hover:opacity-100"
-            >
-              Next
-            </Button>
-          </div>
-          
-          {/* View All Button */}
-          <div className="text-center mt-8">
-            <Link to="/mentors">
-              <Button>View All Mentors</Button>
-            </Link>
-          </div>
+          {hasNoMentors ? (
+            <AnimatedSection threshold={0.1} delay={100} className="bg-white dark:bg-stargaze-900 rounded-xl p-8 shadow-sm border border-stargaze-100 dark:border-stargaze-800">
+              <EmptyState
+                icon={<Users className="h-10 w-10 text-primary/60" />}
+                title={mentorEmptyStates.noMentorsAvailable.title}
+                description={mentorEmptyStates.noMentorsAvailable.description}
+                actionLabel={mentorEmptyStates.noMentorsAvailable.actionLabel}
+                onAction={() => window.location.href = "/apply-as-mentor"}
+              />
+            </AnimatedSection>
+          ) : (
+            <>
+              {/* Mentors Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                {mentors.slice(0, 4).map((mentor, index) => (
+                  <AnimatedSection
+                    key={mentor.id}
+                    threshold={0.1}
+                    delay={100 + index * 100}
+                  >
+                    <MentorCard mentor={mentor} />
+                  </AnimatedSection>
+                ))}
+              </div>
+              
+              {/* Navigation Buttons - For larger implementations with more mentors */}
+              <div className="flex justify-center mt-12 space-x-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  leftIcon={<ChevronLeft className="h-4 w-4" />}
+                  onClick={handlePrevSlide}
+                  disabled={currentSlide === 0}
+                  className="opacity-70 hover:opacity-100"
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  rightIcon={<ChevronRight className="h-4 w-4" />}
+                  onClick={handleNextSlide}
+                  disabled={currentSlide >= maxSlides}
+                  className="opacity-70 hover:opacity-100"
+                >
+                  Next
+                </Button>
+              </div>
+              
+              {/* View All Button */}
+              <div className="text-center mt-8">
+                <Link to="/mentors">
+                  <Button>View All Mentors</Button>
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
