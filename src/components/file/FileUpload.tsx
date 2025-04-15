@@ -1,264 +1,216 @@
 
-import React, { useState, useRef } from "react";
+import { useState, useRef, useCallback } from 'react';
 import { Button } from "@/components/Button";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription,
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { 
-  UploadCloud,
-  File,
-  FileText,
-  FilePdf,
-  FileImage,
-  Trash2,
-  AlertTriangle,
-  CheckCircle,
-  X
-} from "lucide-react";
 import { toast } from "sonner";
-import { EmptyState } from "@/components/ui/empty-state";
-import { fileEmptyStates } from "@/shared/utils/empty-state-utils";
+import { 
+  Upload, 
+  File, 
+  FileText, 
+  Image as ImageIcon, 
+  X, 
+  CheckCircle,
+  AlertCircle
+} from "lucide-react";
 
-// Maximum file size in bytes (5MB)
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+type FileUploadProps = {
+  onFileUpload?: (file: File) => Promise<void>;
+  acceptedTypes?: string[];
+  maxSizeMB?: number;
+  multiple?: boolean;
+  className?: string;
+  buttonLabel?: string;
+};
 
-// Allowed file types
-const ALLOWED_FILE_TYPES = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-powerpoint',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'image/jpeg',
-  'image/png',
-  'image/gif'
-];
-
-interface FileUploadProps {
-  sessionId?: string;
-  conversationId?: string;
-  onFileUploaded?: (fileUrl: string, fileName: string) => void;
-  maxFiles?: number;
-  showTitle?: boolean;
-}
-
-export function FileUpload({ 
-  sessionId, 
-  conversationId, 
-  onFileUploaded,
-  maxFiles = 5,
-  showTitle = true
-}: FileUploadProps) {
+const FileUpload = ({
+  onFileUpload,
+  acceptedTypes = ['.pdf', '.doc', '.docx', '.ppt', '.pptx', '.jpg', '.jpeg', '.png'],
+  maxSizeMB = 10,
+  multiple = false,
+  className = '',
+  buttonLabel = 'Upload File'
+}: FileUploadProps) => {
+  const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    
-    const selectedFiles = Array.from(e.target.files);
-    
-    // Validate file size and type
-    const validFiles = selectedFiles.filter(file => {
-      // Check file size
-      if (file.size > MAX_FILE_SIZE) {
-        toast.error(`${file.name} is too large. Maximum file size is 5MB.`);
-        return false;
-      }
-      
-      // Check file type
-      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-        toast.error(`${file.name} has an unsupported file format.`);
-        return false;
-      }
-      
-      return true;
-    });
-    
-    // Check if adding these files would exceed the max count
-    if (files.length + validFiles.length > maxFiles) {
-      toast.error(`You can only upload a maximum of ${maxFiles} files.`);
-      return;
-    }
-    
-    setFiles(prevFiles => [...prevFiles, ...validFiles]);
-    
-    // Reset the input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+
+  const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+  const getAcceptString = () => {
+    return acceptedTypes.join(',');
+  };
+
+  const getFileIcon = (type: string) => {
+    if (type.includes('image')) {
+      return <ImageIcon className="h-5 w-5 text-primary" />;
+    } else if (type.includes('pdf')) {
+      return <FileText className="h-5 w-5 text-red-500" />;
+    } else if (type.includes('word') || type.includes('doc')) {
+      return <FileText className="h-5 w-5 text-blue-500" />;
+    } else if (type.includes('presentation') || type.includes('powerpoint') || type.includes('ppt')) {
+      return <FileText className="h-5 w-5 text-orange-500" />;
+    } else {
+      return <File className="h-5 w-5 text-gray-500" />;
     }
   };
-  
+
+  const handleFileChange = useCallback(
+    async (selectedFiles: FileList | null) => {
+      if (!selectedFiles) return;
+      
+      const newFiles: File[] = [];
+      let hasErrors = false;
+      
+      Array.from(selectedFiles).forEach(file => {
+        // Check file type
+        const fileExtension = `.${file.name.split('.').pop()?.toLowerCase()}`;
+        const isAcceptedType = acceptedTypes.some(type => {
+          if (type.startsWith('.')) {
+            return fileExtension === type.toLowerCase();
+          }
+          return file.type.includes(type);
+        });
+        
+        if (!isAcceptedType) {
+          toast.error(`File type not allowed: ${file.name}`);
+          hasErrors = true;
+          return;
+        }
+        
+        // Check file size
+        if (file.size > maxSizeBytes) {
+          toast.error(`File too large: ${file.name}. Max size is ${maxSizeMB}MB`);
+          hasErrors = true;
+          return;
+        }
+        
+        newFiles.push(file);
+      });
+      
+      if (hasErrors) return;
+      
+      if (multiple) {
+        setFiles(prev => [...prev, ...newFiles]);
+      } else {
+        setFiles(newFiles.slice(0, 1));
+      }
+      
+      if (onFileUpload && newFiles.length > 0) {
+        setIsUploading(true);
+        try {
+          // In a real app, you would upload to your server or a service like Firebase/Cloudinary
+          await onFileUpload(newFiles[0]);
+          toast.success('File uploaded successfully!');
+        } catch (error) {
+          console.error('Error uploading file:', error);
+          toast.error('Error uploading file. Please try again.');
+        } finally {
+          setIsUploading(false);
+        }
+      }
+    },
+    [acceptedTypes, maxSizeBytes, maxSizeMB, multiple, onFileUpload]
+  );
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      handleFileChange(e.dataTransfer.files);
+    },
+    [handleFileChange]
+  );
+
   const removeFile = (index: number) => {
-    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+    setFiles(files.filter((_, i) => i !== index));
   };
-  
-  const uploadFiles = async () => {
-    if (files.length === 0) return;
-    
-    setUploading(true);
-    
-    // In a real implementation, upload each file to your backend/storage
-    // This is a simulated upload
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      
-      // Create a new progress entry for this file
-      setUploadProgress(prev => ({
-        ...prev,
-        [file.name]: 0
-      }));
-      
-      // Simulate a file upload with progress
-      for (let progress = 0; progress <= 100; progress += 10) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        setUploadProgress(prev => ({
-          ...prev,
-          [file.name]: progress
-        }));
-      }
-      
-      // In a real implementation, you'd get the file URL from your storage service
-      const fakeFileUrl = `https://storage.example.com/files/${Date.now()}-${file.name}`;
-      
-      if (onFileUploaded) {
-        onFileUploaded(fakeFileUrl, file.name);
-      }
-      
-      toast.success(`${file.name} uploaded successfully!`);
-    }
-    
-    // Clear the files list after upload
-    setFiles([]);
-    setUploading(false);
-    setUploadProgress({});
-  };
-  
-  const getFileIcon = (file: File) => {
-    const type = file.type;
-    
-    if (type.includes('pdf')) return <FilePdf className="h-5 w-5 text-red-500" />;
-    if (type.includes('word')) return <FileText className="h-5 w-5 text-blue-500" />;
-    if (type.includes('powerpoint')) return <FileText className="h-5 w-5 text-orange-500" />;
-    if (type.includes('image')) return <FileImage className="h-5 w-5 text-green-500" />;
-    
-    return <File className="h-5 w-5 text-gray-500" />;
-  };
-  
+
   return (
-    <Card>
-      {showTitle && (
-        <CardHeader>
-          <CardTitle>File Upload</CardTitle>
-          <CardDescription>
-            Share files with your mentors or founders (max 5MB per file)
-          </CardDescription>
-        </CardHeader>
-      )}
-      
-      <CardContent>
-        <div 
-          className="border-2 border-dashed border-primary/20 rounded-lg p-8 text-center hover:bg-primary/5 transition-colors cursor-pointer"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            multiple
-            onChange={handleFileChange}
-            disabled={uploading}
-          />
-          
-          <UploadCloud className="h-10 w-10 text-primary/50 mx-auto mb-4" />
-          
-          <h3 className="text-lg font-medium mb-1">
-            {uploading ? 'Uploading...' : 'Drag files here or click to browse'}
-          </h3>
-          
-          <p className="text-sm text-muted-foreground mb-2">
-            Supported formats: PDF, Word, PowerPoint, JPEG, PNG, GIF
-          </p>
-          
-          <p className="text-xs text-muted-foreground">
-            Max {maxFiles} files, up to 5MB each
-          </p>
-        </div>
+    <div className={`w-full ${className}`}>
+      <div
+        className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+          isDragging
+            ? 'border-primary bg-primary/5'
+            : 'border-gray-300 dark:border-gray-700 hover:border-primary/70'
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept={getAcceptString()}
+          multiple={multiple}
+          onChange={(e) => handleFileChange(e.target.files)}
+        />
         
-        {files.length > 0 && (
-          <div className="mt-6 space-y-3">
-            <h4 className="text-sm font-medium mb-2">Selected Files</h4>
-            
-            {files.map((file, index) => (
-              <div key={`${file.name}-${index}`} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                <div className="flex items-center space-x-3">
-                  {getFileIcon(file)}
-                  <div className="overflow-hidden">
-                    <p className="text-sm font-medium truncate max-w-[200px]">{file.name}</p>
-                    <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  {uploading && uploadProgress[file.name] !== undefined ? (
-                    <div className="w-24">
-                      <Progress value={uploadProgress[file.name]} className="h-2" />
-                    </div>
-                  ) : (
-                    <button 
-                      className="text-muted-foreground hover:text-destructive p-1 rounded-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeFile(index);
-                      }}
-                      disabled={uploading}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+        <div className="space-y-3 py-2">
+          <div className="flex justify-center">
+            <Upload className="h-10 w-10 text-gray-400 dark:text-gray-500" />
           </div>
-        )}
-        
-        {files.length === 0 && !uploading && (
-          <div className="mt-6">
-            <EmptyState
-              icon={<FileText className="h-6 w-6 text-muted-foreground" />}
-              title={fileEmptyStates.noFilesUploaded.title}
-              description={fileEmptyStates.noFilesUploaded.description}
-              size="sm"
-            />
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {isDragging ? 'Drop files here' : 'Drag files here or click to upload'}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {acceptedTypes.join(', ')} (Max {maxSizeMB}MB)
+            </p>
           </div>
-        )}
-      </CardContent>
-      
-      {files.length > 0 && (
-        <CardFooter className="flex justify-end space-x-2">
           <Button
             variant="outline"
-            disabled={uploading}
-            onClick={() => setFiles([])}
+            size="sm"
+            disabled={isUploading}
+            onClick={() => fileInputRef.current?.click()}
           >
-            Cancel
+            {isUploading ? 'Uploading...' : buttonLabel}
           </Button>
-          <Button
-            disabled={uploading || files.length === 0}
-            onClick={uploadFiles}
-          >
-            {uploading ? 'Uploading...' : 'Upload Files'}
-          </Button>
-        </CardFooter>
+        </div>
+      </div>
+
+      {files.length > 0 && (
+        <div className="mt-4 space-y-2">
+          {files.map((file, index) => (
+            <div
+              key={`${file.name}-${index}`}
+              className="flex items-center justify-between p-3 rounded-md bg-gray-50 dark:bg-gray-800"
+            >
+              <div className="flex items-center space-x-3">
+                {getFileIcon(file.type)}
+                <div className="truncate">
+                  <p className="text-sm font-medium truncate">{file.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                {isUploading ? (
+                  <div className="w-5 h-5 border-t-2 border-primary rounded-full animate-spin" />
+                ) : (
+                  <X
+                    className="h-5 w-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                    onClick={() => removeFile(index)}
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
-    </Card>
+    </div>
   );
-}
+};
+
+export default FileUpload;

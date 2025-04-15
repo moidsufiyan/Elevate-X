@@ -4,25 +4,10 @@ import { Button } from "./Button";
 import { Link } from "react-router-dom";
 import { MessageSquare, Star, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Mentor } from "@/shared/types/models";
 
 interface MentorCardProps {
-  mentor: {
-    id: string;
-    name: string;
-    role: string;
-    company: string;
-    expertise: string[];
-    image: string;
-    available: boolean;
-    bio?: string;
-    rating?: number;
-    sessions?: number;
-    tags?: string[];
-    badges?: {
-      label: string;
-      variant?: "default" | "secondary" | "destructive" | "outline";
-    }[];
-  };
+  mentor: Mentor;
   className?: string;
 }
 
@@ -41,17 +26,15 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
       <Link to={`/mentor/${mentor.id}`} className="block">
         <div className="relative aspect-[4/5] overflow-hidden">
           <img 
-            src={mentor.image} 
+            src={mentor.avatar} 
             alt={mentor.name} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          {mentor.available && (
-            <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-              Available
-            </div>
-          )}
+          <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
+            Available
+          </div>
           
-          {mentor.rating && (
+          {mentor.rating > 0 && (
             <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-stargaze-800/90 backdrop-blur-sm text-xs px-2 py-1 rounded-full shadow-md flex items-center gap-1">
               <Star className="h-3 w-3 text-amber-500" fill="currentColor" />
               <span className="text-stargaze-900 dark:text-white font-medium">{mentor.rating}</span>
@@ -62,18 +45,15 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
 
       {/* Content */}
       <div className="relative p-5">
-        {/* Badges (NEW) */}
-        {mentor.badges && mentor.badges.length > 0 && (
+        {/* Badge for Featured Mentors */}
+        {mentor.featured && (
           <div className="absolute -top-4 right-4 flex gap-2">
-            {mentor.badges.map((badge, index) => (
-              <Badge
-                key={index}
-                variant={badge.variant || "default"}
-                className="text-xs shadow-md"
-              >
-                {badge.label}
-              </Badge>
-            ))}
+            <Badge
+              variant="default"
+              className="text-xs shadow-md"
+            >
+              Featured
+            </Badge>
           </div>
         )}
 
@@ -82,23 +62,9 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
           <p className="text-stargaze-600 dark:text-stargaze-400 mb-2">{mentor.role} at {mentor.company}</p>
         </Link>
         
-        {/* Tags (NEW) - Display mentor tags if available */}
-        {mentor.tags && mentor.tags.length > 0 && (
-          <div className="mb-3 flex flex-wrap gap-1.5">
-            {mentor.tags.map((tag, index) => (
-              <span 
-                key={index} 
-                className="inline-block px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-        
         {/* Expertise Tags */}
         <div className="mb-4 flex flex-wrap gap-2">
-          {mentor.expertise.map((skill, index) => (
+          {mentor.expertise.slice(0, 3).map((skill, index) => (
             <span 
               key={index} 
               className="inline-block px-2 py-1 text-xs rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-700 dark:text-stargaze-300"
@@ -116,7 +82,7 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
         )}
         
         {/* Sessions Count (if provided) */}
-        {mentor.sessions && (
+        {mentor.sessions > 0 && (
           <div className="text-xs text-stargaze-500 dark:text-stargaze-400 mb-4">
             {mentor.sessions} mentoring sessions completed
           </div>

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { MentorCard } from "@/components/MentorCard";
-import { Search, Filter, Calendar, Star, ArrowRight, Loader } from "lucide-react";
+import { Search, Filter, Calendar, Star, ArrowRight, Loader, Users } from "lucide-react";
 import { useMentors } from "@/hooks/use-mentors";
 import { 
   Pagination, 
@@ -20,10 +20,12 @@ import {
   PaginationNext, 
   PaginationPrevious 
 } from "@/components/ui/pagination";
+import { EmptyState } from "@/components/ui/empty-state";
+import { mentorEmptyStates } from "@/shared/utils/empty-state-utils";
 
 // Filter options
 const expertiseOptions = ["All Expertise", "Marketing", "Sales", "Finance", "Operations", "Product", "Tech", "Design", "Leadership"];
-const availabilityOptions = ["Any Availability", "Available Now", "Available This Week", "Available Next Week"];
+const availabilityOptions = ["Any Availability", "Available This Week", "Available Next Week"];
 const industryOptions = ["All Industries", "SaaS", "FinTech", "Health Tech", "E-commerce", "Marketplaces", "AI/ML", "Consumer"];
 
 const ITEMS_PER_PAGE = 6;
@@ -53,13 +55,13 @@ const Mentors = () => {
       mentor.expertise.some(exp => exp.toLowerCase().includes(selectedExpertise.toLowerCase()));
     
     // Availability filter (basic implementation)
-    const matchesAvailability = 
-      selectedAvailability === "Any Availability" ||
-      (selectedAvailability === "Available Now" && mentor.available);
+    // In a real app, this would check actual availability data
+    const matchesAvailability = selectedAvailability === "Any Availability";
     
-    // Industry filter would be implemented similarly (using mentor.industries if that data existed)
-    // This is a simplified version
-    const matchesIndustry = selectedIndustry === "All Industries";
+    // Industry filter (basic implementation)
+    const matchesIndustry = 
+      selectedIndustry === "All Industries" ||
+      (mentor.industries && mentor.industries.some(ind => ind.toLowerCase().includes(selectedIndustry.toLowerCase())));
     
     return matchesSearch && matchesExpertise && matchesAvailability && matchesIndustry;
   }) : [];
@@ -350,24 +352,19 @@ const Mentors = () => {
               )}
             </>
           ) : (
-            <div className="text-center py-20 max-w-5xl mx-auto">
-              <p className="text-2xl font-medium text-stargaze-600 dark:text-stargaze-300">
-                No mentors match your filters
-              </p>
-              <p className="mt-2 text-stargaze-500">
-                Try adjusting your search criteria
-              </p>
-              <Button 
-                className="mt-6" 
-                onClick={() => {
+            <div className="bg-white dark:bg-stargaze-900 border border-stargaze-100 dark:border-stargaze-800 rounded-xl p-8 shadow-sm max-w-5xl mx-auto">
+              <EmptyState
+                icon={<Users className="h-10 w-10 text-primary/60" />}
+                title={mentorEmptyStates.noMentorsMatching.title}
+                description={mentorEmptyStates.noMentorsMatching.description}
+                actionLabel="Clear All Filters"
+                onAction={() => {
                   setSearchQuery("");
                   setSelectedExpertise("All Expertise");
                   setSelectedAvailability("Any Availability");
                   setSelectedIndustry("All Industries");
                 }}
-              >
-                Clear All Filters
-              </Button>
+              />
             </div>
           )}
         </div>
