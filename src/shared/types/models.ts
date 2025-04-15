@@ -15,6 +15,12 @@ export interface Mentor {
   availability: string[];
   hourlyRate: number;
   featured?: boolean;
+  // New fields for enhanced matching
+  industries?: string[];
+  startupStage?: string[];
+  languages?: string[];
+  mentorshipStyle?: string[];
+  maxStartups?: number;
   // Add any additional fields that might be needed from API
 }
 
@@ -99,10 +105,49 @@ export interface SessionFeedback {
   willRecommend?: boolean;
 }
 
-// User preferences for matching algorithm
+// Enhanced user preferences for matching algorithm
 export interface UserPreferences {
   skillsNeeded: string[];
   goals: string[];
   availability: string[];
   industries: string[];
+  startupStage?: string;
+  preferredLanguages?: string[];
+  preferredMentorshipStyle?: string[];
+  locationPreference?: 'local' | 'remote' | 'any';
+  sessionFrequency?: 'weekly' | 'biweekly' | 'monthly';
+  budgetRange?: {
+    min: number;
+    max: number;
+  };
+}
+
+// New interfaces for booking system
+export interface AvailabilitySlot {
+  id: string;
+  mentorId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  isBooked: boolean;
+  sessionId?: string;
+  recurrence?: 'once' | 'weekly' | 'biweekly' | 'monthly';
+}
+
+export interface Booking {
+  id: string;
+  slotId: string;
+  mentorId: string;
+  founderId: string;
+  startupId?: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: 'confirmed' | 'cancelled' | 'rescheduled' | 'completed';
+  topic?: string;
+  notes?: string;
+  meetingLink?: string;
+  meetingType: 'video' | 'audio' | 'in-person';
+  createdAt: string;
+  updatedAt: string;
 }
