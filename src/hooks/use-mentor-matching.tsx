@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Mentor, Startup, UserPreferences } from "@/shared/types/models";
 import { findMentorMatches } from "@/shared/utils/matching-utils";
+import { ensureCompletePreferences } from "@/shared/utils/adapter-utils";
 import { toast } from "sonner";
 
 const STORAGE_KEY = "elevate-x-matching-preferences";
@@ -57,7 +58,11 @@ export const useMentorMatching = ({ userId, startup, mentors = [] }: UseMentorMa
   
   // Save user preferences mutation
   const { mutate: savePreferences, isPending: isSaving } = useMutation({
-    mutationFn: (newPreferences: UserPreferences) => savePreferencesToApi(userId, newPreferences),
+    mutationFn: (newPreferences: Partial<UserPreferences>) => {
+      // Ensure we have all required fields
+      const completePreferences = ensureCompletePreferences(newPreferences);
+      return savePreferencesToApi(userId, completePreferences);
+    },
     onSuccess: (savedPreferences) => {
       queryClient.setQueryData(['matching-preferences', userId], savedPreferences);
       toast.success("Preferences saved successfully");

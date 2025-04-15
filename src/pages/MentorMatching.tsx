@@ -11,33 +11,29 @@ import { Startup, UserPreferences } from "@/shared/types/models";
 import { useMentorMatching } from "@/hooks/use-mentor-matching";
 import { useMentors } from "@/hooks/use-mentors";
 import { SearchX, Sparkles, Settings, ListFilter } from "lucide-react";
+import { ensureCompletePreferences } from "@/shared/utils/adapter-utils";
 
-// Mock user and startup for demo purposes
+// For demonstration - in production this would come from the user's profile
 const MOCK_USER_ID = "user-1";
 const MOCK_STARTUP: Startup = {
   id: "startup-1",
-  name: "EcoHarvest",
-  description: "Sustainable farming solutions using IoT and AI to optimize crop yields while reducing environmental impact.",
-  industry: "AgTech",
+  name: "Your Startup",
+  description: "Complete your startup profile to see personalized mentor matches.",
+  industry: "",
   stage: "Seed",
-  foundingYear: 2022,
-  logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3603?auto=format&fit=crop&w=1074&q=80",
+  foundingYear: new Date().getFullYear(),
+  logo: "https://via.placeholder.com/150?text=Your+Logo",
   founders: [
     {
-      name: "Alex Johnson",
+      name: "Founder",
       role: "CEO",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=1170&q=80"
-    },
-    {
-      name: "Sarah Chen",
-      role: "CTO",
-      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=776&q=80"
+      avatar: "https://via.placeholder.com/150?text=You"
     }
   ],
-  location: "California, USA",
-  funding: "Pre-seed",
-  employees: 8,
-  website: "https://ecoharvest.io"
+  location: "",
+  funding: "",
+  employees: 1,
+  website: ""
 };
 
 const MentorMatching = () => {
@@ -56,7 +52,7 @@ const MentorMatching = () => {
     mentors: mentors || []
   });
   
-  const handleSavePreferences = (newPreferences: UserPreferences) => {
+  const handleSavePreferences = (newPreferences: Partial<UserPreferences>) => {
     savePreferences(newPreferences);
     setActiveTab("matches");
   };
@@ -128,7 +124,7 @@ const MentorMatching = () => {
                               We're analyzing your profile and preferences to identify the best mentors for your needs
                             </p>
                           </div>
-                        ) : matchingResults.length > 0 ? (
+                        ) : matchingResults && matchingResults.length > 0 ? (
                           <div className="space-y-6 mt-6">
                             {matchingResults.map(({ mentor, matchScore }) => (
                               <div 

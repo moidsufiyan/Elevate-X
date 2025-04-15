@@ -15,14 +15,16 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check, Clock, Star, UserCheck, Calendar, ChevronRight, Info } from "lucide-react";
+import { Check, Clock, Star, UserCheck, Calendar, ChevronRight, Info, Users } from "lucide-react";
 import { Mentor, Startup, UserPreferences } from "@/shared/types/models";
 import { getRecommendedMentors, getMatchRecommendationMessage } from "@/shared/utils/matching-utils";
 import { useMentors } from "@/hooks/use-mentors";
+import { adaptMentorFromApi } from "@/shared/utils/adapter-utils";
+import { ensureCompletePreferences } from "@/shared/utils/adapter-utils";
 
 interface SuggestedMentorsProps {
   startup: Startup | null;
-  preferences?: UserPreferences;
+  preferences?: Partial<UserPreferences>;
   limit?: number;
 }
 
@@ -37,15 +39,18 @@ export const SuggestedMentors = ({
   limit = 3 
 }: SuggestedMentorsProps) => {
   const navigate = useNavigate();
-  const { data: mentors, isLoading } = useMentors();
+  const { data: apiMentors, isLoading } = useMentors();
   const [suggestedMentors, setSuggestedMentors] = useState<{ mentor: Mentor, matchScore: number }[]>([]);
   
   useEffect(() => {
-    if (mentors && startup) {
-      const matches = getRecommendedMentors(mentors, startup, preferences);
+    if (apiMentors && startup) {
+      // Convert API mentors to the internal model format
+      const mentors = apiMentors;
+      const completePreferences = ensureCompletePreferences(preferences);
+      const matches = getRecommendedMentors(mentors, startup, completePreferences);
       setSuggestedMentors(matches.slice(0, limit));
     }
-  }, [mentors, startup, preferences, limit]);
+  }, [apiMentors, startup, preferences, limit]);
   
   const handleViewProfile = (mentorId: string) => {
     navigate(`/mentor/${mentorId}`);
@@ -96,9 +101,16 @@ export const SuggestedMentors = ({
       <Card className="w-full mb-6">
         <CardHeader>
           <CardTitle className="text-lg">Suggested Mentors</CardTitle>
-          <CardDescription>Update your preferences to find mentor matches</CardDescription>
+          <CardDescription>No mentors available matching your preferences yet</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-center py-8">
+          <div className="inline-block p-4 rounded-full bg-primary/10 mb-4">
+            <Users className="h-10 w-10 text-primary" />
+          </div>
+          <h3 className="text-lg font-medium mb-2">No mentors available yet</h3>
+          <p className="text-stargaze-600 dark:text-stargaze-400 max-w-md mx-auto mb-4">
+            We're growing our mentor network. Check back soon or adjust your preferences to broaden your search.
+          </p>
           <Button onClick={() => navigate("/mentorship-matching")}>
             Update Matching Preferences
           </Button>

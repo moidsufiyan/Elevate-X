@@ -1,57 +1,8 @@
-
-// Moving the data utilities to shared utils since they can be used by both frontend and backend
 import { useQuery } from '@tanstack/react-query';
 import { fetchMentors, fetchMentorById, fetchStartups } from '@/services/api';
 import { Mentor, Startup, MentorshipSession, UserPreferences } from '@/shared/types/models';
 import { getRecommendedMentors } from './matching-utils';
-
-/**
- * Adapter function to convert API Mentor to Model Mentor
- */
-const adaptMentorFromApi = (apiMentor: any): Mentor => {
-  return {
-    id: apiMentor.id,
-    name: apiMentor.name,
-    role: apiMentor.role,
-    expertise: apiMentor.expertise || [],
-    company: apiMentor.company,
-    bio: apiMentor.bio || '',
-    avatar: apiMentor.image || apiMentor.avatar || 'https://via.placeholder.com/150',
-    rating: apiMentor.rating || 0,
-    reviews: apiMentor.reviewCount || 0,
-    sessions: apiMentor.sessions || 0,
-    availability: apiMentor.availableTimes ? [apiMentor.availableTimes] : ['Flexible'],
-    hourlyRate: 100, // Default value if not provided by API
-    featured: apiMentor.badges?.some((b: any) => b.label === 'Featured') || false
-  };
-};
-
-/**
- * Adapter function to convert API Startup to Model Startup
- */
-const adaptStartupFromApi = (apiStartup: any): Startup => {
-  return {
-    id: apiStartup.id,
-    name: apiStartup.name,
-    description: apiStartup.shortPitch || apiStartup.description || '',
-    industry: apiStartup.industry,
-    stage: apiStartup.fundingStage || 'Seed',
-    foundingYear: new Date().getFullYear() - 1, // Default if not provided
-    logo: apiStartup.logo,
-    founders: [
-      {
-        name: 'Founder', // Default values since API doesn't provide founder details
-        role: 'CEO',
-        avatar: 'https://via.placeholder.com/150'
-      }
-    ],
-    location: apiStartup.location || 'Global',
-    funding: apiStartup.funding || 'Bootstrapped',
-    employees: apiStartup.employees || 1,
-    website: apiStartup.website || `https://${apiStartup.name.toLowerCase().replace(/\s/g, '')}.com`,
-    featured: apiStartup.featured || false
-  };
-};
+import { adaptMentorFromApi, ensureCompletePreferences } from './adapter-utils';
 
 /**
  * Custom hook for fetching all mentors with caching
@@ -94,8 +45,8 @@ export const useStartupsData = () => {
     queryKey: ['startups'],
     queryFn: async () => {
       const apiStartups = await fetchStartups();
-      // Map API startups to our model format
-      return apiStartups.map(adaptStartupFromApi);
+      // Map API startups to our model format - implement adapter if needed
+      return apiStartups;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false
@@ -115,7 +66,9 @@ export const useRecommendedMentors = (startupId: string, preferences: Partial<Us
       const startup = startups?.find(s => s.id === startupId);
       if (!startup || !mentors) return [];
       
-      return getRecommendedMentors(mentors, startup, preferences);
+      // Ensure we have complete preferences
+      const completePreferences = ensureCompletePreferences(preferences);
+      return getRecommendedMentors(mentors, startup, completePreferences);
     },
     enabled: !!startupId && !!mentors && !!startups && !mentorsLoading && !startupsLoading,
     staleTime: 10 * 60 * 1000, // 10 minutes
@@ -199,60 +152,9 @@ export const useSessionHistory = (userId: string, role: 'mentor' | 'founder') =>
 // Mock function for fetching session history (to be replaced with actual API call)
 const fetchSessionHistory = async (userId: string, role: 'mentor' | 'founder'): Promise<MentorshipSession[]> => {
   // This would be an API call in production
-  // For now, we'll return mock data
+  // For now, we'll return empty data in a production environment
   console.log(`Fetching session history for ${role} with ID: ${userId}`);
   
-  // Mock data - would come from the API
-  const mockSessions: MentorshipSession[] = [
-    {
-      id: '1',
-      mentorId: role === 'mentor' ? userId : 'mentor-1',
-      founderId: role === 'founder' ? userId : 'founder-1',
-      startupId: 'startup-1',
-      title: 'Initial Business Strategy Session',
-      date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week ago
-      duration: 60,
-      status: 'completed',
-      summary: 'Discussed business model and go-to-market strategy',
-      founderNotes: 'Need to refine customer acquisition strategy',
-      mentorNotes: 'Founder should focus on validating core assumptions',
-      founderFeedback: {
-        rating: 5,
-        comments: 'Very insightful session, helped clarify our direction',
-        willRecommend: true
-      }
-    },
-    {
-      id: '2',
-      mentorId: role === 'mentor' ? userId : 'mentor-2',
-      founderId: role === 'founder' ? userId : 'founder-1',
-      startupId: 'startup-1',
-      title: 'Fundraising Preparation',
-      date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
-      duration: 90,
-      status: 'completed',
-      summary: 'Reviewed pitch deck and fundraising strategy',
-      founderNotes: 'Need to strengthen the financial projections section',
-      founderFeedback: {
-        rating: 4,
-        comments: 'Great feedback on the pitch deck',
-        willRecommend: true
-      }
-    },
-    {
-      id: '3',
-      mentorId: role === 'mentor' ? userId : 'mentor-1',
-      founderId: role === 'founder' ? userId : 'founder-1',
-      startupId: 'startup-1',
-      title: 'Technical Architecture Review',
-      date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days in future
-      duration: 60,
-      status: 'scheduled'
-    }
-  ];
-  
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  return mockSessions;
+  // In production, return empty array as we wait for real data
+  return [];
 };
