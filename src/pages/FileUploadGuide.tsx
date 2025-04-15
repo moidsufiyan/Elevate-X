@@ -6,7 +6,7 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 import { SEO } from "@/components/SEO";
 import { FileUp, Check, X, Image, FileText, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/Button"; // Changed to use the custom Button component
+import { Button } from "@/components/Button"; // Using the custom Button component
 
 const FileUploadGuide = () => {
   const [activeTab, setActiveTab] = useState<'intro' | 'howto' | 'formats'>('intro');
