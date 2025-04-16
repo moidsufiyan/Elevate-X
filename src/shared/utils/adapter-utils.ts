@@ -1,5 +1,5 @@
 
-import { Mentor as ApiMentor } from "@/services/api";
+import { ApiMentor } from "@/services/api";
 import { Mentor, Startup, UserPreferences } from "@/shared/types/models";
 
 /**
@@ -26,6 +26,27 @@ export const adaptMentorFromApi = (apiMentor: ApiMentor): Mentor => {
     languages: ['English'],
     mentorshipStyle: ['One-on-one'],
     maxStartups: 5
+  };
+};
+
+/**
+ * Converts API startup format to the application's internal Startup model
+ */
+export const adaptStartupFromApi = (apiStartup: any): Startup => {
+  return {
+    id: apiStartup.id,
+    name: apiStartup.name,
+    description: apiStartup.shortPitch || '',
+    industry: apiStartup.industry,
+    stage: apiStartup.fundingStage,
+    foundingYear: new Date().getFullYear(), // Default if not provided
+    logo: apiStartup.logo || 'https://via.placeholder.com/150',
+    founders: [],
+    location: apiStartup.location,
+    funding: 'Unknown',
+    employees: 0,
+    website: '',
+    featured: false
   };
 };
 

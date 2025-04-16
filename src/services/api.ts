@@ -1,12 +1,46 @@
 
 // API service for data fetching
 import { toast } from "sonner";
-import { Mentor, Startup } from "@/shared/types/models";
+import { Mentor as MentorModel, Startup as StartupModel } from "@/shared/types/models";
 
 // Base URL for API requests - update this with your production API URL
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? "https://api.elevatex.com/v1" 
   : "https://api-staging.elevatex.com/v1";
+
+// API Types that match the incoming data format
+export interface ApiMentor {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  expertise: string[];
+  image: string;
+  available: boolean;
+  bio?: string;
+  rating?: number;
+  sessions?: number;
+  tags?: string[];
+  badges?: {
+    label: string;
+    variant?: "default" | "secondary" | "destructive" | "outline";
+  }[];
+  reviewCount?: number;
+  availableTimes?: string;
+}
+
+// API Startup interface
+export interface ApiStartup {
+  id: string;
+  name: string;
+  logo: string;
+  industry: string;
+  location: string;
+  fundingStage: string;
+  shortPitch: string;
+  interestedCount: number;
+  tags: string[];
+}
 
 // Error handling with proper user feedback
 const handleApiError = (error: unknown, fallbackMessage: string) => {
@@ -23,7 +57,7 @@ const handleApiError = (error: unknown, fallbackMessage: string) => {
 // API functions
 
 // Fetch all mentors
-export const fetchMentors = async (): Promise<Mentor[]> => {
+export const fetchMentors = async (): Promise<ApiMentor[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/mentors`);
     
@@ -41,7 +75,7 @@ export const fetchMentors = async (): Promise<Mentor[]> => {
 };
 
 // Fetch a single mentor by ID
-export const fetchMentorById = async (id: string): Promise<Mentor | null> => {
+export const fetchMentorById = async (id: string): Promise<ApiMentor | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/mentors/${id}`);
     
@@ -57,7 +91,7 @@ export const fetchMentorById = async (id: string): Promise<Mentor | null> => {
 };
 
 // Fetch all startups
-export const fetchStartups = async (): Promise<Startup[]> => {
+export const fetchStartups = async (): Promise<ApiStartup[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/startups`);
     

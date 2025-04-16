@@ -7,26 +7,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Startup } from "@/shared/types/models";
 
 interface StartupCardProps {
-  startup: {
-    id: string;
-    name: string;
-    logo: string;
-    industry: string;
-    location: string;
-    fundingStage: string;
-    shortPitch: string;
-    interestedCount: number;
-    tags: string[];
-  };
+  startup: Startup;
   className?: string;
 }
 
 export const StartupCard = ({ startup, className }: StartupCardProps) => {
   const [isInterested, setIsInterested] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [interestedCount, setInterestedCount] = useState(startup.interestedCount);
+  const [interestedCount, setInterestedCount] = useState(0); // Default to 0 if not provided
   const { toast } = useToast();
   
   const handleInterestClick = () => {
@@ -39,7 +30,7 @@ export const StartupCard = ({ startup, className }: StartupCardProps) => {
       });
     } else {
       setIsInterested(false);
-      setInterestedCount(prevCount => prevCount - 1);
+      setInterestedCount(prevCount => Math.max(0, prevCount - 1));
       toast({
         title: "Interest Removed",
         description: `You've removed your interest in ${startup.name}.`,
@@ -93,7 +84,7 @@ export const StartupCard = ({ startup, className }: StartupCardProps) => {
               <span>•</span>
               <div className="flex items-center gap-1">
                 <TrendingUp className="h-3 w-3" />
-                <span>{startup.fundingStage}</span>
+                <span>{startup.stage}</span>
               </div>
             </div>
           </div>
@@ -105,11 +96,12 @@ export const StartupCard = ({ startup, className }: StartupCardProps) => {
       
       <CardContent className="pb-4 flex-grow">
         <p className="text-sm text-stargaze-600 dark:text-stargaze-300 line-clamp-3">
-          {startup.shortPitch}
+          {startup.description}
         </p>
         
         <div className="flex flex-wrap gap-1.5 mt-4">
-          {startup.tags.map((tag, index) => (
+          {/* If no tags are available, show industry as a tag */}
+          {[startup.industry].map((tag, index) => (
             <span 
               key={index} 
               className="inline-block px-2 py-1 text-xs rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-700 dark:text-stargaze-300"

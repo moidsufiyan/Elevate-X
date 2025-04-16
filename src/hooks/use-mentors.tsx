@@ -1,6 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchMentors, fetchMentorById, Mentor as ApiMentor } from "@/services/api";
+import { fetchMentors, fetchMentorById, ApiMentor } from "@/services/api";
 import { adaptMentorFromApi } from "@/shared/utils/adapter-utils";
 import { Mentor } from "@/shared/types/models";
 
@@ -21,6 +21,7 @@ export function useMentor(id: string) {
     queryKey: ["mentor", id],
     queryFn: async () => {
       const apiMentor = await fetchMentorById(id);
+      if (!apiMentor) return null;
       return adaptMentorFromApi(apiMentor);
     },
     enabled: !!id, // Only run the query if an ID is provided
