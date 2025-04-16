@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,11 +14,13 @@ import {
   EyeIcon, 
   EyeOffIcon, 
   GithubIcon, 
-  MailIcon, // Using MailIcon instead of GoogleIcon
+  MailIcon,
   LinkedinIcon,
   ArrowLeft,
   Loader2
 } from "lucide-react";
+import { loginUser, signupUser } from "@/services/api";
+import { useAuth } from "@/components/auth/AuthContext";
 
 // Form validation schemas
 const loginSchema = z.object({
@@ -45,6 +47,11 @@ const Auth = () => {
   const [accountType, setAccountType] = useState<"founder" | "mentor" | "investor">("founder");
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { refreshUser } = useAuth();
+  
+  // Get the "from" location from state, or default to "/"
+  const from = (location.state as any)?.from?.pathname || "/";
   
   // Form state
   const [loginForm, setLoginForm] = useState({
@@ -103,16 +110,22 @@ const Auth = () => {
       // Validate form
       loginSchema.parse(loginForm);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call API to login
+      const response = await loginUser(loginForm);
       
-      // Show success and redirect
-      toast({
-        title: "Login successful",
-        description: "Redirecting you to the dashboard...",
-      });
-      
-      navigate("/profile");
+      if (response.success) {
+        // Refresh user context
+        await refreshUser();
+        
+        // Show success and redirect
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+        });
+        
+        // Redirect to the page the user was trying to access, or fallback to profile
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Format Zod validation errors
@@ -123,11 +136,11 @@ const Auth = () => {
           }
         });
         setLoginErrors(formattedErrors);
-      } else {
-        // Handle API errors or other issues
+      } else if (error instanceof Error) {
+        // Handle API errors
         toast({
           title: "Login failed",
-          description: "Invalid email or password. Please try again.",
+          description: error.message || "Invalid email or password. Please try again.",
           variant: "destructive",
         });
       }
@@ -151,22 +164,27 @@ const Auth = () => {
       // Validate form
       signupSchema.parse(formWithAccountType);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call API to signup
+      const response = await signupUser(formWithAccountType);
       
-      // Show success and redirect
-      toast({
-        title: "Account created successfully",
-        description: "Redirecting you to complete your profile...",
-      });
-      
-      // Redirect based on account type
-      if (accountType === "founder") {
-        navigate("/startup-profile");
-      } else if (accountType === "mentor") {
-        navigate("/mentor-profile");
-      } else {
-        navigate("/profile");
+      if (response.success) {
+        // Refresh user context
+        await refreshUser();
+        
+        // Show success and redirect
+        toast({
+          title: "Account created successfully",
+          description: "Welcome to our platform!",
+        });
+        
+        // Redirect based on account type
+        if (accountType === "founder") {
+          navigate("/startup-profile", { replace: true });
+        } else if (accountType === "mentor") {
+          navigate("/mentor-profile", { replace: true });
+        } else {
+          navigate("/profile", { replace: true });
+        }
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -178,11 +196,11 @@ const Auth = () => {
           }
         });
         setSignupErrors(formattedErrors);
-      } else {
-        // Handle API errors or other issues
+      } else if (error instanceof Error) {
+        // Handle API errors
         toast({
           title: "Signup failed",
-          description: "There was an error creating your account. Please try again.",
+          description: error.message || "There was an error creating your account. Please try again.",
           variant: "destructive",
         });
       }

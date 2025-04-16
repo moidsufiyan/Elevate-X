@@ -26,13 +26,19 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
       <Link to={`/mentor/${mentor.id}`} className="block">
         <div className="relative aspect-[4/5] overflow-hidden">
           <img 
-            src={mentor.avatar} 
+            src={mentor.avatar || "/placeholder.svg"}
             alt={mentor.name} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = "/placeholder.svg";
+            }}
           />
-          <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-            Available
-          </div>
+          {mentor.availability && mentor.availability.length > 0 && (
+            <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
+              Available
+            </div>
+          )}
           
           {mentor.rating > 0 && (
             <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-stargaze-800/90 backdrop-blur-sm text-xs px-2 py-1 rounded-full shadow-md flex items-center gap-1">
@@ -63,16 +69,18 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
         </Link>
         
         {/* Expertise Tags */}
-        <div className="mb-4 flex flex-wrap gap-2">
-          {mentor.expertise.slice(0, 3).map((skill, index) => (
-            <span 
-              key={index} 
-              className="inline-block px-2 py-1 text-xs rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-700 dark:text-stargaze-300"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
+        {mentor.expertise && mentor.expertise.length > 0 && (
+          <div className="mb-4 flex flex-wrap gap-2">
+            {mentor.expertise.slice(0, 3).map((skill, index) => (
+              <span 
+                key={index} 
+                className="inline-block px-2 py-1 text-xs rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-700 dark:text-stargaze-300"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
         
         {/* Bio (if provided) */}
         {mentor.bio && (

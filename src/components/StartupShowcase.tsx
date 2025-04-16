@@ -57,9 +57,6 @@ export const StartupShowcase = () => {
   // Check if there are any startups to display
   const hasNoStartups = !startups || startups.length === 0;
 
-  // Take only the first few startups to display on the homepage
-  const displayedStartups = startups && startups.slice(0, MAX_STARTUPS_DISPLAY);
-
   return (
     <section id="startups" className="py-24 relative overflow-hidden">
       {/* Background Elements */}
@@ -91,7 +88,7 @@ export const StartupShowcase = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {displayedStartups.map((startup, index) => (
+              {startups.slice(0, MAX_STARTUPS_DISPLAY).map((startup, index) => (
                 <AnimatedSection
                   key={startup.id}
                   threshold={0.1}
