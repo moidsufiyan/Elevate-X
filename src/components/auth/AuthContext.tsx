@@ -39,7 +39,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Demo User',
         email: 'demo@example.com',
         role: 'founder', // Default role for demo
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        avatar: '' // Adding the missing avatar property
       };
       setUser(mockUser);
     } catch (error) {
