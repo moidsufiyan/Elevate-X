@@ -28,13 +28,20 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const fetchUser = async () => {
     try {
       setLoading(true);
-      const userData = await getCurrentUser();
-      setUser(userData);
+      // Auto-authenticate with a mock user for demo purposes
+      const mockUser: User = {
+        id: 'demo-user-id',
+        name: 'Demo User',
+        email: 'demo@example.com',
+        role: 'founder', // Default role for demo
+        createdAt: new Date().toISOString()
+      };
+      setUser(mockUser);
     } catch (error) {
       console.error('Error fetching user data:', error);
       setUser(null);
@@ -59,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const value = {
     user,
     loading,
-    isAuthenticated: !!user,
+    isAuthenticated: true, // Always authenticated for demo purposes
     logout,
     refreshUser,
   };

@@ -39,18 +39,18 @@ const Documentation = () => {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection threshold={0.1} className="mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-elevate-900 dark:text-white mb-4">
             Documentation
           </h1>
-          <p className="text-xl text-stargaze-600 dark:text-stargaze-300 mb-8">
+          <p className="text-xl text-elevate-600 dark:text-elevate-300 mb-8">
             Access comprehensive resources designed specifically for Indian startups
           </p>
           <div className="relative">
-            <Search className="absolute left-4 top-3.5 h-5 w-5 text-stargaze-400" />
+            <Search className="absolute left-4 top-3.5 h-5 w-5 text-elevate-400" />
             <input 
               type="text" 
               placeholder="Search documentation..." 
-              className="w-full md:w-2/3 pl-11 pr-4 py-3 rounded-lg border border-stargaze-200 dark:border-stargaze-700 bg-white dark:bg-stargaze-900"
+              className="w-full md:w-2/3 pl-11 pr-4 py-3 rounded-lg border border-elevate-200 dark:border-elevate-700 bg-white dark:bg-elevate-900"
             />
           </div>
         </AnimatedSection>
@@ -64,14 +64,14 @@ const Documentation = () => {
                 {category.icon}
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-stargaze-900 dark:text-white">{category.title}</h2>
-                <p className="text-stargaze-600 dark:text-stargaze-400">{category.description}</p>
+                <h2 className="text-2xl font-bold text-elevate-900 dark:text-white">{category.title}</h2>
+                <p className="text-elevate-600 dark:text-elevate-400">{category.description}</p>
               </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
               {category.resources.map((resource, idx) => (
-                <div key={idx} className="border border-stargaze-200 dark:border-stargaze-700 rounded-lg p-4 bg-white dark:bg-stargaze-900 flex justify-between items-center">
+                <div key={idx} className="border border-elevate-200 dark:border-elevate-700 rounded-lg p-4 bg-white dark:bg-elevate-900 flex justify-between items-center">
                   <p className="font-medium">{resource.title}</p>
                   <Button variant="outline" size="sm" className="flex items-center gap-2">
                     <FileDown className="h-4 w-4" />
