@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Helmet } from "react-helmet";
 
@@ -6,45 +5,32 @@ interface SEOProps {
   title?: string;
   description?: string;
   keywords?: string;
-  ogImage?: string;
-  ogUrl?: string;
-  ogType?: string;
-  twitterCard?: string;
+  image?: string;
+  url?: string;
 }
 
-export const SEO: React.FC<SEOProps> = ({
-  title = "Elevate X | Connect with Expert Startup Mentors",
-  description = "Get guidance from experienced startup mentors. Book sessions, access resources, and accelerate your entrepreneurial journey.",
-  keywords = "startup mentors, mentorship, entrepreneurship, founder coaching, startup advice",
-  ogImage = "/og-image.jpg",
-  ogUrl,
-  ogType = "website",
-  twitterCard = "summary_large_image"
-}) => {
-  const siteUrl = ogUrl || "https://yourwebsite.com";
-  const fullTitle = title.includes("Elevate X") ? title : `${title} | Elevate X`;
-
+export const SEO = ({
+  title = "Elevate-X - Connect with Expert Mentors",
+  description = "Elevate-X is a platform connecting startups with expert mentors to help them grow and succeed.",
+  keywords = "mentorship, startup, entrepreneur, business, growth, networking",
+  image = "/og-image.jpg",
+  url = "https://elevate-x.com",
+}: SEOProps) => {
   return (
     <Helmet>
-      <title>{fullTitle}</title>
+      <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
-      
-      {/* Open Graph tags */}
-      <meta property="og:type" content={ogType} />
-      <meta property="og:url" content={siteUrl} />
-      <meta property="og:title" content={fullTitle} />
+      <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={ogImage} />
-      
-      {/* Twitter tags */}
-      <meta name="twitter:card" content={twitterCard} />
-      <meta name="twitter:title" content={fullTitle} />
+      <meta property="og:image" content={image} />
+      <meta property="og:url" content={url} />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
-      
-      {/* Canonical link */}
-      <link rel="canonical" href={siteUrl} />
+      <meta name="twitter:image" content={image} />
+      <link rel="canonical" href={url} />
     </Helmet>
   );
 };

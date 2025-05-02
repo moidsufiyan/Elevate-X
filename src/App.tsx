@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SEO } from "@/components/SEO";
-import { AuthProvider } from "@/components/auth/AuthContext";
+import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 // Import pages from the new directory structure when possible
@@ -24,8 +24,8 @@ import FounderDashboard from "./pages/FounderDashboard";
 import MentorshipMatching from "./pages/MentorshipMatching";
 import Communities from "./pages/Communities";
 import StartupShowcase from "./pages/StartupShowcase";
-import NotFound from "./pages/NotFound";
-import Unauthorized from "./pages/Unauthorized";
+import { NotFound } from "./pages/NotFound";
+import { Unauthorized } from "./pages/Unauthorized";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Careers from "./pages/Careers";
@@ -77,115 +77,126 @@ function App() {
               <Route path="/auth" element={<Auth />} />
               <Route path="/startup-showcase" element={<StartupShowcase />} />
               <Route path="/unauthorized" element={<Unauthorized />} />
-              
+
               {/* New Resources Subpages */}
-              <Route path="/resources/documentation" element={<Documentation />} />
+              <Route
+                path="/resources/documentation"
+                element={<Documentation />}
+              />
               <Route path="/resources/guides" element={<Guides />} />
               <Route path="/resources/faqs" element={<FAQs />} />
-              <Route path="/resources/success-stories" element={<SuccessStories />} />
+              <Route
+                path="/resources/success-stories"
+                element={<SuccessStories />}
+              />
               <Route path="/resources/events" element={<Events />} />
-              
+
               {/* Protected Routes */}
-              <Route 
-                path="/mentor/:id/book" 
+              <Route
+                path="/mentor/:id/book"
                 element={
                   <ProtectedRoute>
                     <MentorBooking />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/profile" 
+              <Route
+                path="/profile"
                 element={
                   <ProtectedRoute>
                     <Profile />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/startup-profile" 
+              <Route
+                path="/startup-profile"
                 element={
                   <ProtectedRoute requiredRole="founder">
                     <StartupProfile />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/mentor-profile" 
+              <Route
+                path="/mentor-profile"
                 element={
                   <ProtectedRoute requiredRole="mentor">
                     <MentorProfile />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/mentor-dashboard" 
+              <Route
+                path="/mentor-dashboard"
                 element={
                   <ProtectedRoute requiredRole="mentor">
                     <MentorDashboard />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/blog-management" 
+              <Route
+                path="/blog-management"
                 element={
                   <ProtectedRoute requiredRole={["admin", "mentor"]}>
                     <BlogManagement />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/founder-dashboard" 
+              <Route
+                path="/founder-dashboard"
                 element={
                   <ProtectedRoute requiredRole="founder">
                     <FounderDashboard />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/mentorship-matching" 
+              <Route
+                path="/mentorship-matching"
                 element={
                   <ProtectedRoute>
                     <MentorshipMatching />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/messaging" 
+              <Route
+                path="/messaging"
                 element={
                   <ProtectedRoute>
                     <Messaging />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/file-upload-guide" 
+              <Route
+                path="/file-upload-guide"
                 element={
                   <ProtectedRoute>
                     <FileUploadGuide />
                   </ProtectedRoute>
-                } 
+                }
               />
-              
+
               {/* Blog Routes */}
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:id" element={<BlogPost />} />
-              
+
               {/* Page Routes */}
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/press" element={<Press />} />
               <Route path="/sitemap" element={<Sitemap />} />
-              
+
               {/* Legal Pages */}
               <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/legal/terms-of-service" element={<TermsOfService />} />
+              <Route
+                path="/legal/terms-of-service"
+                element={<TermsOfService />}
+              />
               <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
-              <Route path="/legal/data-processing" element={<DataProcessing />} />
-              
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="/startup/:id" element={<StartupDetail />} />
+              <Route
+                path="/legal/data-processing"
+                element={<DataProcessing />}
+              />
+
+              {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

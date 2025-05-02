@@ -1,21 +1,20 @@
-
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { 
+import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger
-} from "@/components/ui/navigation-menu"
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { 
-  Search, 
-  Bell, 
-  User, 
-  Menu, 
+import {
+  Search,
+  Bell,
+  User,
+  Menu,
   X,
   Lightbulb,
   Users,
@@ -24,14 +23,18 @@ import {
   Globe,
   ChevronRight,
   FileUp,
-  Calendar
+  Calendar,
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/hooks/useAuth.tsx";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,6 +54,13 @@ export const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   const isActive = (path: string) => {
     return location.pathname === path;
   };
@@ -68,6 +78,7 @@ export const Navbar = () => {
         <Link
           to="/"
           className="flex items-center space-x-2 text-2xl font-bold tracking-tight"
+          aria-label="Elevate X Home"
         >
           <span className="text-primary">Elevate</span>
           <span className="dark:text-white">X</span>
@@ -79,27 +90,37 @@ export const Navbar = () => {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link to="/" className={cn(
-                  "px-3 py-2 text-sm font-medium transition-colors",
-                  isActive("/")
-                    ? "text-primary"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
-                )}>
+                <Link
+                  to="/"
+                  className={cn(
+                    "px-3 py-2 text-sm font-medium transition-colors",
+                    isActive("/")
+                      ? "text-primary"
+                      : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
+                  )}
+                >
                   Home
                 </Link>
               </NavigationMenuItem>
-              
+
               <NavigationMenuItem>
-                <NavigationMenuTrigger className={cn(
-                  "text-sm font-medium bg-transparent",
-                  isActive("/mentors") ? "text-primary" : "text-stargaze-600 dark:text-stargaze-300"
-                )}>
+                <NavigationMenuTrigger
+                  className={cn(
+                    "text-sm font-medium bg-transparent",
+                    isActive("/mentors")
+                      ? "text-primary"
+                      : "text-stargaze-600 dark:text-stargaze-300"
+                  )}
+                >
                   Mentors
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     <div>
-                      <Link to="/mentors" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <Link
+                        to="/mentors"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                      >
                         <div className="flex items-center gap-2 text-sm font-medium leading-none">
                           <Users className="h-4 w-4" /> Browse All Mentors
                         </div>
@@ -109,7 +130,10 @@ export const Navbar = () => {
                       </Link>
                     </div>
                     <div>
-                      <Link to="/mentor-dashboard" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <Link
+                        to="/mentor-dashboard"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                      >
                         <div className="flex items-center gap-2 text-sm font-medium leading-none">
                           <Award className="h-4 w-4" /> Become a Mentor
                         </div>
@@ -119,7 +143,10 @@ export const Navbar = () => {
                       </Link>
                     </div>
                     <div>
-                      <Link to="/mentorship-matching" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <Link
+                        to="/mentorship-matching"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                      >
                         <div className="flex items-center gap-2 text-sm font-medium leading-none">
                           <Lightbulb className="h-4 w-4" /> Mentorship Matching
                         </div>
@@ -129,7 +156,10 @@ export const Navbar = () => {
                       </Link>
                     </div>
                     <div>
-                      <Link to="/mentor/1/book" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                      <Link
+                        to="/mentor/1/book"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                      >
                         <div className="flex items-center gap-2 text-sm font-medium leading-none">
                           <Calendar className="h-4 w-4" /> Book a Session
                         </div>
@@ -141,17 +171,24 @@ export const Navbar = () => {
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-              
+
               <NavigationMenuItem>
-                <NavigationMenuTrigger className={cn(
-                  "text-sm font-medium bg-transparent",
-                  isActive("/resources") ? "text-primary" : "text-stargaze-600 dark:text-stargaze-300"
-                )}>
+                <NavigationMenuTrigger
+                  className={cn(
+                    "text-sm font-medium bg-transparent",
+                    isActive("/resources")
+                      ? "text-primary"
+                      : "text-stargaze-600 dark:text-stargaze-300"
+                  )}
+                >
                   Resources
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid gap-3 p-4 w-[400px]">
-                    <Link to="/resources" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                    <Link
+                      to="/resources"
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium leading-none">
                         <BookOpen className="h-4 w-4" /> Resource Library
                       </div>
@@ -159,15 +196,22 @@ export const Navbar = () => {
                         Browse our collection of guides, templates and tools
                       </p>
                     </Link>
-                    <Link to="/blog" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                    <Link
+                      to="/blog"
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium leading-none">
                         <BookOpen className="h-4 w-4" /> Blog
                       </div>
                       <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                        Insights and articles on startup trends and growth strategies
+                        Insights and articles on startup trends and growth
+                        strategies
                       </p>
                     </Link>
-                    <Link to="/file-upload-guide" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                    <Link
+                      to="/file-upload-guide"
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium leading-none">
                         <FileUp className="h-4 w-4" /> File Sharing Guide
                       </div>
@@ -180,15 +224,22 @@ export const Navbar = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className={cn(
-                  "text-sm font-medium bg-transparent",
-                  isActive("/community") ? "text-primary" : "text-stargaze-600 dark:text-stargaze-300"
-                )}>
+                <NavigationMenuTrigger
+                  className={cn(
+                    "text-sm font-medium bg-transparent",
+                    isActive("/community")
+                      ? "text-primary"
+                      : "text-stargaze-600 dark:text-stargaze-300"
+                  )}
+                >
                   Community
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid gap-3 p-4 w-[400px]">
-                    <Link to="/community" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                    <Link
+                      to="/community"
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium leading-none">
                         <Globe className="h-4 w-4" /> Community Hub
                       </div>
@@ -196,15 +247,22 @@ export const Navbar = () => {
                         Connect with fellow founders and startup enthusiasts
                       </p>
                     </Link>
-                    <Link to="/communities" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                    <Link
+                      to="/communities"
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium leading-none">
                         <Users className="h-4 w-4" /> Explore Communities
                       </div>
                       <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                        Find specialized groups in your industry or interest area
+                        Find specialized groups in your industry or interest
+                        area
                       </p>
                     </Link>
-                    <Link to="/messaging" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                    <Link
+                      to="/messaging"
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                    >
                       <div className="flex items-center gap-2 text-sm font-medium leading-none">
                         <FileUp className="h-4 w-4" /> Share Files
                       </div>
@@ -215,314 +273,149 @@ export const Navbar = () => {
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-              
+
               <NavigationMenuItem>
-                <Link to="/startup-showcase" className={cn(
-                  "px-3 py-2 text-sm font-medium transition-colors",
-                  isActive("/startup-showcase")
-                    ? "text-primary"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
-                )}>
+                <Link
+                  to="/startup-showcase"
+                  className={cn(
+                    "px-3 py-2 text-sm font-medium transition-colors",
+                    isActive("/startup-showcase")
+                      ? "text-primary"
+                      : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
+                  )}
+                >
                   Startups
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-          
+
+          {/* Search Form */}
+          <form onSubmit={handleSearch} className="relative">
+            <input
+              type="search"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-48 px-4 py-2 rounded-full bg-stargaze-50 dark:bg-stargaze-900 border border-stargaze-200 dark:border-stargaze-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              aria-label="Search"
+            />
+            <Button
+              type="submit"
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-stargaze-600 dark:text-stargaze-300"
+              aria-label="Submit search"
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+          </form>
+
           {/* Action Buttons */}
           <div className="flex items-center space-x-3">
-            <Link to="/resources">
-              <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
-                <Search className="h-5 w-5" />
-                <span className="sr-only">Search</span>
-              </Button>
-            </Link>
-            <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-stargaze-600 dark:text-stargaze-300"
+              aria-label="Notifications"
+            >
               <Bell className="h-5 w-5" />
-              <span className="sr-only">Notifications</span>
             </Button>
             <ThemeToggle />
-            <Link to="/profile">
-              <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
+            <Link to={user ? "/profile" : "/auth"}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-stargaze-600 dark:text-stargaze-300"
+                aria-label="Profile"
+              >
                 <User className="h-5 w-5" />
-                <span className="sr-only">Profile</span>
-              </Button>
-            </Link>
-            <Link to="/auth">
-              <Button variant="outline" size="sm" className="ml-2">
-                Log in
-              </Button>
-            </Link>
-            <Link to="/auth">
-              <Button size="sm">
-                Sign up
               </Button>
             </Link>
           </div>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <div className="flex items-center space-x-3 lg:hidden">
-          <ThemeToggle />
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-5 w-5 text-stargaze-600 dark:text-stargaze-300" />
-            ) : (
-              <Menu className="h-5 w-5 text-stargaze-600 dark:text-stargaze-300" />
-            )}
-            <span className="sr-only">Toggle Menu</span>
-          </Button>
-        </div>
+        {/* Mobile Menu Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="lg:hidden"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+        >
+          {isMobileMenuOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
+        </Button>
       </div>
 
       {/* Mobile Menu */}
-      <div
-        className={cn(
-          "fixed inset-0 top-[60px] bg-white/95 dark:bg-stargaze-950/95 backdrop-blur-lg z-40 transition-transform duration-300 ease-in-out transform lg:hidden overflow-y-auto",
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        )}
-      >
-        <div className="container mx-auto px-4 py-6 flex flex-col space-y-6">
-          <div className="flex flex-col space-y-1">
-            <Link
-              to="/"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <span className="text-base font-medium">Home</span>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            
-            <div className="px-3 pt-4 pb-2">
-              <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Mentors</h3>
-            </div>
-            <Link
-              to="/mentors"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/mentors")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span className="text-base font-medium">Browse All Mentors</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/mentor-dashboard"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/mentor-dashboard")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <Award className="h-4 w-4" />
-                <span className="text-base font-medium">Become a Mentor</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/mentorship-matching"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/mentorship-matching")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <Lightbulb className="h-4 w-4" />
-                <span className="text-base font-medium">Mentorship Matching</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/mentor/1/book"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/mentor/1/book")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span className="text-base font-medium">Book a Session</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            
-            <div className="px-3 pt-4 pb-2">
-              <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Resources</h3>
-            </div>
-            <Link
-              to="/resources"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/resources")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4" />
-                <span className="text-base font-medium">Resource Library</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/blog"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/blog")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4" />
-                <span className="text-base font-medium">Blog</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/file-upload-guide"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/file-upload-guide")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <FileUp className="h-4 w-4" />
-                <span className="text-base font-medium">File Sharing Guide</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            
-            <div className="px-3 pt-4 pb-2">
-              <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Community</h3>
-            </div>
-            <Link
-              to="/community"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/community")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4" />
-                <span className="text-base font-medium">Community Hub</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/communities"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/communities")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span className="text-base font-medium">Explore Communities</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/messaging"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/messaging")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="flex items-center gap-2">
-                <FileUp className="h-4 w-4" />
-                <span className="text-base font-medium">Share Files</span>
-              </div>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-            
-            <div className="px-3 pt-4 pb-2">
-              <h3 className="text-xs uppercase font-semibold text-stargaze-500 tracking-wider">Startups</h3>
-            </div>
-            <Link
-              to="/startup-showcase"
-              className={cn(
-                "flex items-center justify-between p-3 rounded-md",
-                isActive("/startup-showcase")
-                  ? "bg-primary/10 text-primary"
-                  : "text-stargaze-600 dark:text-stargaze-300 hover:bg-primary/5"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <span className="text-base font-medium">Startup Showcase</span>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-          
-          <div className="pt-4 flex flex-col space-y-4 border-t border-stargaze-200 dark:border-stargaze-800">
-            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
-              <Button variant="outline" className="w-full justify-center">
-                Log in
-              </Button>
-            </Link>
-            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
-              <Button className="w-full justify-center">
-                Sign up
-              </Button>
-            </Link>
-          </div>
-          
-          <div className="flex items-center justify-between pt-4 border-t border-stargaze-200 dark:border-stargaze-800">
-            <Link to="/profile" className="flex items-center gap-2 p-2 rounded-md hover:bg-primary/5">
-              <User className="h-5 w-5" />
-              <span className="text-sm font-medium">Profile</span>
-            </Link>
-            <div className="flex items-center gap-2">
-              <Link to="/resources">
-                <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
-                  <Search className="h-5 w-5" />
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 top-16 bg-white dark:bg-stargaze-950 z-40">
+          <div className="container mx-auto px-4 py-6">
+            <form onSubmit={handleSearch} className="mb-6">
+              <div className="relative">
+                <input
+                  type="search"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-2 rounded-full bg-stargaze-50 dark:bg-stargaze-900 border border-stargaze-200 dark:border-stargaze-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  aria-label="Search"
+                />
+                <Button
+                  type="submit"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-stargaze-600 dark:text-stargaze-300"
+                  aria-label="Submit search"
+                >
+                  <Search className="h-4 w-4" />
                 </Button>
+              </div>
+            </form>
+
+            <nav className="space-y-4">
+              <Link
+                to="/"
+                className={cn(
+                  "block px-4 py-2 text-sm font-medium rounded-lg",
+                  isActive("/")
+                    ? "text-primary bg-primary/10"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
+                )}
+              >
+                Home
               </Link>
-              <Button variant="ghost" size="icon" className="text-stargaze-600 dark:text-stargaze-300">
-                <Bell className="h-5 w-5" />
-              </Button>
-            </div>
+
+              <Link
+                to="/mentors"
+                className={cn(
+                  "block px-4 py-2 text-sm font-medium rounded-lg",
+                  isActive("/mentors")
+                    ? "text-primary bg-primary/10"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
+                )}
+              >
+                Mentors
+              </Link>
+
+              {/* Add other mobile menu items... */}
+
+              <div className="pt-4 border-t border-stargaze-200 dark:border-stargaze-800">
+                <div className="flex items-center justify-between px-4">
+                  <span className="text-sm font-medium text-stargaze-600 dark:text-stargaze-300">
+                    Theme
+                  </span>
+                  <ThemeToggle />
+                </div>
+              </div>
+            </nav>
           </div>
         </div>
-      </div>
+      )}
     </nav>
   );
 };

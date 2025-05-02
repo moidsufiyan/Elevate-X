@@ -1,93 +1,73 @@
-
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface AnimatedSectionProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
-  delay?: number;
   threshold?: number;
+  delay?: number;
   staggerChildren?: boolean;
-  animation?: 'fade-up' | 'fade-in' | 'slide-in' | 'scale-in' | 'zoom-in';
-  duration?: 'fast' | 'normal' | 'slow';
-  id?: string; // Add id prop to the interface
+  animation?: "fade-in" | "fade-up" | "slide-in";
 }
 
 export const AnimatedSection = ({
   children,
   className,
+  threshold = 0.1,
   delay = 0,
-  threshold = 0.2,
   staggerChildren = false,
-  animation = 'fade-up',
-  duration = 'normal',
-  id, // Add id to component props
+  animation = "fade-in",
 }: AnimatedSectionProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting && !isVisible) {
-          // Add delay if provided
-          setTimeout(() => {
-            setIsVisible(true);
-          }, delay);
-        }
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-in");
+            if (staggerChildren) {
+              const children = entry.target.children;
+              Array.from(children).forEach((child, index) => {
+                (child as HTMLElement).style.animationDelay = `${
+                  index * 100 + delay
+                }ms`;
+              });
+            }
+          }
+        });
       },
       {
         threshold,
+        rootMargin: "0px 0px -100px 0px",
       }
     );
 
-    const currentRef = sectionRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
+    if (ref.current) {
+      observer.observe(ref.current);
     }
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
+      if (ref.current) {
+        observer.unobserve(ref.current);
       }
     };
-  }, [delay, isVisible, threshold]);
-
-  const getDurationClass = () => {
-    switch (duration) {
-      case 'fast': return 'transition-all duration-500';
-      case 'slow': return 'transition-all duration-1000';
-      default: return 'transition-all duration-700';
-    }
-  };
-
-  const getAnimationClass = () => {
-    switch (animation) {
-      case 'fade-in':
-        return `opacity-0 ${isVisible ? 'opacity-100' : ''}`;
-      case 'slide-in':
-        return `opacity-0 translate-x-10 ${isVisible ? 'opacity-100 translate-x-0' : ''}`;
-      case 'scale-in':
-        return `opacity-0 scale-95 ${isVisible ? 'opacity-100 scale-100' : ''}`;
-      case 'zoom-in':
-        return `opacity-0 scale-90 ${isVisible ? 'opacity-100 scale-100' : ''}`;
-      case 'fade-up':
-      default:
-        return `opacity-0 translate-y-10 ${isVisible ? 'opacity-100 translate-y-0' : ''}`;
-    }
-  };
+  }, [threshold, staggerChildren, delay]);
 
   return (
     <div
-      ref={sectionRef}
-      id={id} // Pass the id to the div element
+      ref={ref}
       className={cn(
-        getAnimationClass(),
-        getDurationClass(),
+        "opacity-0",
+        animation === "fade-in" && "translate-y-0",
+        animation === "fade-up" && "translate-y-4",
+        animation === "slide-in" && "translate-x-4",
         staggerChildren && "stagger-children",
         className
       )}
+      style={{
+        animationDelay: `${delay}ms`,
+      }}
     >
       {children}
     </div>

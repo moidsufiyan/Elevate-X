@@ -1,53 +1,94 @@
+# Elevate-X
 
-# Elevate X
+A modern web application for connecting mentors and mentees.
 
-Elevate X is an entrepreneurial network platform connecting startups with mentors.
+## Features
+
+- User authentication and authorization
+- Mentor search and filtering
+- Real-time chat functionality
+- Resource sharing and management
+- Community forums and discussions
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- React Query
+- Radix UI
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm (v7 or higher)
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/elevate-x.git
+cd elevate-x
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create a `.env` file in the root directory and add the following variables:
+
+```env
+VITE_API_URL=http://localhost:3000/api
+VITE_APP_NAME=Elevate-X
+VITE_APP_VERSION=1.0.0
+```
+
+4. Start the development server:
+
+```bash
+npm run dev
+```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run type-check` - Run TypeScript type checking
 
 ## Project Structure
 
 ```
 src/
-├── frontend/
-│   ├── components/   # React UI components
-│   │   ├── Card/     # Card-related components
-│   │   └── ui/       # UI components (buttons, toasts, etc.)
-│   ├── hooks/        # Custom React hooks
-│   ├── pages/        # Page components
-│   └── styles/       # CSS and style definitions
-│
-├── backend/
-│   ├── services/     # API services and data fetching
-│   └── utils/        # Backend utility functions
-│
-└── shared/
-    ├── types/        # TypeScript type definitions
-    └── utils/        # Shared utility functions
+  ├── components/     # Reusable UI components
+  ├── pages/         # Page components
+  ├── hooks/         # Custom React hooks
+  ├── services/      # API services
+  ├── types/         # TypeScript type definitions
+  ├── utils/         # Utility functions
+  ├── lib/           # Library configurations
+  ├── assets/        # Static assets
+  └── App.tsx        # Root component
 ```
 
-## Getting Started
+## Contributing
 
-1. Install dependencies:
-```bash
-npm install
-```
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-2. Start the development server:
-```bash
-npm run dev
-```
+## License
 
-3. Access the application at http://localhost:8080
-
-## Path Aliases
-
-The project uses path aliases for easier imports:
-- `@/` - Points to the src directory
-- `@frontend/` - Points to src/frontend
-- `@backend/` - Points to src/backend
-- `@shared/` - Points to src/shared
-
-## Available Scripts
-
-- `npm run dev` - Start the development server
-- `npm run build` - Build the production-ready application
-- `npm run preview` - Preview the production build locally
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

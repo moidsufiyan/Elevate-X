@@ -1,79 +1,117 @@
-
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getCurrentUser, logoutUser } from '@/services/api';
-import { User } from '@/shared/types/models';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { getCurrentUser, logoutUser } from "@/services/api";
+import { User } from "@/shared/types/models";
 
 interface AuthContextType {
   user: User | null;
-  loading: boolean;
   isAuthenticated: boolean;
-  logout: () => void;
-  refreshUser: () => Promise<void>;
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  register: (email: string, password: string, name: string) => Promise<void>;
 }
 
-// Create a default context value
-const defaultContextValue: AuthContextType = {
-  user: null,
-  loading: true,
-  isAuthenticated: false,
-  logout: () => {},
-  refreshUser: async () => {},
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
 
-// Create the context with the default value
-const AuthContext = createContext<AuthContextType>(defaultContextValue);
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-// Custom hook to use the auth context
-export const useAuth = () => useContext(AuthContext);
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchUser = async () => {
+  useEffect(() => {
+    // Check for existing session
+    const checkSession = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          // Verify token and get user data
+          // This is a placeholder - implement actual token verification
+          setUser({
+            id: "1",
+            email: "user@example.com",
+            name: "John Doe",
+            role: "user",
+          });
+        }
+      } catch (error) {
+        console.error("Session check failed:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkSession();
+  }, []);
+
+  const login = async (email: string, password: string) => {
     try {
-      setLoading(true);
-      // Auto-authenticate with a mock user for demo purposes
-      const mockUser: User = {
-        id: 'demo-user-id',
-        name: 'Demo User',
-        email: 'demo@example.com',
-        role: 'founder', // Default role for demo
-        createdAt: new Date().toISOString(),
-        avatar: '' // Adding the missing avatar property
-      };
-      setUser(mockUser);
+      // Implement actual login logic here
+      setUser({
+        id: "1",
+        email,
+        name: "John Doe",
+        role: "user",
+      });
     } catch (error) {
-      console.error('Error fetching user data:', error);
-      setUser(null);
-    } finally {
-      setLoading(false);
+      console.error("Login failed:", error);
+      throw error;
     }
   };
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  const logout = () => {
-    logoutUser();
-    setUser(null);
+  const logout = async () => {
+    try {
+      // Implement actual logout logic here
+      setUser(null);
+      localStorage.removeItem("token");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      throw error;
+    }
   };
 
-  const refreshUser = async () => {
-    await fetchUser();
-  };
-
-  const value = {
-    user,
-    loading,
-    isAuthenticated: true, // Always authenticated for demo purposes
-    logout,
-    refreshUser,
+  const register = async (email: string, password: string, name: string) => {
+    try {
+      // Implement actual registration logic here
+      setUser({
+        id: "1",
+        email,
+        name,
+        role: "user",
+      });
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error;
+    }
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isLoading,
+        login,
+        logout,
+        register,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
