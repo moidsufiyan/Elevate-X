@@ -25,7 +25,7 @@ export const StartupShowcase = () => {
           <div className="text-center mb-16">
             <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Startup Showcase</h2>
             <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
-              Discover Promising Startups
+              Discover Promising Indian Startups
             </h3>
             <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
               {[...Array(3)].map((_, index) => (
@@ -83,10 +83,10 @@ export const StartupShowcase = () => {
         <AnimatedSection threshold={0.1} className="text-center mb-16">
           <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Startup Showcase</h2>
           <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
-            Discover Promising Startups
+            Discover Promising Indian Startups
           </h3>
           <p className="max-w-2xl mx-auto text-stargaze-600 dark:text-stargaze-300 text-lg">
-            Connect with innovative startups across various industries and find your next investment opportunity.
+            Connect with innovative startups across various industries in India and find your next investment opportunity.
           </p>
         </AnimatedSection>
         

@@ -18,13 +18,13 @@ export const adaptMentorFromApi = (apiMentor: ApiMentor): Mentor => {
     reviews: apiMentor.reviewCount || 0,
     sessions: apiMentor.sessions || 0,
     availability: apiMentor.availableTimes ? [apiMentor.availableTimes] : ['Flexible'],
-    hourlyRate: 100, // Default hourly rate if not provided by API
+    hourlyRate: apiMentor.role.includes("Investor") ? 150 : 100, // Higher rate for investors
     featured: apiMentor.badges?.some(b => b.label === 'Featured') || false,
-    // Additional fields with default values
-    industries: ['Technology'],
-    startupStage: ['Seed', 'Early Stage'],
-    languages: ['English'],
-    mentorshipStyle: ['One-on-one'],
+    // Additional fields with India-specific values
+    industries: ['Technology', 'E-commerce', 'EdTech', 'FinTech'],
+    startupStage: ['Seed', 'Early Stage', 'Growth'],
+    languages: ['English', 'Hindi', 'Tamil', 'Marathi', 'Telugu'].slice(0, 2 + Math.floor(Math.random() * 3)), // Random selection of Indian languages
+    mentorshipStyle: ['One-on-one', 'Group Sessions', 'Workshops'],
     maxStartups: 5
   };
 };
@@ -33,20 +33,25 @@ export const adaptMentorFromApi = (apiMentor: ApiMentor): Mentor => {
  * Converts API startup format to the application's internal Startup model
  */
 export const adaptStartupFromApi = (apiStartup: ApiStartup): Startup => {
+  // Add some Indian-specific details
+  const foundingYear = 2018 + Math.floor(Math.random() * 5); // Random recent year
+  const employeeCount = 5 + Math.floor(Math.random() * 45); // Random team size
+  const fundingAmounts = ["₹25 Lakhs", "₹50 Lakhs", "₹1.2 Crore", "₹4.5 Crore", "₹12 Crore", "Bootstrapped"];
+  
   return {
     id: apiStartup.id,
     name: apiStartup.name,
     description: apiStartup.shortPitch || '',
     industry: apiStartup.industry,
     stage: apiStartup.fundingStage,
-    foundingYear: new Date().getFullYear(), // Default if not provided
+    foundingYear: foundingYear,
     logo: apiStartup.logo || 'https://via.placeholder.com/150',
     founders: [],
     location: apiStartup.location,
-    funding: 'Unknown',
-    employees: 0,
-    website: '',
-    featured: false
+    funding: fundingAmounts[Math.floor(Math.random() * fundingAmounts.length)],
+    employees: employeeCount,
+    website: `https://${apiStartup.name.toLowerCase().replace(/\s+/g, '')}.in`,
+    featured: Math.random() > 0.7 // 30% chance of being featured
   };
 };
 
@@ -57,15 +62,15 @@ export const ensureCompletePreferences = (
   partialPreferences: Partial<UserPreferences>
 ): UserPreferences => {
   return {
-    skillsNeeded: partialPreferences.skillsNeeded || [],
-    goals: partialPreferences.goals || [],
-    availability: partialPreferences.availability || [],
-    industries: partialPreferences.industries || [],
+    skillsNeeded: partialPreferences.skillsNeeded || ['Business Strategy', 'Marketing', 'Technology'],
+    goals: partialPreferences.goals || ['Fundraising', 'Product Development', 'Market Expansion'],
+    availability: partialPreferences.availability || ['Weekdays', 'Evenings'],
+    industries: partialPreferences.industries || ['Technology', 'E-commerce', 'FinTech'],
     startupStage: partialPreferences.startupStage || 'Seed',
-    preferredLanguages: partialPreferences.preferredLanguages || [],
-    preferredMentorshipStyle: partialPreferences.preferredMentorshipStyle || [],
+    preferredLanguages: partialPreferences.preferredLanguages || ['English', 'Hindi'],
+    preferredMentorshipStyle: partialPreferences.preferredMentorshipStyle || ['One-on-one'],
     locationPreference: partialPreferences.locationPreference || 'any',
     sessionFrequency: partialPreferences.sessionFrequency || 'monthly',
-    budgetRange: partialPreferences.budgetRange || { min: 0, max: 1000 }
+    budgetRange: partialPreferences.budgetRange || { min: 5000, max: 15000 } // In rupees
   };
 };

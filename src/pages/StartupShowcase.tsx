@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { StartupCard } from "@/components/startup/StartupCard";
 import { Button } from "@/components/Button";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, MapPin } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -14,107 +14,37 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Startup } from "@/shared/types/models";
+import { useStartups } from "@/hooks/use-startups";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Startup } from "@/shared/types/models";
 
-// Sample startup data matching the Startup interface
-const startups: Startup[] = [
-  {
-    id: "1",
-    name: "EcoHarvest",
-    logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3603?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
-    industry: "AgTech",
-    description: "Sustainable farming solutions using IoT and AI to optimize crop yields while reducing environmental impact.",
-    stage: "Seed",
-    foundingYear: 2021,
-    founders: [],
-    location: "California, USA",
-    funding: "$500K",
-    employees: 12,
-    website: "https://ecoharvest.example.com",
-    featured: true
-  },
-  {
-    id: "2",
-    name: "MindfulAI",
-    logo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    industry: "HealthTech",
-    description: "Mental health platform using AI to provide personalized therapy and wellness recommendations.",
-    stage: "Series A",
-    foundingYear: 2020,
-    founders: [],
-    location: "Boston, USA",
-    funding: "$2.5M",
-    employees: 25,
-    website: "https://mindfulai.example.com",
-    featured: false
-  },
-  {
-    id: "3",
-    name: "QuantumSecure",
-    logo: "https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    industry: "Cybersecurity",
-    description: "Next-generation encryption technology to protect sensitive data against quantum computing threats.",
-    stage: "Pre-seed",
-    foundingYear: 2023,
-    founders: [],
-    location: "London, UK",
-    funding: "$250K",
-    employees: 8,
-    website: "https://quantumsecure.example.com",
-    featured: false
-  },
-  {
-    id: "4",
-    name: "UrbanMobility",
-    logo: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    industry: "Transportation",
-    description: "Electric micromobility solutions for urban environments to reduce congestion and emissions.",
-    stage: "Series B",
-    foundingYear: 2019,
-    founders: [],
-    location: "Berlin, Germany",
-    funding: "$8M",
-    employees: 42,
-    website: "https://urbanmobility.example.com",
-    featured: true
-  },
-  {
-    id: "5",
-    name: "NutriGenomics",
-    logo: "https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    industry: "FoodTech",
-    description: "Personalized nutrition plans based on genetic analysis for optimal health outcomes.",
-    stage: "Seed",
-    foundingYear: 2022,
-    founders: [],
-    location: "Singapore",
-    funding: "$750K",
-    employees: 15,
-    website: "https://nutrigenomics.example.com",
-    featured: false
-  },
-  {
-    id: "6",
-    name: "BlockFinance",
-    logo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    industry: "FinTech",
-    description: "Decentralized finance platform making crypto investing accessible to everyday users.",
-    stage: "Series A",
-    foundingYear: 2020,
-    founders: [],
-    location: "New York, USA",
-    funding: "$4.2M",
-    employees: 28,
-    website: "https://blockfinance.example.com",
-    featured: false
-  },
+// For filtering - India-specific industries and locations
+const industries = [
+  "All Industries", 
+  "AgriTech", 
+  "CleanTech", 
+  "EdTech", 
+  "FinTech", 
+  "FoodTech", 
+  "HealthTech",
+  "LogisticsTech",
+  "E-commerce"
 ];
-
-// For filtering
-const industries = ["All Industries", "AgTech", "HealthTech", "Cybersecurity", "Transportation", "FoodTech", "FinTech"];
-const fundingStages = ["All Stages", "Pre-seed", "Seed", "Series A", "Series B", "Series C+"];
-const locations = ["All Locations", "USA", "UK", "Germany", "Singapore"];
+const fundingStages = ["All Stages", "Pre-seed", "Seed", "Series A", "Series B", "Series C+", "Bootstrapped"];
+const locations = [
+  "All Locations", 
+  "Bangalore", 
+  "Mumbai", 
+  "Delhi", 
+  "Hyderabad", 
+  "Chennai", 
+  "Pune", 
+  "Ahmedabad",
+  "Jaipur", 
+  "Kolkata"
+];
 
 const StartupShowcase = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,9 +52,12 @@ const StartupShowcase = () => {
   const [selectedStage, setSelectedStage] = useState("All Stages");
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const { toast } = useToast();
+  
+  // Fetch startups data using our hook
+  const { data: startups, isLoading, error } = useStartups();
 
   // Filter startups based on search and filters
-  const filteredStartups = startups.filter((startup) => {
+  const filteredStartups = startups?.filter((startup) => {
     // Search filter
     const matchesSearch = startup.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           startup.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -140,7 +73,7 @@ const StartupShowcase = () => {
                            startup.location.includes(selectedLocation);
     
     return matchesSearch && matchesIndustry && matchesStage && matchesLocation;
-  });
+  }) || [];
   
   const handleFilterChange = (filter: string, value: string) => {
     // Show toast notification when filter changes
@@ -171,10 +104,10 @@ const StartupShowcase = () => {
         <div className="container mx-auto px-6">
           <AnimatedSection className="mb-8 text-center">
             <h1 className="text-4xl font-bold text-stargaze-900 dark:text-white mb-4">
-              Discover Promising Startups
+              Discover Promising Indian Startups
             </h1>
             <p className="text-lg text-stargaze-600 dark:text-stargaze-300 max-w-3xl mx-auto">
-              Connect with innovative startups across various industries and find your next investment opportunity.
+              Connect with innovative startups across various industries in India and find your next investment opportunity or partnership.
             </p>
           </AnimatedSection>
           
@@ -238,53 +171,104 @@ const StartupShowcase = () => {
             </div>
           </AnimatedSection>
           
-          {/* Results Count */}
-          <AnimatedSection delay={150} className="mb-6 max-w-5xl mx-auto">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-stargaze-600 dark:text-stargaze-400">
-                Showing <span className="font-medium">{filteredStartups.length}</span> startups
-              </p>
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-stargaze-500" />
-                <span className="text-sm text-stargaze-600 dark:text-stargaze-400">Filters Applied</span>
-              </div>
-            </div>
-          </AnimatedSection>
-          
-          {/* Startups Grid */}
-          {filteredStartups.length > 0 ? (
+          {/* Loading State */}
+          {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {filteredStartups.map((startup, index) => (
-                <AnimatedSection key={startup.id} delay={200 + index * 50}>
-                  <StartupCard startup={startup} />
-                </AnimatedSection>
+              {[...Array(6)].map((_, index) => (
+                <div key={index} className="bg-white dark:bg-stargaze-900 rounded-xl p-4 space-y-3 shadow-subtle">
+                  <Skeleton className="h-48 w-full rounded-md" />
+                  <Skeleton className="h-8 w-3/4 rounded-md" />
+                  <Skeleton className="h-6 w-1/2 rounded-md" />
+                  <Skeleton className="h-20 w-full rounded-md" />
+                  <div className="flex space-x-2">
+                    <Skeleton className="h-10 w-full rounded-md" />
+                  </div>
+                </div>
               ))}
             </div>
-          ) : (
-            <div className="text-center py-20 max-w-5xl mx-auto">
-              <p className="text-2xl font-medium text-stargaze-600 dark:text-stargaze-300">
-                No startups match your filters
+          )}
+          
+          {/* Error State */}
+          {error && (
+            <div className="max-w-5xl mx-auto text-center py-10">
+              <p className="text-xl font-medium text-red-500">
+                Failed to load startups data. Please try again later.
               </p>
-              <p className="mt-2 text-stargaze-500">
-                Try adjusting your search criteria
-              </p>
-              <Button 
-                className="mt-6" 
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedIndustry("All Industries");
-                  setSelectedStage("All Stages");
-                  setSelectedLocation("All Locations");
-                  
-                  toast({
-                    title: "Filters Cleared",
-                    description: "All search filters have been reset",
-                  });
-                }}
-              >
-                Clear All Filters
+              <Button onClick={() => window.location.reload()} className="mt-4">
+                Retry
               </Button>
             </div>
+          )}
+          
+          {/* Results Count */}
+          {!isLoading && !error && (
+            <AnimatedSection delay={150} className="mb-6 max-w-5xl mx-auto">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                  Showing <span className="font-medium">{filteredStartups.length}</span> startups
+                </p>
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-stargaze-500" />
+                  <span className="text-sm text-stargaze-600 dark:text-stargaze-400">Filters Applied</span>
+                </div>
+              </div>
+            </AnimatedSection>
+          )}
+          
+          {/* Empty State */}
+          {!isLoading && !error && startups && startups.length === 0 && (
+            <EmptyState
+              icon={<MapPin className="h-10 w-10 text-primary/60" />}
+              title="No startups available yet"
+              description="We're currently onboarding exciting Indian startups to our platform. Check back soon!"
+              actionLabel="Notify me when startups are added"
+              onAction={() => {
+                toast({
+                  title: "Notification Set",
+                  description: "We'll notify you when new startups are added",
+                });
+              }}
+            />
+          )}
+          
+          {/* Startups Grid */}
+          {!isLoading && !error && startups && startups.length > 0 && (
+            <>
+              {filteredStartups.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                  {filteredStartups.map((startup, index) => (
+                    <AnimatedSection key={startup.id} delay={200 + index * 50}>
+                      <StartupCard startup={startup} />
+                    </AnimatedSection>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20 max-w-5xl mx-auto">
+                  <p className="text-2xl font-medium text-stargaze-600 dark:text-stargaze-300">
+                    No startups match your filters
+                  </p>
+                  <p className="mt-2 text-stargaze-500">
+                    Try adjusting your search criteria
+                  </p>
+                  <Button 
+                    className="mt-6" 
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedIndustry("All Industries");
+                      setSelectedStage("All Stages");
+                      setSelectedLocation("All Locations");
+                      
+                      toast({
+                        title: "Filters Cleared",
+                        description: "All search filters have been reset",
+                      });
+                    }}
+                  >
+                    Clear All Filters
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
