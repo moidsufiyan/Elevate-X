@@ -1,4 +1,3 @@
-
 // Update the App.tsx file to use the new directory structure
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -58,139 +57,142 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <SEO /> {/* Default SEO tags */}
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/mentors" element={<Mentors />} />
-            <Route path="/mentor/:id" element={<MentorDetail />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/communities" element={<Communities />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/startup-showcase" element={<StartupShowcase />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
-            
-            {/* New Resources Subpages */}
-            <Route path="/resources/documentation" element={<Documentation />} />
-            <Route path="/resources/guides" element={<Guides />} />
-            <Route path="/resources/faqs" element={<FAQs />} />
-            <Route path="/resources/success-stories" element={<SuccessStories />} />
-            <Route path="/resources/events" element={<Events />} />
-            
-            {/* Protected Routes */}
-            <Route 
-              path="/mentor/:id/book" 
-              element={
-                <ProtectedRoute>
-                  <MentorBooking />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/profile" 
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/startup-profile" 
-              element={
-                <ProtectedRoute requiredRole="founder">
-                  <StartupProfile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/mentor-profile" 
-              element={
-                <ProtectedRoute requiredRole="mentor">
-                  <MentorProfile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/mentor-dashboard" 
-              element={
-                <ProtectedRoute requiredRole="mentor">
-                  <MentorDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/blog-management" 
-              element={
-                <ProtectedRoute requiredRole={["admin", "mentor"]}>
-                  <BlogManagement />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/founder-dashboard" 
-              element={
-                <ProtectedRoute requiredRole="founder">
-                  <FounderDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/mentorship-matching" 
-              element={
-                <ProtectedRoute>
-                  <MentorshipMatching />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/messaging" 
-              element={
-                <ProtectedRoute>
-                  <Messaging />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/file-upload-guide" 
-              element={
-                <ProtectedRoute>
-                  <FileUploadGuide />
-                </ProtectedRoute>
-              } 
-            />
-            
-            {/* Blog Routes */}
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:id" element={<BlogPost />} />
-            
-            {/* Page Routes */}
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/press" element={<Press />} />
-            <Route path="/sitemap" element={<Sitemap />} />
-            
-            {/* Legal Pages */}
-            <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/legal/terms-of-service" element={<TermsOfService />} />
-            <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
-            <Route path="/legal/data-processing" element={<DataProcessing />} />
-            
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <SEO /> {/* Default SEO tags */}
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/mentors" element={<Mentors />} />
+              <Route path="/mentor/:id" element={<MentorDetail />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/communities" element={<Communities />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/startup-showcase" element={<StartupShowcase />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
+              
+              {/* New Resources Subpages */}
+              <Route path="/resources/documentation" element={<Documentation />} />
+              <Route path="/resources/guides" element={<Guides />} />
+              <Route path="/resources/faqs" element={<FAQs />} />
+              <Route path="/resources/success-stories" element={<SuccessStories />} />
+              <Route path="/resources/events" element={<Events />} />
+              
+              {/* Protected Routes */}
+              <Route 
+                path="/mentor/:id/book" 
+                element={
+                  <ProtectedRoute>
+                    <MentorBooking />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/startup-profile" 
+                element={
+                  <ProtectedRoute requiredRole="founder">
+                    <StartupProfile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/mentor-profile" 
+                element={
+                  <ProtectedRoute requiredRole="mentor">
+                    <MentorProfile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/mentor-dashboard" 
+                element={
+                  <ProtectedRoute requiredRole="mentor">
+                    <MentorDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/blog-management" 
+                element={
+                  <ProtectedRoute requiredRole={["admin", "mentor"]}>
+                    <BlogManagement />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/founder-dashboard" 
+                element={
+                  <ProtectedRoute requiredRole="founder">
+                    <FounderDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/mentorship-matching" 
+                element={
+                  <ProtectedRoute>
+                    <MentorshipMatching />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/messaging" 
+                element={
+                  <ProtectedRoute>
+                    <Messaging />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/file-upload-guide" 
+                element={
+                  <ProtectedRoute>
+                    <FileUploadGuide />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Blog Routes */}
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:id" element={<BlogPost />} />
+              
+              {/* Page Routes */}
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/press" element={<Press />} />
+              <Route path="/sitemap" element={<Sitemap />} />
+              
+              {/* Legal Pages */}
+              <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/legal/terms-of-service" element={<TermsOfService />} />
+              <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
+              <Route path="/legal/data-processing" element={<DataProcessing />} />
+              
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="/startup/:id" element={<StartupDetail />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;

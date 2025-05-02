@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, MapPin, TrendingUp, Bookmark, BookmarkCheck, Globe, Users } from "lucide-react";
@@ -57,6 +56,7 @@ export const StartupCard = ({ startup, className }: StartupCardProps) => {
   
   return (
     <Card className={cn("overflow-hidden transition-all duration-300 hover:shadow-lg h-full flex flex-col", className)}>
+      {/* Image container */}
       <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-stargaze-100 to-stargaze-200 dark:from-stargaze-800 dark:to-stargaze-900">
         <img 
           src={startup.logo} 

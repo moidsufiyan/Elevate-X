@@ -96,7 +96,7 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
           </div>
         )}
 
-        {/* CTA Buttons */}
+        {/* CTA Buttons - Ensuring they direct to proper detail pages */}
         <div className="flex gap-2">
           <Link to={`/mentor/${mentor.id}`} className="flex-1">
             <Button 
