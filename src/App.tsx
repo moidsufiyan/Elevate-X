@@ -42,6 +42,13 @@ import DataProcessing from "./pages/legal/DataProcessing";
 import FileUploadGuide from "./pages/FileUploadGuide";
 import Messaging from "./pages/Messaging";
 
+// Import new resource pages
+import Documentation from "./pages/resources/Documentation";
+import Guides from "./pages/resources/Guides";
+import FAQs from "./pages/resources/FAQs";
+import SuccessStories from "./pages/resources/SuccessStories";
+import Events from "./pages/resources/Events";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -70,6 +77,13 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/startup-showcase" element={<StartupShowcase />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
+            
+            {/* New Resources Subpages */}
+            <Route path="/resources/documentation" element={<Documentation />} />
+            <Route path="/resources/guides" element={<Guides />} />
+            <Route path="/resources/faqs" element={<FAQs />} />
+            <Route path="/resources/success-stories" element={<SuccessStories />} />
+            <Route path="/resources/events" element={<Events />} />
             
             {/* Protected Routes */}
             <Route 
