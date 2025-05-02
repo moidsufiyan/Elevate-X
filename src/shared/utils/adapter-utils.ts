@@ -1,5 +1,5 @@
 
-import { ApiMentor } from "@/services/api";
+import { ApiMentor, ApiStartup } from "@/backend/services/api";
 import { Mentor, Startup, UserPreferences } from "@/shared/types/models";
 
 /**
@@ -32,7 +32,7 @@ export const adaptMentorFromApi = (apiMentor: ApiMentor): Mentor => {
 /**
  * Converts API startup format to the application's internal Startup model
  */
-export const adaptStartupFromApi = (apiStartup: any): Startup => {
+export const adaptStartupFromApi = (apiStartup: ApiStartup): Startup => {
   return {
     id: apiStartup.id,
     name: apiStartup.name,

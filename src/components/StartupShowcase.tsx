@@ -8,13 +8,14 @@ import { ArrowRight, Loader, Building } from "lucide-react";
 import { useStartups } from "@/hooks/use-startups";
 import { EmptyState } from "@/components/ui/empty-state";
 import { startupEmptyStates } from "@/shared/utils/empty-state-utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Number of startups to show on the homepage
 const MAX_STARTUPS_DISPLAY = 3;
 
 export const StartupShowcase = () => {
   // Fetch startups data using React Query with enhanced caching
-  const { data: startups, isLoading, error } = useStartups();
+  const { data: startups, isLoading, error, isError } = useStartups();
 
   // Show loading state while data is being fetched
   if (isLoading) {
@@ -26,8 +27,19 @@ export const StartupShowcase = () => {
             <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
               Discover Promising Startups
             </h3>
-            <div className="flex justify-center">
-              <Loader className="h-8 w-8 animate-spin text-primary" />
+            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className="flex flex-col space-y-3">
+                  <Skeleton className="h-48 w-full rounded-md" />
+                  <Skeleton className="h-6 w-3/4 rounded-md" />
+                  <Skeleton className="h-4 w-1/2 rounded-md" />
+                  <Skeleton className="h-20 w-full rounded-md" />
+                  <div className="flex space-x-2">
+                    <Skeleton className="h-10 w-full rounded-md" />
+                    <Skeleton className="h-10 w-full rounded-md" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -36,7 +48,7 @@ export const StartupShowcase = () => {
   }
 
   // Show error state if fetch fails
-  if (error) {
+  if (isError) {
     return (
       <section id="startups" className="py-24 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
@@ -45,9 +57,12 @@ export const StartupShowcase = () => {
             <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
               Could not load startups
             </h3>
-            <p className="text-stargaze-600 dark:text-stargaze-400">
+            <p className="text-stargaze-600 dark:text-stargaze-400 mb-8">
               Please try again later or contact support if the problem persists.
             </p>
+            <Button onClick={() => window.location.reload()}>
+              Retry Loading
+            </Button>
           </div>
         </div>
       </section>

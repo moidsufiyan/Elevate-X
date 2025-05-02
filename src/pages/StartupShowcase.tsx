@@ -14,74 +14,100 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Startup } from "@/shared/types/models";
+import { useToast } from "@/hooks/use-toast";
 
-// Sample startup data
-const startups = [
+// Sample startup data matching the Startup interface
+const startups: Startup[] = [
   {
     id: "1",
     name: "EcoHarvest",
     logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3603?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
     industry: "AgTech",
+    description: "Sustainable farming solutions using IoT and AI to optimize crop yields while reducing environmental impact.",
+    stage: "Seed",
+    foundingYear: 2021,
+    founders: [],
     location: "California, USA",
-    fundingStage: "Seed",
-    shortPitch: "Sustainable farming solutions using IoT and AI to optimize crop yields while reducing environmental impact.",
-    interestedCount: 24,
-    tags: ["Sustainability", "AgTech", "IoT"],
+    funding: "$500K",
+    employees: 12,
+    website: "https://ecoharvest.example.com",
+    featured: true
   },
   {
     id: "2",
     name: "MindfulAI",
     logo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     industry: "HealthTech",
+    description: "Mental health platform using AI to provide personalized therapy and wellness recommendations.",
+    stage: "Series A",
+    foundingYear: 2020,
+    founders: [],
     location: "Boston, USA",
-    fundingStage: "Series A",
-    shortPitch: "Mental health platform using AI to provide personalized therapy and wellness recommendations.",
-    interestedCount: 41,
-    tags: ["Mental Health", "AI", "Healthcare"],
+    funding: "$2.5M",
+    employees: 25,
+    website: "https://mindfulai.example.com",
+    featured: false
   },
   {
     id: "3",
     name: "QuantumSecure",
     logo: "https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     industry: "Cybersecurity",
+    description: "Next-generation encryption technology to protect sensitive data against quantum computing threats.",
+    stage: "Pre-seed",
+    foundingYear: 2023,
+    founders: [],
     location: "London, UK",
-    fundingStage: "Pre-seed",
-    shortPitch: "Next-generation encryption technology to protect sensitive data against quantum computing threats.",
-    interestedCount: 15,
-    tags: ["Cybersecurity", "Encryption", "Quantum"],
+    funding: "$250K",
+    employees: 8,
+    website: "https://quantumsecure.example.com",
+    featured: false
   },
   {
     id: "4",
     name: "UrbanMobility",
     logo: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     industry: "Transportation",
+    description: "Electric micromobility solutions for urban environments to reduce congestion and emissions.",
+    stage: "Series B",
+    foundingYear: 2019,
+    founders: [],
     location: "Berlin, Germany",
-    fundingStage: "Series B",
-    shortPitch: "Electric micromobility solutions for urban environments to reduce congestion and emissions.",
-    interestedCount: 52,
-    tags: ["Transportation", "Electric", "Sustainable"],
+    funding: "$8M",
+    employees: 42,
+    website: "https://urbanmobility.example.com",
+    featured: true
   },
   {
     id: "5",
     name: "NutriGenomics",
     logo: "https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     industry: "FoodTech",
+    description: "Personalized nutrition plans based on genetic analysis for optimal health outcomes.",
+    stage: "Seed",
+    foundingYear: 2022,
+    founders: [],
     location: "Singapore",
-    fundingStage: "Seed",
-    shortPitch: "Personalized nutrition plans based on genetic analysis for optimal health outcomes.",
-    interestedCount: 33,
-    tags: ["Nutrition", "Genetics", "Health"],
+    funding: "$750K",
+    employees: 15,
+    website: "https://nutrigenomics.example.com",
+    featured: false
   },
   {
     id: "6",
     name: "BlockFinance",
     logo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     industry: "FinTech",
+    description: "Decentralized finance platform making crypto investing accessible to everyday users.",
+    stage: "Series A",
+    foundingYear: 2020,
+    founders: [],
     location: "New York, USA",
-    fundingStage: "Series A",
-    shortPitch: "Decentralized finance platform making crypto investing accessible to everyday users.",
-    interestedCount: 47,
-    tags: ["DeFi", "Blockchain", "Finance"],
+    funding: "$4.2M",
+    employees: 28,
+    website: "https://blockfinance.example.com",
+    featured: false
   },
 ];
 
@@ -95,19 +121,19 @@ const StartupShowcase = () => {
   const [selectedIndustry, setSelectedIndustry] = useState("All Industries");
   const [selectedStage, setSelectedStage] = useState("All Stages");
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
+  const { toast } = useToast();
 
   // Filter startups based on search and filters
   const filteredStartups = startups.filter((startup) => {
     // Search filter
     const matchesSearch = startup.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          startup.shortPitch.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          startup.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+                          startup.description.toLowerCase().includes(searchQuery.toLowerCase());
     
     // Industry filter
     const matchesIndustry = selectedIndustry === "All Industries" || startup.industry === selectedIndustry;
     
     // Funding stage filter
-    const matchesStage = selectedStage === "All Stages" || startup.fundingStage === selectedStage;
+    const matchesStage = selectedStage === "All Stages" || startup.stage === selectedStage;
     
     // Location filter
     const matchesLocation = selectedLocation === "All Locations" || 
@@ -115,6 +141,27 @@ const StartupShowcase = () => {
     
     return matchesSearch && matchesIndustry && matchesStage && matchesLocation;
   });
+  
+  const handleFilterChange = (filter: string, value: string) => {
+    // Show toast notification when filter changes
+    toast({
+      title: "Filter Applied",
+      description: `${filter} filter set to "${value}"`,
+      duration: 2000,
+    });
+    
+    switch(filter) {
+      case "industry":
+        setSelectedIndustry(value);
+        break;
+      case "stage":
+        setSelectedStage(value);
+        break;
+      case "location":
+        setSelectedLocation(value);
+        break;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -149,7 +196,7 @@ const StartupShowcase = () => {
               </div>
               
               <div className="flex flex-wrap gap-3">
-                <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
+                <Select value={selectedIndustry} onValueChange={(value) => handleFilterChange("industry", value)}>
                   <SelectTrigger className="w-[160px]">
                     <SelectValue placeholder="Industry" />
                   </SelectTrigger>
@@ -162,7 +209,7 @@ const StartupShowcase = () => {
                   </SelectContent>
                 </Select>
                 
-                <Select value={selectedStage} onValueChange={setSelectedStage}>
+                <Select value={selectedStage} onValueChange={(value) => handleFilterChange("stage", value)}>
                   <SelectTrigger className="w-[160px]">
                     <SelectValue placeholder="Funding Stage" />
                   </SelectTrigger>
@@ -175,7 +222,7 @@ const StartupShowcase = () => {
                   </SelectContent>
                 </Select>
                 
-                <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                <Select value={selectedLocation} onValueChange={(value) => handleFilterChange("location", value)}>
                   <SelectTrigger className="w-[160px]">
                     <SelectValue placeholder="Location" />
                   </SelectTrigger>
@@ -228,6 +275,11 @@ const StartupShowcase = () => {
                   setSelectedIndustry("All Industries");
                   setSelectedStage("All Stages");
                   setSelectedLocation("All Locations");
+                  
+                  toast({
+                    title: "Filters Cleared",
+                    description: "All search filters have been reset",
+                  });
                 }}
               >
                 Clear All Filters

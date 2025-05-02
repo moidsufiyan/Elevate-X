@@ -1,14 +1,19 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchStartups, ApiStartup } from "@/services/api";
+import { fetchStartups, ApiStartup } from "@/backend/services/api";
 import { adaptStartupFromApi } from "@/shared/utils/adapter-utils";
 
 export function useStartups() {
   return useQuery({
     queryKey: ["startups"],
     queryFn: async () => {
-      const apiStartups = await fetchStartups();
-      return apiStartups.map(startup => adaptStartupFromApi(startup));
+      try {
+        const apiStartups = await fetchStartups();
+        return apiStartups.map(startup => adaptStartupFromApi(startup));
+      } catch (error) {
+        console.error("Error fetching startups:", error);
+        throw error;
+      }
     },
     staleTime: 60000, // 1 min cache
     refetchOnWindowFocus: false, // Avoid unnecessary calls
