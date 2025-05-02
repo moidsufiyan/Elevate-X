@@ -11,14 +11,19 @@ interface AuthContextType {
   refreshUser: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({
+// Create a default context value
+const defaultContextValue: AuthContextType = {
   user: null,
   loading: true,
   isAuthenticated: false,
   logout: () => {},
   refreshUser: async () => {},
-});
+};
 
+// Create the context with the default value
+const AuthContext = createContext<AuthContextType>(defaultContextValue);
+
+// Custom hook to use the auth context
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -51,16 +56,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await fetchUser();
   };
 
+  const value = {
+    user,
+    loading,
+    isAuthenticated: !!user,
+    logout,
+    refreshUser,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        isAuthenticated: !!user,
-        logout,
-        refreshUser,
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
