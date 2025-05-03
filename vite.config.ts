@@ -12,7 +12,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000, // Change back to standard port
+    port: 8080,
     open: true,
   },
   build: {
