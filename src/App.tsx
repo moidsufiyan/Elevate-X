@@ -1,3 +1,4 @@
+
 // Update the App.tsx file to use the new directory structure
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -24,6 +25,7 @@ import FounderDashboard from "./pages/FounderDashboard";
 import MentorshipMatching from "./pages/MentorshipMatching";
 import Communities from "./pages/Communities";
 import StartupShowcase from "./pages/StartupShowcase";
+import StartupDetail from "./pages/StartupDetail";
 import { NotFound } from "./pages/NotFound";
 import { Unauthorized } from "./pages/Unauthorized";
 import About from "./pages/About";
@@ -76,6 +78,7 @@ function App() {
               <Route path="/communities" element={<Communities />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/startup-showcase" element={<StartupShowcase />} />
+              <Route path="/startup/:id" element={<StartupDetail />} />
               <Route path="/unauthorized" element={<Unauthorized />} />
 
               {/* New Resources Subpages */}
