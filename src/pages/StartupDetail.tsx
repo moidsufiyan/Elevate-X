@@ -18,16 +18,17 @@ import {
   Heart,
   ArrowLeft,
 } from "lucide-react";
-import { useStartups } from "@/hooks/use-startups";
+import { startups, getStartupById } from "@/data/startups";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const StartupDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("about");
-  const { data: startups, isLoading, error } = useStartups();
-
-  // Find the startup with the matching ID
-  const startup = startups?.find((s) => s.id === id);
+  
+  // Find the startup with the matching ID using static data
+  const startup = id ? getStartupById(id) : null;
+  const isLoading = false;
+  const error = null;
 
   // Format founding year to show years active
   const yearsActive = startup

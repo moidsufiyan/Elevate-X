@@ -26,7 +26,6 @@ import {
   Calendar,
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
-import { useAuth } from "@/hooks/useAuth.tsx";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -34,7 +33,9 @@ export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  
+  // Static user for frontend-only demo (always null since no auth)
+  const user = null;
 
   useEffect(() => {
     const handleScroll = () => {

@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Loader, Building } from "lucide-react";
 import { useStartups } from "@/hooks/use-startups";
 import { EmptyState } from "@/components/ui/empty-state";
-import { startupEmptyStates } from "@/shared/utils/empty-state-utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Number of startups to show on the homepage
@@ -93,11 +92,13 @@ export const StartupShowcase = () => {
         {hasNoStartups ? (
           <AnimatedSection threshold={0.1} delay={100} className="bg-white dark:bg-stargaze-900 rounded-xl p-8 shadow-sm border border-stargaze-100 dark:border-stargaze-800">
             <EmptyState
-              icon={<Building className="h-10 w-10 text-primary/60" />}
-              title={startupEmptyStates.noStartupsAvailable.title}
-              description={startupEmptyStates.noStartupsAvailable.description}
-              actionLabel={startupEmptyStates.noStartupsAvailable.actionLabel}
-              onAction={() => window.location.href = "/add-startup"}
+              icon={Building}
+              title="No startups available"
+              description="Check back later for new startup showcases."
+              action={{
+                label: "Refresh Page",
+                onClick: () => window.location.reload()
+              }}
             />
           </AnimatedSection>
         ) : (
