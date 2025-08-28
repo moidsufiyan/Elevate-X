@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
-import { Button } from "./Button";
+import { Button } from "./ui/button";
 import { ChevronRight, Star, ArrowRight } from "lucide-react";
 import { AnimatedSection } from "./AnimatedSection";
 import { Link } from "react-router-dom";
+import { statistics } from "@/data/home";
 
 export const Hero = () => {
   return (
@@ -56,11 +57,11 @@ export const Hero = () => {
             <Link to="/mentors" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="w-full"
-                rightIcon={<ChevronRight className="h-4 w-4" />}
+                className="w-full flex items-center gap-2"
                 aria-label="Find a mentor"
               >
                 Find a Mentor
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </Link>
             <Link to="/resources" className="w-full sm:w-auto">
@@ -82,11 +83,7 @@ export const Hero = () => {
             delay={400}
             staggerChildren={true}
           >
-            {[
-              { label: "Startup Founders", value: "2,500+" },
-              { label: "Expert Mentors", value: "500+" },
-              { label: "Success Stories", value: "150+" },
-            ].map((stat, index) => (
+            {statistics.slice(0, 3).map((stat, index) => (
               <div key={index} className="appear-animation">
                 <div
                   className={cn(

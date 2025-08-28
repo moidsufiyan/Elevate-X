@@ -15,9 +15,30 @@ import {
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Card, CardContent } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
+import { resources, resourceCategories } from "@/data/resources";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Resources = () => {
-  const resourceCategories = [
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+  // Filter resources based on search and category
+  const filteredResources = resources.filter((resource) => {
+    const matchesSearch = 
+      resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      resource.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      resource.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    const matchesCategory = 
+      selectedCategory === "All Categories" || resource.category === selectedCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
+
+  const staticResourceCategories = [
     {
       title: "Documentation",
       description: "Comprehensive documentation on startup formation, compliance, and growth in India",
@@ -126,16 +147,99 @@ const Resources = () => {
           </AnimatedSection>
         </section>
 
-        {/* Resource Categories */}
+        {/* Search and Filters */}
         <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <AnimatedSection threshold={0.1} className="mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-stargaze-900 dark:text-white text-center mb-8">
+                Browse Resources
+              </h2>
+              
+              <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto mb-12">
+                <div className="flex-1">
+                  <Input
+                    placeholder="Search resources..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="md:w-48">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {resourceCategories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Resources Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredResources.map((resource) => (
+                  <Link
+                    key={resource.id}
+                    to={`/resource/${resource.id}`}
+                    className="group"
+                  >
+                    <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/20 group-hover:-translate-y-1">
+                      {resource.image && (
+                        <div className="h-48 overflow-hidden">
+                          <img
+                            src={resource.image}
+                            alt={resource.title}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </div>
+                      )}
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Badge variant="secondary" className="text-xs">
+                            {resource.type.charAt(0).toUpperCase() + resource.type.slice(1)}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {resource.difficulty}
+                          </Badge>
+                        </div>
+                        <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                          {resource.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                          {resource.description}
+                        </p>
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <span>{resource.author.name}</span>
+                          <span>{resource.downloadCount.toLocaleString()} downloads</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+
+              {filteredResources.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">No resources found matching your criteria.</p>
+                </div>
+              )}
+            </AnimatedSection>
+          </div>
+        </section>
+
+        {/* Resource Categories */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/50">
+          <div className="max-w-7xl mx-auto">
+            <AnimatedSection threshold={0.1} className="mb-12">
               <h2 className="text-2xl sm:text-3xl font-bold text-stargaze-900 dark:text-white text-center mb-12">
-                Explore Resources
+                Resource Categories
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {resourceCategories.map((category, index) => (
+                {staticResourceCategories.map((category, index) => (
                   <AnimatedSection key={category.title} threshold={0.1} delay={index * 100}>
                     <Link to={category.link} className="block">
                       <div className="flex flex-col h-full bg-white dark:bg-stargaze-900 rounded-xl shadow-sm border border-stargaze-100 dark:border-stargaze-800 overflow-hidden transition-all hover:shadow-md hover:border-primary/30">

@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/button";
 import { SuggestedMentors } from "@/components/matching/SuggestedMentors";
 import { MentorMatchConfiguration } from "@/components/matching/MentorMatchConfiguration";
 import { Startup, UserPreferences } from "@/shared/types/models";
@@ -18,7 +17,8 @@ const MOCK_USER_ID = "user-1";
 const MOCK_STARTUP: Startup = {
   id: "startup-1",
   name: "Your Startup",
-  description: "Complete your startup profile to see personalized mentor matches.",
+  description:
+    "Complete your startup profile to see personalized mentor matches.",
   industry: "",
   stage: "Seed",
   foundingYear: new Date().getFullYear(),
@@ -27,40 +27,40 @@ const MOCK_STARTUP: Startup = {
     {
       name: "Founder",
       role: "CEO",
-      avatar: "https://via.placeholder.com/150?text=You"
-    }
+      avatar: "https://via.placeholder.com/150?text=You",
+    },
   ],
   location: "",
   funding: "",
   employees: 1,
-  website: ""
+  website: "",
 };
 
 const MentorMatching = () => {
   const [activeTab, setActiveTab] = useState("matches");
   const { data: mentors, isLoading: mentorsLoading } = useMentors();
-  
+
   const {
     preferences,
     matchingResults,
     savePreferences,
     isLoading: preferencesLoading,
-    isSaving
+    isSaving,
   } = useMentorMatching({
     userId: MOCK_USER_ID,
     startup: MOCK_STARTUP,
-    mentors: mentors || []
+    mentors: mentors || [],
   });
-  
+
   const handleSavePreferences = (newPreferences: Partial<UserPreferences>) => {
     savePreferences(newPreferences);
     setActiveTab("matches");
   };
-  
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      
+
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <AnimatedSection className="mb-8">
@@ -70,25 +70,33 @@ const MentorMatching = () => {
                   Find Your Perfect Mentor Match
                 </h1>
                 <p className="text-lg text-stargaze-600 dark:text-stargaze-300 max-w-3xl">
-                  Our intelligent matching system connects you with mentors who can help your specific needs
+                  Our intelligent matching system connects you with mentors who
+                  can help your specific needs
                 </p>
               </div>
             </div>
           </AnimatedSection>
-          
+
           <AnimatedSection delay={100}>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
               <TabsList className="grid grid-cols-2 mb-8 w-full max-w-md">
                 <TabsTrigger value="matches" className="text-sm md:text-base">
                   <Sparkles className="h-4 w-4 mr-2" />
                   Mentor Matches
                 </TabsTrigger>
-                <TabsTrigger value="preferences" className="text-sm md:text-base">
+                <TabsTrigger
+                  value="preferences"
+                  className="text-sm md:text-base"
+                >
                   <Settings className="h-4 w-4 mr-2" />
                   Matching Preferences
                 </TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="matches" className="pb-4">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div className="col-span-3">
@@ -101,68 +109,78 @@ const MentorMatching = () => {
                               Your Perfect Mentor Matches
                             </h2>
                             <p className="text-stargaze-600 dark:text-stargaze-400">
-                              Mentors ranked by match score based on your startup needs and preferences
+                              Mentors ranked by match score based on your
+                              startup needs and preferences
                             </p>
                           </div>
-                          
-                          <Button 
-                            variant="outline" 
+
+                          <Button
+                            variant="outline"
                             leftIcon={<Settings className="h-4 w-4" />}
                             onClick={() => setActiveTab("preferences")}
                           >
                             Adjust Matching
                           </Button>
                         </div>
-                        
+
                         {mentorsLoading || preferencesLoading ? (
                           <div className="text-center py-10">
                             <div className="inline-block p-3 bg-primary/10 rounded-full mb-4">
                               <Sparkles className="h-6 w-6 text-primary animate-pulse" />
                             </div>
-                            <h3 className="text-lg font-medium mb-2">Finding your perfect matches...</h3>
+                            <h3 className="text-lg font-medium mb-2">
+                              Finding your perfect matches...
+                            </h3>
                             <p className="text-stargaze-600 dark:text-stargaze-400">
-                              We're analyzing your profile and preferences to identify the best mentors for your needs
+                              We're analyzing your profile and preferences to
+                              identify the best mentors for your needs
                             </p>
                           </div>
                         ) : matchingResults && matchingResults.length > 0 ? (
                           <div className="space-y-6 mt-6">
                             {matchingResults.map(({ mentor, matchScore }) => (
-                              <div 
+                              <div
                                 key={mentor.id}
                                 className="flex flex-col md:flex-row gap-6 p-5 border border-stargaze-100 dark:border-stargaze-800 rounded-lg hover:bg-stargaze-50 dark:hover:bg-stargaze-900/50 transition-all"
                               >
                                 <div className="flex items-center gap-4">
                                   <div className="relative">
-                                    <img 
-                                      src={mentor.avatar} 
-                                      alt={mentor.name} 
+                                    <img
+                                      src={mentor.avatar}
+                                      alt={mentor.name}
                                       className="w-16 h-16 rounded-full object-cover border-2 border-white dark:border-stargaze-800"
                                     />
                                     <div className="absolute -bottom-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-8 w-8 flex items-center justify-center border-2 border-white dark:border-stargaze-800">
                                       {matchScore}%
                                     </div>
                                   </div>
-                                  
+
                                   <div>
-                                    <h3 className="font-semibold">{mentor.name}</h3>
+                                    <h3 className="font-semibold">
+                                      {mentor.name}
+                                    </h3>
                                     <p className="text-sm text-stargaze-600 dark:text-stargaze-400">
                                       {mentor.role} at {mentor.company}
                                     </p>
                                   </div>
                                 </div>
-                                
+
                                 <div className="md:flex-grow grid grid-cols-1 md:grid-cols-3 gap-4">
                                   <div>
-                                    <h4 className="text-xs uppercase text-stargaze-500 font-medium mb-1">Expertise</h4>
+                                    <h4 className="text-xs uppercase text-stargaze-500 font-medium mb-1">
+                                      Expertise
+                                    </h4>
                                     <div className="flex flex-wrap gap-1">
-                                      {mentor.expertise.slice(0, 3).map((skill, index) => (
-                                        <span 
-                                          key={index}
-                                          className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full"
-                                        >
-                                          {skill}
-                                        </span>
-                                      ))}
+                                      {mentor.expertise
+                                        .slice(0, 3)
+                                        .map((skill, index) => (
+                                          <span
+                                            key={index}
+                                            className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full"
+                                          >
+                                            {skill}
+                                          </span>
+                                        ))}
                                       {mentor.expertise.length > 3 && (
                                         <span className="text-xs px-2 py-0.5 bg-stargaze-100 dark:bg-stargaze-800 rounded-full">
                                           +{mentor.expertise.length - 3}
@@ -170,9 +188,11 @@ const MentorMatching = () => {
                                       )}
                                     </div>
                                   </div>
-                                  
+
                                   <div>
-                                    <h4 className="text-xs uppercase text-stargaze-500 font-medium mb-1">Top Matches</h4>
+                                    <h4 className="text-xs uppercase text-stargaze-500 font-medium mb-1">
+                                      Top Matches
+                                    </h4>
                                     <div className="flex flex-wrap gap-1">
                                       <span className="text-xs px-2 py-0.5 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full">
                                         Industry Match
@@ -182,15 +202,22 @@ const MentorMatching = () => {
                                       </span>
                                     </div>
                                   </div>
-                                  
+
                                   <div>
-                                    <h4 className="text-xs uppercase text-stargaze-500 font-medium mb-1">Session Rate</h4>
-                                    <p className="font-medium">${mentor.hourlyRate}/hour</p>
+                                    <h4 className="text-xs uppercase text-stargaze-500 font-medium mb-1">
+                                      Session Rate
+                                    </h4>
+                                    <p className="font-medium">
+                                      ${mentor.hourlyRate}/hour
+                                    </p>
                                   </div>
                                 </div>
-                                
+
                                 <div className="flex items-center gap-2">
-                                  <Button variant="secondary" className="w-full md:w-auto">
+                                  <Button
+                                    variant="secondary"
+                                    className="w-full md:w-auto"
+                                  >
                                     Schedule Call
                                   </Button>
                                   <Button className="w-full md:w-auto">
@@ -205,9 +232,12 @@ const MentorMatching = () => {
                             <div className="inline-block p-3 bg-stargaze-100 dark:bg-stargaze-800 rounded-full mb-4">
                               <SearchX className="h-6 w-6 text-stargaze-500" />
                             </div>
-                            <h3 className="text-lg font-medium mb-2">No matches found</h3>
+                            <h3 className="text-lg font-medium mb-2">
+                              No matches found
+                            </h3>
                             <p className="text-stargaze-600 dark:text-stargaze-400 max-w-md mx-auto mb-4">
-                              Try adjusting your matching preferences to find mentors who can help with your specific needs
+                              Try adjusting your matching preferences to find
+                              mentors who can help with your specific needs
                             </p>
                             <Button onClick={() => setActiveTab("preferences")}>
                               Update Preferences
@@ -219,10 +249,10 @@ const MentorMatching = () => {
                   </div>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="preferences">
                 <AnimatedSection delay={150} animation="fade-up">
-                  <MentorMatchConfiguration 
+                  <MentorMatchConfiguration
                     initialPreferences={preferences || undefined}
                     onSavePreferences={handleSavePreferences}
                   />
@@ -232,7 +262,7 @@ const MentorMatching = () => {
           </AnimatedSection>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

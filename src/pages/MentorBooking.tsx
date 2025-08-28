@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { 
   CalendarIcon,
   Check,
@@ -195,35 +195,24 @@ const MentorBooking = () => {
   // Handle booking submission
   const handleBookingSubmit = async () => {
     if (!selectedTimeSlot) {
-      toast({
-        title: "Select a time slot",
-        description: "Please select an available time slot for your session.",
-        variant: "destructive"
-      });
+      toast.error("Please select an available time slot for your session.");
       return;
     }
     
     setIsSubmitting(true);
     
     try {
-      // In a real app, this would be an API call to save the booking
+      // Frontend only demo - simulate booking submission
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      toast({
-        title: "Booking confirmed!",
-        description: `Your session with ${mentor.name} is scheduled for ${format(selectedDate, "MMMM d, yyyy")} at ${selectedTimeSlot}.`,
-      });
+      toast.success(`Session booking confirmed! (Demo only - ${mentor.name} on ${format(selectedDate, "MMMM d, yyyy")} at ${selectedTimeSlot})`);
       
       // Close dialog and navigate to a confirmation page or back to mentor list
       setConfirmDialogOpen(false);
       navigate("/mentors");
     } catch (error) {
       console.error("Error submitting booking:", error);
-      toast({
-        title: "Booking failed",
-        description: "There was an error processing your booking. Please try again.",
-        variant: "destructive"
-      });
+      toast.error("Booking failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { AnimatedSection } from "./AnimatedSection";
 import { StartupCard } from "./startup/StartupCard";
-import { Button } from "./Button";
+import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Loader, Building } from "lucide-react";
 import { useStartups } from "@/hooks/use-startups";
@@ -22,7 +21,9 @@ export const StartupShowcase = () => {
       <section id="startups" className="py-24 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Startup Showcase</h2>
+            <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
+              Startup Showcase
+            </h2>
             <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
               Discover Promising Indian Startups
             </h3>
@@ -52,7 +53,9 @@ export const StartupShowcase = () => {
       <section id="startups" className="py-24 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-sm font-semibold text-destructive uppercase tracking-wider mb-3">Error</h2>
+            <h2 className="text-sm font-semibold text-destructive uppercase tracking-wider mb-3">
+              Error
+            </h2>
             <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
               Could not load startups
             </h3>
@@ -77,27 +80,34 @@ export const StartupShowcase = () => {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-stargaze-50/50 to-transparent dark:from-stargaze-950/50" />
       </div>
-      
+
       <div className="container mx-auto px-6 relative z-10">
         <AnimatedSection threshold={0.1} className="text-center mb-16">
-          <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Startup Showcase</h2>
+          <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
+            Startup Showcase
+          </h2>
           <h3 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
             Discover Promising Indian Startups
           </h3>
           <p className="max-w-2xl mx-auto text-stargaze-600 dark:text-stargaze-300 text-lg">
-            Connect with innovative startups across various industries in India and find your next investment opportunity.
+            Connect with innovative startups across various industries in India
+            and find your next investment opportunity.
           </p>
         </AnimatedSection>
-        
+
         {hasNoStartups ? (
-          <AnimatedSection threshold={0.1} delay={100} className="bg-white dark:bg-stargaze-900 rounded-xl p-8 shadow-sm border border-stargaze-100 dark:border-stargaze-800">
+          <AnimatedSection
+            threshold={0.1}
+            delay={100}
+            className="bg-white dark:bg-stargaze-900 rounded-xl p-8 shadow-sm border border-stargaze-100 dark:border-stargaze-800"
+          >
             <EmptyState
               icon={Building}
               title="No startups available"
               description="Check back later for new startup showcases."
               action={{
                 label: "Refresh Page",
-                onClick: () => window.location.reload()
+                onClick: () => window.location.reload(),
               }}
             />
           </AnimatedSection>
@@ -114,11 +124,16 @@ export const StartupShowcase = () => {
                 </AnimatedSection>
               ))}
             </div>
-            
-            <AnimatedSection threshold={0.1} delay={400} className="text-center mt-12">
+
+            <AnimatedSection
+              threshold={0.1}
+              delay={400}
+              className="text-center mt-12"
+            >
               <Link to="/startup-showcase">
-                <Button rightIcon={<ArrowRight className="h-4 w-4" />}>
+                <Button className="flex items-center gap-2">
                   View All Startups ({startups ? startups.length : 0})
+                  <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
             </AnimatedSection>

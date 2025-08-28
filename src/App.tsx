@@ -1,4 +1,3 @@
-
 // Update the App.tsx file to use the new directory structure
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -39,6 +38,7 @@ import CookiePolicy from "./pages/legal/CookiePolicy";
 import DataProcessing from "./pages/legal/DataProcessing";
 import FileUploadGuide from "./pages/FileUploadGuide";
 import Messaging from "./pages/Messaging";
+import ResourceDetail from "./pages/ResourceDetail";
 
 // Import new resource pages
 import Documentation from "./pages/resources/Documentation";
@@ -50,76 +50,68 @@ import Events from "./pages/resources/Events";
 function App() {
   return (
     <TooltipProvider>
-        <SEO /> {/* Default SEO tags */}
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Index />} />
-              <Route path="/mentors" element={<Mentors />} />
-              <Route path="/mentor/:id" element={<MentorDetail />} />
-              <Route path="/resources" element={<Resources />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/communities" element={<Communities />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/startup-showcase" element={<StartupShowcase />} />
-              <Route path="/startup/:id" element={<StartupDetail />} />
-              <Route path="/unauthorized" element={<Unauthorized />} />
+      <SEO /> {/* Default SEO tags */}
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Index />} />
+          <Route path="/mentors" element={<Mentors />} />
+          <Route path="/mentor/:id" element={<MentorDetail />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/resource/:id" element={<ResourceDetail />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/communities" element={<Communities />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/startup-showcase" element={<StartupShowcase />} />
+          <Route path="/startup/:id" element={<StartupDetail />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
 
-              {/* New Resources Subpages */}
-              <Route
-                path="/resources/documentation"
-                element={<Documentation />}
-              />
-              <Route path="/resources/guides" element={<Guides />} />
-              <Route path="/resources/faqs" element={<FAQs />} />
-              <Route
-                path="/resources/success-stories"
-                element={<SuccessStories />}
-              />
-              <Route path="/resources/events" element={<Events />} />
+          {/* New Resources Subpages */}
+          <Route path="/resources/documentation" element={<Documentation />} />
+          <Route path="/resources/guides" element={<Guides />} />
+          <Route path="/resources/faqs" element={<FAQs />} />
+          <Route
+            path="/resources/success-stories"
+            element={<SuccessStories />}
+          />
+          <Route path="/resources/events" element={<Events />} />
 
-              {/* All Routes are now Public */}
-              <Route path="/mentor/:id/book" element={<MentorBooking />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/startup-profile" element={<StartupProfile />} />
-              <Route path="/mentor-profile" element={<MentorProfile />} />
-              <Route path="/mentor-dashboard" element={<MentorDashboard />} />
-              <Route path="/blog-management" element={<BlogManagement />} />
-              <Route path="/founder-dashboard" element={<FounderDashboard />} />
-              <Route path="/mentorship-matching" element={<MentorshipMatching />} />
-              <Route path="/messaging" element={<Messaging />} />
-              <Route path="/file-upload-guide" element={<FileUploadGuide />} />
+          {/* All Routes are now Public */}
+          <Route path="/mentor/:id/book" element={<MentorBooking />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/startup-profile" element={<StartupProfile />} />
+          <Route path="/mentor-profile" element={<MentorProfile />} />
+          <Route path="/mentor-dashboard" element={<MentorDashboard />} />
+          <Route path="/blog-management" element={<BlogManagement />} />
+          <Route path="/founder-dashboard" element={<FounderDashboard />} />
+          <Route path="/mentorship-matching" element={<MentorshipMatching />} />
+          <Route path="/messaging" element={<Messaging />} />
+          <Route path="/file-upload-guide" element={<FileUploadGuide />} />
 
-              {/* Blog Routes */}
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:id" element={<BlogPost />} />
+          {/* Blog Routes */}
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
 
-              {/* Page Routes */}
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/press" element={<Press />} />
-              <Route path="/sitemap" element={<Sitemap />} />
+          {/* Page Routes */}
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/press" element={<Press />} />
+          <Route path="/sitemap" element={<Sitemap />} />
 
-              {/* Legal Pages */}
-              <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
-              <Route
-                path="/legal/terms-of-service"
-                element={<TermsOfService />}
-              />
-              <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
-              <Route
-                path="/legal/data-processing"
-                element={<DataProcessing />}
-              />
+          {/* Legal Pages */}
+          <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/legal/terms-of-service" element={<TermsOfService />} />
+          <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/legal/data-processing" element={<DataProcessing />} />
 
-              {/* Catch-all route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+          {/* Catch-all route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
   );
 }
 

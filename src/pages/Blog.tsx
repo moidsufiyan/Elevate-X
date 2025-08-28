@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Search, Clock, User, ArrowRight, Calendar } from "lucide-react";
+import { blogPosts, blogCategories } from "@/data/blogs";
+import { useState } from "react";
 
-const blogPosts = [
+const staticBlogPosts = [
   {
     id: "1",
     title: "10 Essential Tips for Finding the Right Mentor for Your Startup",
@@ -74,6 +76,22 @@ const categories = [
 ];
 
 const Blog = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+  // Filter blog posts based on search and category
+  const filteredPosts = blogPosts.filter((post) => {
+    const matchesSearch = 
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    const matchesCategory = 
+      selectedCategory === "All Categories" || post.category === selectedCategory;
+    
+    return matchesSearch && matchesCategory && post.status === "published";
+  });
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -119,35 +137,35 @@ const Blog = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2">
                 <div className="h-64 lg:h-auto">
                   <img 
-                    src={blogPosts[0].image} 
-                    alt={blogPosts[0].title}
+                    src={filteredPosts[0]?.image} 
+                    alt={filteredPosts[0]?.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="p-6 md:p-10 flex flex-col justify-between">
                   <div>
-                    <Badge>{blogPosts[0].category}</Badge>
+                    <Badge>{filteredPosts[0]?.category}</Badge>
                     <h2 className="text-2xl md:text-3xl font-bold text-stargaze-900 dark:text-white mt-4 mb-3">
-                      {blogPosts[0].title}
+                      {filteredPosts[0]?.title}
                     </h2>
                     <p className="text-stargaze-600 dark:text-stargaze-300 mb-4">
-                      {blogPosts[0].excerpt}
+                      {filteredPosts[0]?.excerpt}
                     </p>
                   </div>
                   
                   <div>
                     <div className="flex items-center text-sm text-stargaze-500 dark:text-stargaze-400 mb-4">
                       <User className="h-4 w-4 mr-2" />
-                      <span>{blogPosts[0].author}</span>
+                      <span>{filteredPosts[0]?.author.name}</span>
                       <span className="mx-2">•</span>
                       <Calendar className="h-4 w-4 mr-2" />
-                      <span>{blogPosts[0].date}</span>
+                      <span>{filteredPosts[0] ? new Date(filteredPosts[0].publishedAt).toLocaleDateString() : ''}</span>
                       <span className="mx-2">•</span>
                       <Clock className="h-4 w-4 mr-2" />
-                      <span>{blogPosts[0].readTime}</span>
+                      <span>{filteredPosts[0]?.readTime} min read</span>
                     </div>
                     
-                    <Link to={`/blog/${blogPosts[0].id}`}>
+                    <Link to={`/blog/${filteredPosts[0]?.id}`}>
                       <Button className="gap-2">
                         Read Article <ArrowRight className="h-4 w-4" />
                       </Button>
@@ -161,7 +179,7 @@ const Blog = () => {
           {/* Article Grid */}
           <AnimatedSection animation="fade-up" delay={200} className="mb-16">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.slice(1).map((post) => (
+              {filteredPosts.slice(1).map((post) => (
                 <Link 
                   key={post.id} 
                   to={`/blog/${post.id}`}

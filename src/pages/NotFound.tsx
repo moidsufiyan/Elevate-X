@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/button";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { ArrowLeft } from "lucide-react";
 
@@ -12,8 +12,11 @@ export const NotFound = () => {
         <p className="text-muted-foreground mb-8">
           The page you are looking for doesn't exist or has been moved.
         </p>
-        <Button asChild leftIcon={<ArrowLeft className="h-4 w-4" />}>
-          <Link to="/">Go Back Home</Link>
+        <Button asChild>
+          <Link to="/" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Go Back Home
+          </Link>
         </Button>
       </AnimatedSection>
     </div>

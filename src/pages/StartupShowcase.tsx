@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { StartupCard } from "@/components/startup/StartupCard";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/button";
 import { Search, Filter, MapPin } from "lucide-react";
 import {
   Select,
@@ -22,28 +21,36 @@ import { Startup } from "@/shared/types/models";
 
 // For filtering - India-specific industries and locations
 const industries = [
-  "All Industries", 
-  "AgriTech", 
-  "CleanTech", 
-  "EdTech", 
-  "FinTech", 
-  "FoodTech", 
+  "All Industries",
+  "AgriTech",
+  "CleanTech",
+  "EdTech",
+  "FinTech",
+  "FoodTech",
   "HealthTech",
   "LogisticsTech",
-  "E-commerce"
+  "E-commerce",
 ];
-const fundingStages = ["All Stages", "Pre-seed", "Seed", "Series A", "Series B", "Series C+", "Bootstrapped"];
+const fundingStages = [
+  "All Stages",
+  "Pre-seed",
+  "Seed",
+  "Series A",
+  "Series B",
+  "Series C+",
+  "Bootstrapped",
+];
 const locations = [
-  "All Locations", 
-  "Bangalore", 
-  "Mumbai", 
-  "Delhi", 
-  "Hyderabad", 
-  "Chennai", 
-  "Pune", 
+  "All Locations",
+  "Bangalore",
+  "Mumbai",
+  "Delhi",
+  "Hyderabad",
+  "Chennai",
+  "Pune",
   "Ahmedabad",
-  "Jaipur", 
-  "Kolkata"
+  "Jaipur",
+  "Kolkata",
 ];
 
 const StartupShowcase = () => {
@@ -52,29 +59,37 @@ const StartupShowcase = () => {
   const [selectedStage, setSelectedStage] = useState("All Stages");
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const { toast } = useToast();
-  
+
   // Fetch startups data using our hook
   const { data: startups, isLoading, error } = useStartups();
 
   // Filter startups based on search and filters
-  const filteredStartups = startups?.filter((startup) => {
-    // Search filter
-    const matchesSearch = startup.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          startup.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    // Industry filter
-    const matchesIndustry = selectedIndustry === "All Industries" || startup.industry === selectedIndustry;
-    
-    // Funding stage filter
-    const matchesStage = selectedStage === "All Stages" || startup.stage === selectedStage;
-    
-    // Location filter
-    const matchesLocation = selectedLocation === "All Locations" || 
-                           startup.location.includes(selectedLocation);
-    
-    return matchesSearch && matchesIndustry && matchesStage && matchesLocation;
-  }) || [];
-  
+  const filteredStartups =
+    startups?.filter((startup) => {
+      // Search filter
+      const matchesSearch =
+        startup.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        startup.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Industry filter
+      const matchesIndustry =
+        selectedIndustry === "All Industries" ||
+        startup.industry === selectedIndustry;
+
+      // Funding stage filter
+      const matchesStage =
+        selectedStage === "All Stages" || startup.stage === selectedStage;
+
+      // Location filter
+      const matchesLocation =
+        selectedLocation === "All Locations" ||
+        startup.location.includes(selectedLocation);
+
+      return (
+        matchesSearch && matchesIndustry && matchesStage && matchesLocation
+      );
+    }) || [];
+
   const handleFilterChange = (filter: string, value: string) => {
     // Show toast notification when filter changes
     toast({
@@ -82,8 +97,8 @@ const StartupShowcase = () => {
       description: `${filter} filter set to "${value}"`,
       duration: 2000,
     });
-    
-    switch(filter) {
+
+    switch (filter) {
       case "industry":
         setSelectedIndustry(value);
         break;
@@ -99,7 +114,7 @@ const StartupShowcase = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      
+
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <AnimatedSection className="mb-8 text-center">
@@ -107,14 +122,15 @@ const StartupShowcase = () => {
               Discover Promising Indian Startups
             </h1>
             <p className="text-lg text-stargaze-600 dark:text-stargaze-300 max-w-3xl mx-auto">
-              Connect with innovative startups across various industries in India and find your next investment opportunity or partnership.
+              Connect with innovative startups across various industries in
+              India and find your next investment opportunity or partnership.
             </p>
           </AnimatedSection>
-          
+
           {/* Search and Filters */}
-          <AnimatedSection 
-            animation="fade-up" 
-            delay={100} 
+          <AnimatedSection
+            animation="fade-up"
+            delay={100}
             className="bg-white dark:bg-stargaze-900 shadow-subtle rounded-xl p-6 mb-8 max-w-5xl mx-auto"
           >
             <div className="flex flex-col md:flex-row gap-4">
@@ -127,9 +143,14 @@ const StartupShowcase = () => {
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stargaze-400" />
               </div>
-              
+
               <div className="flex flex-wrap gap-3">
-                <Select value={selectedIndustry} onValueChange={(value) => handleFilterChange("industry", value)}>
+                <Select
+                  value={selectedIndustry}
+                  onValueChange={(value) =>
+                    handleFilterChange("industry", value)
+                  }
+                >
                   <SelectTrigger className="w-[160px]">
                     <SelectValue placeholder="Industry" />
                   </SelectTrigger>
@@ -141,8 +162,11 @@ const StartupShowcase = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                
-                <Select value={selectedStage} onValueChange={(value) => handleFilterChange("stage", value)}>
+
+                <Select
+                  value={selectedStage}
+                  onValueChange={(value) => handleFilterChange("stage", value)}
+                >
                   <SelectTrigger className="w-[160px]">
                     <SelectValue placeholder="Funding Stage" />
                   </SelectTrigger>
@@ -154,8 +178,13 @@ const StartupShowcase = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                
-                <Select value={selectedLocation} onValueChange={(value) => handleFilterChange("location", value)}>
+
+                <Select
+                  value={selectedLocation}
+                  onValueChange={(value) =>
+                    handleFilterChange("location", value)
+                  }
+                >
                   <SelectTrigger className="w-[160px]">
                     <SelectValue placeholder="Location" />
                   </SelectTrigger>
@@ -170,12 +199,15 @@ const StartupShowcase = () => {
               </div>
             </div>
           </AnimatedSection>
-          
+
           {/* Loading State */}
           {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {[...Array(6)].map((_, index) => (
-                <div key={index} className="bg-white dark:bg-stargaze-900 rounded-xl p-4 space-y-3 shadow-subtle">
+                <div
+                  key={index}
+                  className="bg-white dark:bg-stargaze-900 rounded-xl p-4 space-y-3 shadow-subtle"
+                >
                   <Skeleton className="h-48 w-full rounded-md" />
                   <Skeleton className="h-8 w-3/4 rounded-md" />
                   <Skeleton className="h-6 w-1/2 rounded-md" />
@@ -187,7 +219,7 @@ const StartupShowcase = () => {
               ))}
             </div>
           )}
-          
+
           {/* Error State */}
           {error && (
             <div className="max-w-5xl mx-auto text-center py-10">
@@ -199,22 +231,26 @@ const StartupShowcase = () => {
               </Button>
             </div>
           )}
-          
+
           {/* Results Count */}
           {!isLoading && !error && (
             <AnimatedSection delay={150} className="mb-6 max-w-5xl mx-auto">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-stargaze-600 dark:text-stargaze-400">
-                  Showing <span className="font-medium">{filteredStartups.length}</span> startups
+                  Showing{" "}
+                  <span className="font-medium">{filteredStartups.length}</span>{" "}
+                  startups
                 </p>
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-stargaze-500" />
-                  <span className="text-sm text-stargaze-600 dark:text-stargaze-400">Filters Applied</span>
+                  <span className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                    Filters Applied
+                  </span>
                 </div>
               </div>
             </AnimatedSection>
           )}
-          
+
           {/* Empty State */}
           {!isLoading && !error && startups && startups.length === 0 && (
             <EmptyState
@@ -230,7 +266,7 @@ const StartupShowcase = () => {
               }}
             />
           )}
-          
+
           {/* Startups Grid */}
           {!isLoading && !error && startups && startups.length > 0 && (
             <>
@@ -250,14 +286,14 @@ const StartupShowcase = () => {
                   <p className="mt-2 text-stargaze-500">
                     Try adjusting your search criteria
                   </p>
-                  <Button 
-                    className="mt-6" 
+                  <Button
+                    className="mt-6"
                     onClick={() => {
                       setSearchQuery("");
                       setSelectedIndustry("All Industries");
                       setSelectedStage("All Stages");
                       setSelectedLocation("All Locations");
-                      
+
                       toast({
                         title: "Filters Cleared",
                         description: "All search filters have been reset",
@@ -272,7 +308,7 @@ const StartupShowcase = () => {
           )}
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

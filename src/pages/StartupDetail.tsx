@@ -1,4 +1,3 @@
-
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
@@ -18,17 +17,23 @@ import {
   Heart,
   ArrowLeft,
 } from "lucide-react";
-import { startups, getStartupById } from "@/data/startups";
+import { startups } from "@/data/startups";
 import { Skeleton } from "@/components/ui/skeleton";
+import { NotFound } from "./NotFound";
 
 const StartupDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("about");
-  
+
   // Find the startup with the matching ID using static data
-  const startup = id ? getStartupById(id) : null;
+  const startup = startups.find((s) => s.id === id);
   const isLoading = false;
   const error = null;
+
+  // Show not found if startup doesn't exist
+  if (!startup) {
+    return <NotFound />;
+  }
 
   // Format founding year to show years active
   const yearsActive = startup

@@ -1,6 +1,6 @@
 
 import { cn } from "@/lib/utils";
-import { Button } from "./Button";
+import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { MessageSquare, Star, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -102,9 +102,9 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="w-full justify-center border border-stargaze-200 dark:border-stargaze-700"
-              leftIcon={<MessageSquare className="h-4 w-4" />}
+              className="w-full justify-center border border-stargaze-200 dark:border-stargaze-700 flex items-center gap-2"
             >
+              <MessageSquare className="h-4 w-4" />
               Connect
             </Button>
           </Link>
@@ -112,9 +112,9 @@ export const MentorCard = ({ mentor, className }: MentorCardProps) => {
             <Button 
               variant="outline" 
               size="sm" 
-              className="w-full justify-center border border-stargaze-200 dark:border-stargaze-700"
-              leftIcon={<Calendar className="h-4 w-4" />}
+              className="w-full justify-center border border-stargaze-200 dark:border-stargaze-700 flex items-center gap-2"
             >
+              <Calendar className="h-4 w-4" />
               Book
             </Button>
           </Link>

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { AnimatedSection } from "./AnimatedSection";
 import { MentorCard } from "./MentorCard";
-import { Button } from "./Button";
+import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Loader, Users } from "lucide-react";
 import { useMentors } from "@/hooks/use-mentors";
@@ -128,22 +128,22 @@ export const MentorShowcase = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  leftIcon={<ChevronLeft className="h-4 w-4" />}
                   onClick={handlePrevSlide}
                   disabled={currentSlide === 0}
-                  className="opacity-70 hover:opacity-100"
+                  className="opacity-70 hover:opacity-100 flex items-center gap-2"
                 >
+                  <ChevronLeft className="h-4 w-4" />
                   Previous
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  rightIcon={<ChevronRight className="h-4 w-4" />}
                   onClick={handleNextSlide}
                   disabled={currentSlide >= maxSlides}
-                  className="opacity-70 hover:opacity-100"
+                  className="opacity-70 hover:opacity-100 flex items-center gap-2"
                 >
                   Next
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
               

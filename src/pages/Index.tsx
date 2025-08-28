@@ -6,7 +6,7 @@ import { MentorShowcase } from "@/components/MentorShowcase";
 import { StartupShowcase } from "@/components/StartupShowcase";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -19,6 +19,7 @@ import {
   Globe,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { statistics, testimonials } from "@/data/home";
 
 const Index = () => {
   useEffect(() => {
@@ -227,12 +228,9 @@ const Index = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <Link to="/auth">
-                    <Button
-                      size="lg"
-                      className="gap-2"
-                      rightIcon={<ArrowRight className="h-4 w-4" />}
-                    >
+                    <Button size="lg" className="gap-2">
                       Get Started
+                      <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
                   <Link to="/mentors">
@@ -256,13 +254,9 @@ const Index = () => {
           <MentorShowcase />
           <div className="text-center mt-8 mb-16">
             <Link to="/mentors">
-              <Button
-                size="lg"
-                variant="outline"
-                className="gap-2"
-                rightIcon={<ArrowRight className="h-4 w-4" />}
-              >
+              <Button size="lg" variant="outline" className="gap-2">
                 View All Mentors
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
@@ -559,20 +553,67 @@ const Index = () => {
           <StartupShowcase />
           <div className="text-center mt-8 mb-20">
             <Link to="/startup-showcase">
-              <Button
-                size="lg"
-                variant="outline"
-                className="gap-2"
-                rightIcon={<ArrowRight className="h-4 w-4" />}
-              >
+              <Button size="lg" variant="outline" className="gap-2">
                 View All Startups
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
         </AnimatedSection>
 
-        {/* Final CTA */}
+        {/* Testimonials Section */}
         <AnimatedSection animation="fade-up" duration="normal" delay={450}>
+          <section className="py-20 px-4 sm:px-6">
+            <div className="max-w-6xl mx-auto text-center">
+              <h2 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-4">
+                What Our Community Says
+              </h2>
+              <p className="text-lg text-stargaze-600 dark:text-stargaze-300 mb-16 max-w-2xl mx-auto">
+                Don't just take our word for it. Hear from founders who've
+                transformed their businesses with our mentors.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {testimonials.map((testimonial) => (
+                  <div
+                    key={testimonial.id}
+                    className="bg-white dark:bg-stargaze-800 rounded-xl p-6 shadow-lg border border-stargaze-200 dark:border-stargaze-700"
+                  >
+                    <div className="flex items-center gap-1 mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className="h-5 w-5 fill-yellow-400 text-yellow-400"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-stargaze-700 dark:text-stargaze-300 mb-6 leading-relaxed">
+                      "{testimonial.content}"
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={testimonial.avatar}
+                        alt={testimonial.name}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div className="text-left">
+                        <h4 className="font-semibold text-stargaze-900 dark:text-white">
+                          {testimonial.name}
+                        </h4>
+                        <p className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                          {testimonial.role}, {testimonial.company}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </AnimatedSection>
+
+        {/* Final CTA */}
+        <AnimatedSection animation="fade-up" duration="normal" delay={500}>
           <section className="bg-primary/10 dark:bg-primary/20 py-20 px-4 sm:px-6">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
@@ -584,12 +625,9 @@ const Index = () => {
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link to="/auth">
-                  <Button
-                    size="lg"
-                    className="gap-2"
-                    rightIcon={<ArrowRight className="h-4 w-4" />}
-                  >
+                  <Button size="lg" className="gap-2">
                     Join Now
+                    <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <Link to="/about">
