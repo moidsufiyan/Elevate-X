@@ -39,6 +39,7 @@ import DataProcessing from "./pages/legal/DataProcessing";
 import FileUploadGuide from "./pages/FileUploadGuide";
 import Messaging from "./pages/Messaging";
 import ResourceDetail from "./pages/ResourceDetail";
+import Test from "./pages/Test";
 
 // Import new resource pages
 import Documentation from "./pages/resources/Documentation";
@@ -57,6 +58,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
+          <Route path="/test" element={<Test />} />
           <Route path="/mentors" element={<Mentors />} />
           <Route path="/mentor/:id" element={<MentorDetail />} />
           <Route path="/resources" element={<Resources />} />
