@@ -1,0 +1,21 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft blue glow under the text -->
+    <radialGradient id="glow" cx="50%" cy="70%" r="45%">
+      <stop offset="0%" stop-color="#3576df" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#020919" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Dark background -->
+  <rect width="64" height="64" rx="15" fill="#020919"/>
+  <!-- Blue glow under text -->
+  <ellipse cx="32" cy="44" rx="19" ry="12" fill="url(#glow)"/>
+  <!-- Glass panel with blue border -->
+  <rect x="07" y="08" width="50" height="50" rx="11"
+        fill="#08142d" fill-opacity="0.55" stroke="#3576df" stroke-width="1.3"/>
+  <!-- "e x" text, centered horizontally, on the same line -->
+  <text x="50%" y="39" text-anchor="middle" font-family="'Poppins','Inter',sans-serif"
+        font-weight="750" font-size="20" letter-spacing="1" fill="#3576df">
+    eX
+  </text>
+</svg>
