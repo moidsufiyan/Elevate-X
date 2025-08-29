@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { MentorshipSession } from "@/shared/types/models";
-import { formatDate, formatDuration } from "@/shared/utils/data-utils";
+import { MentorshipSession } from "@/lib/types";
+import { formatDate, formatDuration } from "@/lib/data-utils";
 import {
   Card,
   CardContent,

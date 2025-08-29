@@ -25,12 +25,36 @@ import { MentorReviewRequests } from "@/components/mentor/MentorReviewRequests";
 import { MentorSessions } from "@/components/mentor/MentorSessions";
 import { MentorContentHub } from "@/components/mentor/MentorContentHub";
 import { MentorStats } from "@/components/mentor/MentorStats";
-import { useSessionHistory } from "@/shared/utils/data-utils";
+// Removed shared utils import - using static data instead
 import { SessionHistoryList } from "@/components/session/SessionHistoryList";
 
 const MentorDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
-  const { data: sessionHistory } = useSessionHistory("mentor-1", "mentor");
+  // Mock session history data for demo
+  const sessionHistory = {
+    upcomingSessions: [
+      {
+        id: "1",
+        mentorName: "Current User",
+        founderName: "Rahul Gupta",
+        scheduledDate: "2024-01-25T10:00:00Z",
+        duration: 60,
+        status: "confirmed",
+        topic: "Product Strategy Discussion",
+      },
+    ],
+    completedSessions: [
+      {
+        id: "2",
+        mentorName: "Current User",
+        founderName: "Priya Sharma",
+        scheduledDate: "2024-01-20T14:00:00Z",
+        duration: 45,
+        status: "completed",
+        topic: "Fundraising Guidance",
+      },
+    ],
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">

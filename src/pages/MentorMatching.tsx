@@ -6,11 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { SuggestedMentors } from "@/components/matching/SuggestedMentors";
 import { MentorMatchConfiguration } from "@/components/matching/MentorMatchConfiguration";
-import { Startup, UserPreferences } from "@/shared/types/models";
-import { useMentorMatching } from "@/hooks/use-mentor-matching";
-import { useMentors } from "@/hooks/use-mentors";
+import { Startup, UserPreferences } from "@/lib/types";
+import { mentors } from "@/data/mentors";
 import { SearchX, Sparkles, Settings, ListFilter } from "lucide-react";
-import { ensureCompletePreferences } from "@/shared/utils/adapter-utils";
+import { ensureCompletePreferences } from "@/lib/data-utils";
 
 // For demonstration - in production this would come from the user's profile
 const MOCK_USER_ID = "user-1";
@@ -38,19 +37,20 @@ const MOCK_STARTUP: Startup = {
 
 const MentorMatching = () => {
   const [activeTab, setActiveTab] = useState("matches");
-  const { data: mentors, isLoading: mentorsLoading } = useMentors();
+  // Using static data - no loading states needed
+  const mentorsLoading = false;
 
-  const {
-    preferences,
-    matchingResults,
-    savePreferences,
-    isLoading: preferencesLoading,
-    isSaving,
-  } = useMentorMatching({
-    userId: MOCK_USER_ID,
-    startup: MOCK_STARTUP,
-    mentors: mentors || [],
+  // Mock matching functionality for static demo
+  const [preferences, setPreferences] = useState<UserPreferences>({
+    industries: [],
+    experience: "Any",
+    location: "Any",
+    availability: "Flexible",
   });
+  const matchingResults = mentors.slice(0, 5);
+  const savePreferences = (prefs: UserPreferences) => setPreferences(prefs);
+  const preferencesLoading = false;
+  const isSaving = false;
 
   const handleSavePreferences = (newPreferences: Partial<UserPreferences>) => {
     savePreferences(newPreferences);

@@ -33,7 +33,7 @@ export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // Static user for frontend-only demo (always null since no auth)
   const user = null;
 
@@ -80,6 +80,7 @@ export const Navbar = () => {
           to="/"
           className="flex items-center space-x-2 text-2xl font-bold tracking-tight"
           aria-label="Elevate X Home"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
           <span className="text-primary">Elevate</span>
           <span className="dark:text-white">X</span>

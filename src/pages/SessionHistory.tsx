@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { useSessionHistory } from "@/shared/utils/data-utils";
+import { useSessionHistory } from "@/lib/data-utils";
 import { SessionHistoryList } from "@/components/session/SessionHistoryList";
 import { Button } from "@/components/ui/button";
 import {

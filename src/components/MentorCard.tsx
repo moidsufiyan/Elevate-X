@@ -1,10 +1,10 @@
-
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
-import { MessageSquare, Star, Calendar } from "lucide-react";
+import { MessageSquare, Star, MapPin, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Mentor } from "@/shared/types/models";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Mentor } from "@/data/mentors";
 
 interface MentorCardProps {
   mentor: Mentor;
@@ -13,111 +13,114 @@ interface MentorCardProps {
 
 export const MentorCard = ({ mentor, className }: MentorCardProps) => {
   return (
-    <div 
+    <div
       className={cn(
-        "group relative overflow-hidden rounded-2xl transition-all duration-500",
+        "group relative overflow-hidden rounded-xl transition-all duration-300",
         "bg-white dark:bg-stargaze-900",
         "border border-stargaze-100 dark:border-stargaze-800",
-        "shadow-subtle hover:shadow-md",
+        "shadow-sm hover:shadow-lg hover:-translate-y-1",
+        "h-full flex flex-col",
         className
       )}
     >
-      {/* Image Container */}
-      <Link to={`/mentor/${mentor.id}`} className="block">
-        <div className="relative aspect-[4/5] overflow-hidden">
-          <img 
-            src={mentor.avatar || "/placeholder.svg"}
-            alt={mentor.name} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = "/placeholder.svg";
-            }}
-          />
-          {mentor.availability && mentor.availability.length > 0 && (
-            <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-              Available
+      {/* Header with Avatar and Status */}
+      <div className="p-6 pb-4">
+        <div className="flex items-start justify-between mb-4">
+          <Avatar className="w-16 h-16">
+            <AvatarImage src={mentor.image} alt={mentor.name} />
+            <AvatarFallback className="text-lg font-semibold">
+              {mentor.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col items-end gap-2">
+            {mentor.available && (
+              <div className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 text-xs px-2 py-1 rounded-full font-medium">
+                Available
+              </div>
+            )}
+            {mentor.rating && (
+              <div className="flex items-center gap-1 text-sm">
+                <Star className="h-4 w-4 text-amber-500 fill-current" />
+                <span className="font-medium">{mentor.rating}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Link
+            to={`/mentor/${mentor.id}`}
+            className="block hover:text-primary transition-colors"
+          >
+            <h3 className="text-lg font-bold text-stargaze-900 dark:text-white line-clamp-1">
+              {mentor.name}
+            </h3>
+          </Link>
+
+          <p className="text-primary font-medium text-sm line-clamp-1">
+            {mentor.role}
+          </p>
+
+          <p className="text-stargaze-600 dark:text-stargaze-400 text-sm line-clamp-1">
+            {mentor.company}
+          </p>
+        </div>
+
+        {/* Location and Experience */}
+        <div className="flex items-center gap-4 mt-3 text-xs text-stargaze-500">
+          {mentor.location && (
+            <div className="flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              <span>{mentor.location}</span>
             </div>
           )}
-          
-          {mentor.rating > 0 && (
-            <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-stargaze-800/90 backdrop-blur-sm text-xs px-2 py-1 rounded-full shadow-md flex items-center gap-1">
-              <Star className="h-3 w-3 text-amber-500" fill="currentColor" />
-              <span className="text-stargaze-900 dark:text-white font-medium">{mentor.rating}</span>
+          {mentor.sessions && (
+            <div className="flex items-center gap-1">
+              <Users className="h-3 w-3" />
+              <span>{mentor.sessions} sessions</span>
             </div>
           )}
         </div>
-      </Link>
+      </div>
 
-      {/* Content */}
-      <div className="relative p-5">
-        {/* Badge for Featured Mentors */}
-        {mentor.featured && (
-          <div className="absolute -top-4 right-4 flex gap-2">
-            <Badge
-              variant="default"
-              className="text-xs shadow-md"
-            >
-              Featured
+      {/* Bio */}
+      <div className="px-6 pb-4 flex-grow">
+        <p className="text-stargaze-700 dark:text-stargaze-300 text-sm leading-relaxed line-clamp-3">
+          {mentor.bio}
+        </p>
+      </div>
+
+      {/* Expertise Tags */}
+      <div className="px-6 pb-4">
+        <div className="flex flex-wrap gap-1">
+          {mentor.expertise.slice(0, 3).map((skill, index) => (
+            <Badge key={index} variant="secondary" className="text-xs">
+              {skill}
             </Badge>
-          </div>
-        )}
+          ))}
+          {mentor.expertise.length > 3 && (
+            <Badge variant="outline" className="text-xs">
+              +{mentor.expertise.length - 3}
+            </Badge>
+          )}
+        </div>
+      </div>
 
-        <Link to={`/mentor/${mentor.id}`} className="block">
-          <h4 className="text-xl font-bold text-stargaze-900 dark:text-white group-hover:text-primary transition-colors">{mentor.name}</h4>
-          <p className="text-stargaze-600 dark:text-stargaze-400 mb-2">{mentor.role} at {mentor.company}</p>
-        </Link>
-        
-        {/* Expertise Tags */}
-        {mentor.expertise && mentor.expertise.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-2">
-            {mentor.expertise.slice(0, 3).map((skill, index) => (
-              <span 
-                key={index} 
-                className="inline-block px-2 py-1 text-xs rounded-full bg-stargaze-100 dark:bg-stargaze-800 text-stargaze-700 dark:text-stargaze-300"
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
-        )}
-        
-        {/* Bio (if provided) */}
-        {mentor.bio && (
-          <p className="text-sm text-stargaze-600 dark:text-stargaze-400 mb-4 line-clamp-3">
-            {mentor.bio}
-          </p>
-        )}
-        
-        {/* Sessions Count (if provided) */}
-        {mentor.sessions > 0 && (
-          <div className="text-xs text-stargaze-500 dark:text-stargaze-400 mb-4">
-            {mentor.sessions} mentoring sessions completed
-          </div>
-        )}
-
-        {/* CTA Buttons - Ensuring they direct to proper detail pages */}
+      {/* Footer with CTA */}
+      <div className="p-6 pt-0 mt-auto">
         <div className="flex gap-2">
           <Link to={`/mentor/${mentor.id}`} className="flex-1">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-center border border-stargaze-200 dark:border-stargaze-700 flex items-center gap-2"
-            >
-              <MessageSquare className="h-4 w-4" />
-              Connect
+            <Button variant="outline" size="sm" className="w-full text-xs">
+              View Profile
             </Button>
           </Link>
-          <Link to={`/mentor/${mentor.id}/book`} className="flex-1">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="w-full justify-center border border-stargaze-200 dark:border-stargaze-700 flex items-center gap-2"
-            >
-              <Calendar className="h-4 w-4" />
-              Book
-            </Button>
-          </Link>
+          <Button size="sm" className="gap-1 text-xs">
+            <MessageSquare className="h-3 w-3" />
+            Connect
+          </Button>
         </div>
       </div>
     </div>

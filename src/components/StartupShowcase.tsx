@@ -4,7 +4,7 @@ import { StartupCard } from "./startup/StartupCard";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Loader, Building } from "lucide-react";
-import { useStartups } from "@/hooks/use-startups";
+import { startups } from "@/data/startups";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -12,8 +12,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 const MAX_STARTUPS_DISPLAY = 3;
 
 export const StartupShowcase = () => {
-  // Fetch startups data using React Query with enhanced caching
-  const { data: startups, isLoading, error, isError } = useStartups();
+  // Using static data - no loading states needed
+  const isLoading = false;
+  const error = null;
+  const isError = false;
 
   // Show loading state while data is being fetched
   if (isLoading) {

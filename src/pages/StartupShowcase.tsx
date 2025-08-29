@@ -13,11 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { useStartups } from "@/hooks/use-startups";
+import { startups } from "@/data/startups";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Startup } from "@/shared/types/models";
+import { Startup } from "@/data/startups";
 
 // For filtering - India-specific industries and locations
 const industries = [
@@ -61,7 +61,9 @@ const StartupShowcase = () => {
   const { toast } = useToast();
 
   // Fetch startups data using our hook
-  const { data: startups, isLoading, error } = useStartups();
+  // Using static data - no loading states needed
+  const isLoading = false;
+  const error = null;
 
   // Filter startups based on search and filters
   const filteredStartups =

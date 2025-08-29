@@ -1,73 +1,63 @@
-import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   MapPin,
-  TrendingUp,
-  Users,
   Calendar,
-  Globe,
-  Building,
-  MessageSquare,
-  Heart,
+  Users,
+  TrendingUp,
+  Target,
+  Lightbulb,
+  Rocket,
+  Award,
   ArrowLeft,
+  ExternalLink,
+  Linkedin,
+  Twitter,
+  Globe,
+  DollarSign,
+  Building,
+  Clock,
+  CheckCircle,
 } from "lucide-react";
-import { startups } from "@/data/startups";
-import { Skeleton } from "@/components/ui/skeleton";
-import { NotFound } from "./NotFound";
+import { getStartupById } from "@/data/startups";
+import { AnimatedSection } from "@/components/AnimatedSection";
+import { SEO } from "@/components/SEO";
 
 const StartupDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [activeTab, setActiveTab] = useState("about");
+  const navigate = useNavigate();
+  const startup = id ? getStartupById(id) : null;
 
-  // Find the startup with the matching ID using static data
-  const startup = startups.find((s) => s.id === id);
-  const isLoading = false;
-  const error = null;
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
-  // Show not found if startup doesn't exist
   if (!startup) {
-    return <NotFound />;
-  }
-
-  // Format founding year to show years active
-  const yearsActive = startup
-    ? new Date().getFullYear() - startup.foundingYear
-    : 0;
-
-  if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />
         <main className="pt-24 pb-16">
-          <div className="container mx-auto px-6">
-            <div className="flex justify-center items-center py-20">
-              <Skeleton className="h-64 w-64 rounded-full" />
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error || !startup) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar />
-        <main className="pt-24 pb-16">
-          <div className="container mx-auto px-6 text-center">
-            <h1 className="text-3xl font-bold mb-4">Startup Not Found</h1>
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+            <h1 className="text-3xl font-bold text-stargaze-900 dark:text-white mb-4">
+              Startup Not Found
+            </h1>
             <p className="text-stargaze-600 dark:text-stargaze-400 mb-8">
-              The startup you're looking for doesn't exist or there was an error
-              loading the data.
+              The startup you're looking for doesn't exist or has been removed.
             </p>
-            <Button onClick={() => window.history.back()}>Go Back</Button>
+            <Button
+              onClick={() => navigate("/startup-showcase")}
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Startups
+            </Button>
           </div>
         </main>
         <Footer />
@@ -77,251 +67,441 @@ const StartupDetail = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title={`${startup.name} - ${startup.industry} Startup | ElevateX`}
+        description={`${startup.shortPitch} Learn about ${startup.name}'s journey, founders, and growth story.`}
+      />
       <Navbar />
-
       <main className="pt-24 pb-16">
-        <div className="container mx-auto px-6">
-          <AnimatedSection>
+        {/* Hero Section */}
+        <AnimatedSection className="py-12 px-4 sm:px-6 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5">
+          <div className="max-w-7xl mx-auto">
             <Button
               variant="ghost"
-              className="mb-6 flex items-center gap-2"
-              onClick={() => window.history.back()}
+              onClick={() => navigate("/startup-showcase")}
+              className="mb-6 gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back
+              Back to Startups
             </Button>
 
-            {/* Startup Profile Header */}
-            <div className="bg-white dark:bg-stargaze-900 rounded-xl overflow-hidden shadow-subtle mb-8">
-              <div className="md:flex">
-                {/* Logo Container (larger on desktop) */}
-                <div className="md:w-1/3 p-6 flex justify-center items-center bg-gradient-to-br from-stargaze-50 to-stargaze-100 dark:from-stargaze-900 dark:to-stargaze-800">
-                  <div className="relative w-48 h-48 flex items-center justify-center">
+            <div className="grid lg:grid-cols-3 gap-8">
+              {/* Company Overview */}
+              <div className="lg:col-span-2">
+                <div className="flex items-start gap-6 mb-8">
+                  <div className="w-20 h-20 bg-white rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
                     <img
-                      src={startup.logo || "/placeholder.svg"}
+                      src={startup.logo}
                       alt={startup.name}
-                      className="max-w-full max-h-full object-contain"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder.svg";
-                      }}
+                      className="w-16 h-16 object-cover rounded-lg"
                     />
                   </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h1 className="text-3xl font-bold text-stargaze-900 dark:text-white">
+                        {startup.name}
+                      </h1>
+                      <Badge variant="outline" className="text-sm">
+                        {startup.fundingStage}
+                      </Badge>
+                    </div>
+                    <p className="text-xl text-stargaze-600 dark:text-stargaze-400 mb-4">
+                      {startup.shortPitch}
+                    </p>
+                    <div className="flex flex-wrap gap-4 text-sm text-stargaze-600 dark:text-stargaze-400">
+                      <div className="flex items-center gap-1">
+                        <Building className="h-4 w-4" />
+                        {startup.industry}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        {startup.location}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-4 w-4" />
+                        Founded {startup.foundingYear}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Users className="h-4 w-4" />
+                        {startup.teamSize} employees
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Startup Info */}
-                <div className="md:w-2/3 p-6 md:pt-10">
-                  <div className="flex items-center justify-between mb-2">
-                    <h1 className="text-3xl font-bold text-stargaze-900 dark:text-white">
-                      {startup.name}
-                    </h1>
-                    <Badge
-                      variant="outline"
-                      className="bg-primary/10 text-primary border-primary/20"
-                    >
-                      {startup.industry}
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {startup.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary">
+                      {tag}
                     </Badge>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-4 text-stargaze-600 dark:text-stargaze-300 mb-6">
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
-                      <span>{startup.location}</span>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      <TrendingUp className="h-4 w-4" />
-                      <span>{startup.stage}</span>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
-                      <span>
-                        Founded {startup.foundingYear} (
-                        {yearsActive === 0 ? "New" : `${yearsActive}y`})
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      <span>{startup.employees} employees</span>
-                    </div>
-                  </div>
-
-                  <p className="text-stargaze-600 dark:text-stargaze-400 mb-6 max-w-2xl">
-                    {startup.description}
-                  </p>
-
-                  {startup.funding !== "Unknown" && (
-                    <div className="mb-6">
-                      <span className="inline-block px-3 py-1 text-sm rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
-                        {startup.funding}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap gap-3">
-                    {startup.website && (
-                      <a
-                        href={startup.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button variant="outline" size="lg" className="gap-2">
-                          <Globe className="h-5 w-5" />
-                          Visit Website
-                        </Button>
-                      </a>
-                    )}
-
-                    <Button size="lg" className="gap-2">
-                      <MessageSquare className="h-5 w-5" />
-                      Contact
-                    </Button>
-
-                    <Button variant="secondary" size="lg" className="gap-2">
-                      <Heart className="h-5 w-5" />
-                      Show Interest
-                    </Button>
-                  </div>
+                  ))}
                 </div>
               </div>
-            </div>
 
-            {/* Startup Detail Tabs */}
-            <AnimatedSection delay={100}>
-              <Tabs
-                defaultValue="about"
-                onValueChange={setActiveTab}
-                className="w-full max-w-5xl mx-auto"
-              >
-                <TabsList className="grid grid-cols-3 mb-8">
-                  <TabsTrigger value="about">About</TabsTrigger>
-                  <TabsTrigger value="founders">Founders</TabsTrigger>
-                  <TabsTrigger value="details">Details</TabsTrigger>
-                </TabsList>
-
-                <TabsContent
-                  value="about"
-                  className="bg-white dark:bg-stargaze-900 p-6 rounded-xl shadow-subtle"
-                >
-                  <h2 className="text-2xl font-bold mb-4 text-stargaze-900 dark:text-white">
-                    About {startup.name}
-                  </h2>
-                  <p className="text-stargaze-600 dark:text-stargaze-400 mb-6">
-                    {startup.description}
-                  </p>
-
-                  {startup.website && (
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold mb-2">Website</h3>
-                      <a
-                        href={startup.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline flex items-center gap-2"
-                      >
-                        <Globe className="h-4 w-4" />
-                        {startup.website}
-                      </a>
+              {/* Quick Stats */}
+              <div className="lg:col-span-1">
+                <Card className="sticky top-24">
+                  <CardHeader>
+                    <CardTitle>Company Stats</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-stargaze-600 dark:text-stargaze-400">
+                        Funding
+                      </span>
+                      <span className="font-semibold">{startup.funding}</span>
                     </div>
-                  )}
-                </TabsContent>
+                    <div className="flex justify-between items-center">
+                      <span className="text-stargaze-600 dark:text-stargaze-400">
+                        Stage
+                      </span>
+                      <span className="font-semibold">
+                        {startup.fundingStage}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-stargaze-600 dark:text-stargaze-400">
+                        Team Size
+                      </span>
+                      <span className="font-semibold">{startup.teamSize}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-stargaze-600 dark:text-stargaze-400">
+                        Founded
+                      </span>
+                      <span className="font-semibold">
+                        {startup.foundingYear}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-stargaze-600 dark:text-stargaze-400">
+                        Interest
+                      </span>
+                      <span className="font-semibold">
+                        {startup.interestedCount}+ followers
+                      </span>
+                    </div>
 
-                <TabsContent
-                  value="founders"
-                  className="bg-white dark:bg-stargaze-900 p-6 rounded-xl shadow-subtle"
-                >
-                  <h2 className="text-2xl font-bold mb-6 text-stargaze-900 dark:text-white">
-                    Founding Team
-                  </h2>
+                    <Separator />
 
-                  {startup.founders && startup.founders.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {startup.founders.map((founder, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-4 p-4 border border-stargaze-200 dark:border-stargaze-800 rounded-lg"
-                        >
-                          <div className="w-16 h-16 rounded-full overflow-hidden bg-stargaze-200 dark:bg-stargaze-800 flex-shrink-0">
-                            <img
-                              src={founder.avatar || "/placeholder.svg"}
-                              alt={founder.name}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = "/placeholder.svg";
-                              }}
-                            />
+                    <div className="space-y-3">
+                      <Button className="w-full gap-2">
+                        <ExternalLink className="h-4 w-4" />
+                        Visit Website
+                      </Button>
+
+                      <div className="flex gap-2">
+                        {startup.socialLinks?.linkedin && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 gap-1"
+                          >
+                            <Linkedin className="h-4 w-4" />
+                            LinkedIn
+                          </Button>
+                        )}
+                        {startup.socialLinks?.twitter && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 gap-1"
+                          >
+                            <Twitter className="h-4 w-4" />
+                            Twitter
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </AnimatedSection>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-12">
+          {/* Problem Statement */}
+          {startup.problemStatement && (
+            <AnimatedSection>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    The Problem
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-stargaze-700 dark:text-stargaze-300 leading-relaxed text-lg">
+                    {startup.problemStatement}
+                  </p>
+                </CardContent>
+              </Card>
+            </AnimatedSection>
+          )}
+
+          {/* Solution */}
+          {startup.solution && (
+            <AnimatedSection>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Lightbulb className="h-5 w-5" />
+                    Our Solution
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-stargaze-700 dark:text-stargaze-300 leading-relaxed text-lg">
+                    {startup.solution}
+                  </p>
+                </CardContent>
+              </Card>
+            </AnimatedSection>
+          )}
+
+          {/* Company Story */}
+          {startup.fullStory && (
+            <AnimatedSection>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Rocket className="h-5 w-5" />
+                    Our Journey
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-stargaze-700 dark:text-stargaze-300 leading-relaxed text-lg">
+                    {startup.fullStory}
+                  </p>
+                </CardContent>
+              </Card>
+            </AnimatedSection>
+          )}
+
+          {/* Founders */}
+          {startup.founders && startup.founders.length > 0 && (
+            <AnimatedSection>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Meet the Founders
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {startup.founders.map((founder, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start gap-4 p-4 bg-stargaze-50 dark:bg-stargaze-800 rounded-lg"
+                      >
+                        <Avatar className="w-16 h-16">
+                          <AvatarImage
+                            src={founder.avatar}
+                            alt={founder.name}
+                          />
+                          <AvatarFallback>
+                            {founder.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <h4 className="font-semibold text-stargaze-900 dark:text-white mb-1">
+                            {founder.name}
+                          </h4>
+                          <p className="text-primary font-medium mb-2">
+                            {founder.role}
+                          </p>
+                          <p className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                            {founder.bio}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </AnimatedSection>
+          )}
+
+          {/* Traction & Growth */}
+          {startup.traction && (
+            <AnimatedSection>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Traction & Growth
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {startup.traction.customers && (
+                      <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                        <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">
+                          {startup.traction.customers.split(" ")[0]}
+                        </div>
+                        <div className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                          Customers
+                        </div>
+                      </div>
+                    )}
+                    {startup.traction.revenue && (
+                      <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                          {startup.traction.revenue.split(" ")[0]}
+                        </div>
+                        <div className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                          Annual Revenue
+                        </div>
+                      </div>
+                    )}
+                    {startup.traction.growth && (
+                      <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                        <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+                          {startup.traction.growth.split(" ")[0]}
+                        </div>
+                        <div className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                          Growth Rate
+                        </div>
+                      </div>
+                    )}
+                    {startup.traction.partnerships && (
+                      <div className="text-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                        <div className="text-2xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+                          {startup.traction.partnerships.split(" ")[0]}
+                        </div>
+                        <div className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                          Partnerships
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </AnimatedSection>
+          )}
+
+          {/* Achievements */}
+          {startup.achievements && startup.achievements.length > 0 && (
+            <AnimatedSection>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5" />
+                    Key Achievements
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {startup.achievements.map((achievement, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-stargaze-700 dark:text-stargaze-300">
+                          {achievement}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </AnimatedSection>
+          )}
+
+          {/* Roadmap */}
+          {startup.roadmap && startup.roadmap.length > 0 && (
+            <AnimatedSection>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5" />
+                    Future Roadmap
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {startup.roadmap.map((item, index) => (
+                      <div key={index} className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Clock className="h-6 w-6 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="font-semibold text-stargaze-900 dark:text-white">
+                              {item.title}
+                            </h4>
+                            <Badge variant="outline" className="text-xs">
+                              {item.timeline}
+                            </Badge>
                           </div>
-                          <div>
-                            <h3 className="font-bold text-stargaze-900 dark:text-white">
-                              {founder.name}
-                            </h3>
-                            <p className="text-stargaze-600 dark:text-stargaze-400">
-                              {founder.role}
-                            </p>
-                          </div>
+                          <p className="text-stargaze-600 dark:text-stargaze-400">
+                            {item.description}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </AnimatedSection>
+          )}
+
+          {/* Investor Highlights */}
+          {startup.investorHighlights &&
+            startup.investorHighlights.length > 0 && (
+              <AnimatedSection>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5" />
+                      Investment Highlights
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {startup.investorHighlights.map((highlight, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                          <span className="text-stargaze-700 dark:text-stargaze-300">
+                            {highlight}
+                          </span>
                         </div>
                       ))}
                     </div>
-                  ) : (
-                    <p className="text-stargaze-600 dark:text-stargaze-400">
-                      Founder information not available.
-                    </p>
-                  )}
-                </TabsContent>
+                  </CardContent>
+                </Card>
+              </AnimatedSection>
+            )}
 
-                <TabsContent
-                  value="details"
-                  className="bg-white dark:bg-stargaze-900 p-6 rounded-xl shadow-subtle"
-                >
-                  <h2 className="text-2xl font-bold mb-6 text-stargaze-900 dark:text-white">
-                    Startup Details
-                  </h2>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3">Industry</h3>
-                      <p className="text-stargaze-600 dark:text-stargaze-400 mb-6">
-                        {startup.industry}
-                      </p>
-
-                      <h3 className="text-lg font-semibold mb-3">Stage</h3>
-                      <p className="text-stargaze-600 dark:text-stargaze-400 mb-6">
-                        {startup.stage}
-                      </p>
-
-                      <h3 className="text-lg font-semibold mb-3">Founded</h3>
-                      <p className="text-stargaze-600 dark:text-stargaze-400 mb-6">
-                        {startup.foundingYear}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3">Location</h3>
-                      <p className="text-stargaze-600 dark:text-stargaze-400 mb-6">
-                        {startup.location}
-                      </p>
-
-                      <h3 className="text-lg font-semibold mb-3">Team Size</h3>
-                      <p className="text-stargaze-600 dark:text-stargaze-400 mb-6">
-                        {startup.employees} employees
-                      </p>
-
-                      <h3 className="text-lg font-semibold mb-3">Funding</h3>
-                      <p className="text-stargaze-600 dark:text-stargaze-400">
-                        {startup.funding || "Not disclosed"}
-                      </p>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </AnimatedSection>
+          {/* CTA Section */}
+          <AnimatedSection>
+            <Card className="bg-gradient-to-r from-primary/10 to-primary/5">
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-bold text-stargaze-900 dark:text-white mb-4">
+                  Interested in Learning More?
+                </h3>
+                <p className="text-stargaze-600 dark:text-stargaze-400 mb-6 max-w-2xl mx-auto">
+                  Connect with {startup.name} to explore partnership
+                  opportunities, learn more about their solution, or discuss
+                  potential collaboration.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button size="lg" className="gap-2">
+                    <ExternalLink className="h-4 w-4" />
+                    Visit Website
+                  </Button>
+                  <Button size="lg" variant="outline" className="gap-2">
+                    <Users className="h-4 w-4" />
+                    Connect with Team
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </AnimatedSection>
         </div>
       </main>
-
       <Footer />
     </div>
   );

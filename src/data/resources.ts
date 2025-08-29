@@ -18,147 +18,337 @@ export interface Resource {
   publishedAt: string;
   estimatedReadTime?: number;
   difficulty: "Beginner" | "Intermediate" | "Advanced";
+  fullContent?: string;
+  sections?: {
+    title: string;
+    content: string;
+  }[];
+  keyTakeaways?: string[];
+  relatedLinks?: {
+    title: string;
+    url: string;
+    description: string;
+  }[];
 }
+
+export const resourceCategories = [
+  "All",
+  "Business Planning",
+  "Funding",
+  "Legal & Compliance",
+  "Marketing",
+  "Technology",
+  "Operations",
+  "HR & Talent",
+];
 
 export const resources: Resource[] = [
   {
     id: "1",
-    title: "Complete Business Plan Template",
+    title: "Indian Startup Business Plan Template",
     description:
-      "A comprehensive business plan template that covers all essential sections including market analysis, financial projections, and marketing strategy.",
+      "Comprehensive business plan template tailored for Indian startups, including sections on regulatory compliance, local market analysis, and funding landscape.",
     category: "Business Planning",
     type: "template",
     image:
       "https://images.unsplash.com/photo-1553484771-371a605b060b?w=400&h=300&fit=crop",
-    fileUrl: "/resources/business-plan-template.pdf",
-    downloadCount: 1250,
-    tags: ["Business Plan", "Template", "Strategy", "Planning"],
+    fileUrl: "/resources/indian-business-plan-template.pdf",
+    downloadCount: 2340,
+    tags: ["Business Plan", "Template", "India", "Strategy"],
     author: {
-      name: "Michael Rodriguez",
+      name: "Dr. Priya Sharma",
       avatar:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-      role: "Business Strategist",
+        "https://images.unsplash.com/photo-1594824388853-2c5e95564b2a?w=100&h=100&fit=crop&crop=face",
+      role: "Startup Mentor & Former McKinsey Consultant",
     },
-    publishedAt: "2024-01-15",
+    publishedAt: "2024-01-20",
     difficulty: "Intermediate",
+    estimatedReadTime: 25,
+    fullContent: `Creating a comprehensive business plan is crucial for Indian startups seeking funding, partnerships, and strategic direction. This template has been specifically designed keeping in mind the unique challenges and opportunities in the Indian market.`,
+    sections: [
+      {
+        title: "Executive Summary",
+        content:
+          "The executive summary is your elevator pitch on paper. It should concisely present your business idea, target market, competitive advantage, financial projections, and funding requirements. For Indian startups, highlight how your solution addresses specific Indian market needs and your understanding of local consumer behavior.",
+      },
+      {
+        title: "Market Analysis",
+        content:
+          "Conduct thorough research on the Indian market size, growth trends, and customer segments. Include analysis of tier-1, tier-2, and tier-3 cities if relevant. Address regulatory environment, cultural factors, and economic indicators that impact your business. Use credible sources like NASSCOM reports, government data, and industry studies.",
+      },
+      {
+        title: "Business Model & Revenue Streams",
+        content:
+          "Clearly define how your startup will make money. Consider subscription models, freemium approaches, or marketplace commissions that work well in the Indian context. Address pricing strategies for different market segments and explain how you'll achieve unit economics profitability.",
+      },
+      {
+        title: "Regulatory Compliance",
+        content:
+          "Detail all regulatory requirements including company registration, GST compliance, labor laws, data protection (if applicable), and industry-specific regulations. Include timelines and costs for obtaining necessary licenses and approvals.",
+      },
+      {
+        title: "Financial Projections",
+        content:
+          "Provide 3-5 year financial projections including P&L, cash flow, and balance sheet. Use conservative assumptions and explain your methodology. Include break-even analysis, customer acquisition costs, and lifetime value calculations.",
+      },
+      {
+        title: "Funding Requirements",
+        content:
+          "Clearly state how much funding you need, how you'll use it, and your preferred funding sources (angel investors, VCs, government schemes). Include milestones you'll achieve with the funding and potential exit strategies for investors.",
+      },
+    ],
+    keyTakeaways: [
+      "Focus on solving real Indian problems with scalable solutions",
+      "Demonstrate deep understanding of local market dynamics",
+      "Include regulatory compliance as a key section",
+      "Show clear path to profitability with realistic projections",
+      "Address how you'll compete with established players",
+    ],
+    relatedLinks: [
+      {
+        title: "Startup India Registration Portal",
+        url: "https://www.startupindia.gov.in",
+        description:
+          "Official government portal for startup registration and benefits",
+      },
+      {
+        title: "GST Registration Guide",
+        url: "#",
+        description: "Step-by-step guide for GST registration for startups",
+      },
+      {
+        title: "NASSCOM Startup Reports",
+        url: "#",
+        description:
+          "Industry reports and market data for Indian tech startups",
+      },
+    ],
   },
   {
     id: "2",
-    title: "Startup Funding Guide 2024",
+    title: "Complete Guide to Raising Funds in India",
     description:
-      "Everything you need to know about raising capital for your startup, from angel investors to venture capital.",
+      "Step-by-step guide covering the entire funding journey from angel investors to Series A, with specific focus on the Indian ecosystem.",
     category: "Funding",
     type: "guide",
     image:
-      "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop",
-    fileUrl: "/resources/funding-guide-2024.pdf",
-    downloadCount: 890,
-    tags: ["Funding", "Investment", "Venture Capital", "Angel Investors"],
+      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop",
+    fileUrl: "/resources/funding-guide-india.pdf",
+    downloadCount: 1890,
+    tags: ["Funding", "VC", "Angel Investors", "Series A", "India"],
     author: {
-      name: "Sarah Johnson",
+      name: "Arjun Mehta",
       avatar:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
-      role: "Investment Advisor",
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+      role: "Serial Entrepreneur & Angel Investor",
     },
-    publishedAt: "2024-02-01",
+    publishedAt: "2024-01-18",
     estimatedReadTime: 45,
     difficulty: "Advanced",
   },
   {
     id: "3",
-    title: "Digital Marketing for Startups",
+    title: "GST Registration and Compliance for Startups",
     description:
-      "Learn how to build a strong online presence and attract customers through digital marketing channels.",
-    category: "Marketing",
-    type: "video",
+      "Complete guide to GST registration, filing, and compliance requirements specifically designed for Indian startups and small businesses.",
+    category: "Legal & Compliance",
+    type: "guide",
     image:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
-    fileUrl: "https://www.youtube.com/watch?v=example",
-    downloadCount: 2100,
-    tags: ["Marketing", "Digital", "SEO", "Social Media"],
+      "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=300&fit=crop",
+    fileUrl: "/resources/gst-compliance-guide.pdf",
+    downloadCount: 1567,
+    tags: ["GST", "Compliance", "Legal", "Taxation", "India"],
     author: {
-      name: "Alex Chen",
+      name: "CA Rajesh Kumar",
       avatar:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      role: "Marketing Specialist",
+      role: "Chartered Accountant & Tax Expert",
     },
-    publishedAt: "2024-01-20",
-    estimatedReadTime: 60,
-    difficulty: "Beginner",
+    publishedAt: "2024-01-15",
+    estimatedReadTime: 30,
+    difficulty: "Intermediate",
   },
   {
     id: "4",
-    title: "Legal Basics for Entrepreneurs",
+    title: "Digital Marketing Playbook for Indian Startups",
     description:
-      "Essential legal knowledge every entrepreneur should have, including business structures, contracts, and intellectual property.",
-    category: "Legal",
-    type: "article",
+      "Comprehensive digital marketing strategies that work in the Indian market, including regional language content, tier-2 city targeting, and cost-effective channels.",
+    category: "Marketing",
+    type: "guide",
     image:
-      "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop",
-    downloadCount: 765,
-    tags: ["Legal", "Contracts", "IP", "Business Structure"],
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+    fileUrl: "/resources/digital-marketing-playbook-india.pdf",
+    downloadCount: 2156,
+    tags: ["Digital Marketing", "Growth", "India", "Tier-2", "Regional"],
     author: {
-      name: "Jennifer Lee",
+      name: "Kavya Reddy",
       avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
-      role: "Business Attorney",
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face",
+      role: "Growth Marketing Expert",
     },
-    publishedAt: "2024-01-10",
-    estimatedReadTime: 25,
+    publishedAt: "2024-01-12",
+    estimatedReadTime: 35,
     difficulty: "Intermediate",
   },
   {
     id: "5",
-    title: "Financial Modeling Spreadsheet",
+    title: "Tech Stack Decisions for Indian Startups",
     description:
-      "A comprehensive Excel template for creating financial models and projections for your startup.",
-    category: "Finance",
-    type: "template",
+      "Guide to choosing the right technology stack considering Indian market conditions, talent availability, cost factors, and scalability requirements.",
+    category: "Technology",
+    type: "article",
     image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-    fileUrl: "/resources/financial-model-template.xlsx",
-    downloadCount: 1450,
-    tags: ["Finance", "Modeling", "Projections", "Excel"],
+      "https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=400&h=300&fit=crop",
+    fileUrl: "/resources/tech-stack-guide-india.pdf",
+    downloadCount: 1823,
+    tags: ["Technology", "Tech Stack", "Development", "Scalability"],
     author: {
-      name: "David Park",
+      name: "Vikram Singh",
       avatar:
         "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop&crop=face",
-      role: "Financial Analyst",
+      role: "CTO & Technical Advisor",
     },
-    publishedAt: "2024-02-05",
+    publishedAt: "2024-01-10",
+    estimatedReadTime: 25,
     difficulty: "Advanced",
   },
   {
     id: "6",
-    title: "Product Development Methodology",
+    title: "Startup Operations Manual for India",
     description:
-      "Learn agile product development practices and how to build products that customers actually want.",
-    category: "Product",
+      "Essential operational processes for Indian startups including vendor management, supply chain, customer support, and quality control systems.",
+    category: "Operations",
+    type: "template",
+    image:
+      "https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=400&h=300&fit=crop",
+    fileUrl: "/resources/operations-manual-india.pdf",
+    downloadCount: 1234,
+    tags: ["Operations", "Processes", "Supply Chain", "Quality"],
+    author: {
+      name: "Sneha Agarwal",
+      avatar:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face",
+      role: "Operations Expert & Former Flipkart",
+    },
+    publishedAt: "2024-01-08",
+    estimatedReadTime: 40,
+    difficulty: "Intermediate",
+  },
+  {
+    id: "7",
+    title: "Hiring and HR Policies for Indian Startups",
+    description:
+      "Complete HR toolkit including job descriptions, interview processes, compensation benchmarks, and employee policies compliant with Indian labor laws.",
+    category: "HR & Talent",
+    type: "template",
+    image:
+      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&h=300&fit=crop",
+    fileUrl: "/resources/hr-policies-india.pdf",
+    downloadCount: 1678,
+    tags: ["HR", "Hiring", "Policies", "Compensation", "Labor Laws"],
+    author: {
+      name: "Ravi Sharma",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+      role: "HR Director & People Operations Expert",
+    },
+    publishedAt: "2024-01-05",
+    estimatedReadTime: 50,
+    difficulty: "Beginner",
+  },
+  {
+    id: "8",
+    title: "Building for Bharat: Product Strategy Guide",
+    description:
+      "Strategic framework for building products that succeed in tier-2 and tier-3 Indian markets, including localization, pricing, and distribution strategies.",
+    category: "Business Planning",
     type: "guide",
     image:
-      "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=400&h=300&fit=crop",
-    downloadCount: 980,
-    tags: ["Product", "Development", "Agile", "MVP"],
+      "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400&h=300&fit=crop",
+    fileUrl: "/resources/building-for-bharat-guide.pdf",
+    downloadCount: 2067,
+    tags: ["Bharat", "Tier-2", "Product Strategy", "Localization"],
     author: {
-      name: "Emily Zhang",
+      name: "Amit Jain",
       avatar:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&h=100&fit=crop&crop=face",
-      role: "Product Manager",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      role: "Product Strategy Consultant",
     },
-    publishedAt: "2024-01-25",
-    estimatedReadTime: 35,
-    difficulty: "Intermediate",
+    publishedAt: "2024-01-03",
+    estimatedReadTime: 55,
+    difficulty: "Advanced",
+  },
+  {
+    id: "9",
+    title: "Financial Modeling Template for Indian Startups",
+    description:
+      "Excel-based financial model template with Indian accounting standards, tax calculations, and funding scenario planning for startups.",
+    category: "Funding",
+    type: "template",
+    image:
+      "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=400&h=300&fit=crop",
+    fileUrl: "/resources/financial-model-template-india.xlsx",
+    downloadCount: 1445,
+    tags: ["Financial Model", "Excel", "Accounting", "Projections"],
+    author: {
+      name: "CA Meera Patel",
+      avatar:
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face",
+      role: "Financial Consultant & CA",
+    },
+    publishedAt: "2024-01-01",
+    estimatedReadTime: 20,
+    difficulty: "Advanced",
+  },
+  {
+    id: "10",
+    title: "Customer Support Excellence for Indian Startups",
+    description:
+      "Best practices for setting up customer support operations in India, including multilingual support, regional preferences, and cost-effective solutions.",
+    category: "Operations",
+    type: "guide",
+    image:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+    fileUrl: "/resources/customer-support-guide-india.pdf",
+    downloadCount: 987,
+    tags: ["Customer Support", "Multilingual", "Operations", "Service"],
+    author: {
+      name: "Pooja Gupta",
+      avatar:
+        "https://images.unsplash.com/photo-1594824388853-2c5e95564b2a?w=100&h=100&fit=crop&crop=face",
+      role: "Customer Experience Lead",
+    },
+    publishedAt: "2023-12-28",
+    estimatedReadTime: 30,
+    difficulty: "Beginner",
   },
 ];
 
-export const resourceCategories = [
-  "All Categories",
-  "Business Planning",
-  "Funding",
-  "Marketing",
-  "Legal",
-  "Finance",
-  "Product",
-  "Technology",
-  "Operations",
-];
+export const getResourceById = (id: string): Resource | undefined => {
+  return resources.find((resource) => resource.id === id);
+};
+
+export const getResourcesByCategory = (category: string): Resource[] => {
+  if (category === "All") return resources;
+  return resources.filter((resource) => resource.category === category);
+};
+
+export const getResourcesByType = (type: string): Resource[] => {
+  return resources.filter((resource) => resource.type === type);
+};
+
+export const getPopularResources = (limit: number = 5): Resource[] => {
+  return resources
+    .sort((a, b) => b.downloadCount - a.downloadCount)
+    .slice(0, limit);
+};
+
+export const searchResources = (query: string): Resource[] => {
+  const lowercaseQuery = query.toLowerCase();
+  return resources.filter(
+    (resource) =>
+      resource.title.toLowerCase().includes(lowercaseQuery) ||
+      resource.description.toLowerCase().includes(lowercaseQuery) ||
+      resource.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
+  );
+};

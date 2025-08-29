@@ -34,7 +34,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { EmptyState } from "@/components/ui/empty-state";
-import { mentorEmptyStates } from "@/shared/utils/empty-state-utils";
+import { mentorEmptyStates } from "@/lib/empty-states";
 
 // Filter options
 const expertiseOptions = [

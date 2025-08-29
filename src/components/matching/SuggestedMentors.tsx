@@ -1,26 +1,42 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check, Clock, Star, UserCheck, Calendar, ChevronRight, Info, Users } from "lucide-react";
-import { Mentor, Startup, UserPreferences } from "@/shared/types/models";
-import { getRecommendedMentors, getMatchRecommendationMessage } from "@/shared/utils/matching-utils";
-import { useMentors } from "@/hooks/use-mentors";
-import { adaptMentorFromApi } from "@/shared/utils/adapter-utils";
-import { ensureCompletePreferences } from "@/shared/utils/adapter-utils";
+import {
+  Check,
+  Clock,
+  Star,
+  UserCheck,
+  Calendar,
+  ChevronRight,
+  Info,
+  Users,
+} from "lucide-react";
+import { Startup, UserPreferences } from "@/lib/types";
+import { Mentor } from "@/data/mentors";
+import {
+  getRecommendedMentors,
+  getMatchRecommendationMessage,
+  adaptMentorFromApi,
+  ensureCompletePreferences,
+} from "@/lib/data-utils";
 
 interface SuggestedMentorsProps {
   startup: Startup | null;
@@ -28,40 +44,50 @@ interface SuggestedMentorsProps {
   limit?: number;
 }
 
-export const SuggestedMentors = ({ 
-  startup, 
+export const SuggestedMentors = ({
+  startup,
   preferences = {
     skillsNeeded: [],
     goals: [],
     availability: [],
-    industries: []
-  }, 
-  limit = 3 
+    industries: [],
+  },
+  limit = 3,
 }: SuggestedMentorsProps) => {
   const navigate = useNavigate();
-  const { data: apiMentors, isLoading } = useMentors();
-  const [suggestedMentors, setSuggestedMentors] = useState<{ mentor: Mentor, matchScore: number }[]>([]);
-  
+  // Using static data - no loading states needed
+  const apiMentors = mentors;
+  const isLoading = false;
+  const [suggestedMentors, setSuggestedMentors] = useState<
+    { mentor: Mentor; matchScore: number }[]
+  >([]);
+
   useEffect(() => {
     if (apiMentors && startup) {
       // Convert API mentors to the internal model format
       const mentors = apiMentors;
       const completePreferences = ensureCompletePreferences(preferences);
-      const matches = getRecommendedMentors(mentors, startup, completePreferences);
+      const matches = getRecommendedMentors(
+        mentors,
+        startup,
+        completePreferences
+      );
       setSuggestedMentors(matches.slice(0, limit));
     }
   }, [apiMentors, startup, preferences, limit]);
-  
+
   const handleViewProfile = (mentorId: string) => {
     navigate(`/mentor/${mentorId}`);
   };
-  
+
   if (isLoading) {
     return (
       <Card className="w-full mb-6">
         <CardHeader>
           <CardTitle className="text-lg">Suggested Mentors</CardTitle>
-          <CardDescription>Finding the perfect match for your needs...</CardDescription>
+          <CardDescription>
+            Finding the perfect match for your needs...
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -79,13 +105,15 @@ export const SuggestedMentors = ({
       </Card>
     );
   }
-  
+
   if (!startup) {
     return (
       <Card className="w-full mb-6">
         <CardHeader>
           <CardTitle className="text-lg">Suggested Mentors</CardTitle>
-          <CardDescription>Complete your startup profile to get mentor recommendations</CardDescription>
+          <CardDescription>
+            Complete your startup profile to get mentor recommendations
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Button onClick={() => navigate("/startup-profile")}>
@@ -95,13 +123,15 @@ export const SuggestedMentors = ({
       </Card>
     );
   }
-  
+
   if (suggestedMentors.length === 0) {
     return (
       <Card className="w-full mb-6">
         <CardHeader>
           <CardTitle className="text-lg">Suggested Mentors</CardTitle>
-          <CardDescription>No mentors available matching your preferences yet</CardDescription>
+          <CardDescription>
+            No mentors available matching your preferences yet
+          </CardDescription>
         </CardHeader>
         <CardContent className="text-center py-8">
           <div className="inline-block p-4 rounded-full bg-primary/10 mb-4">
@@ -109,7 +139,8 @@ export const SuggestedMentors = ({
           </div>
           <h3 className="text-lg font-medium mb-2">No mentors available yet</h3>
           <p className="text-stargaze-600 dark:text-stargaze-400 max-w-md mx-auto mb-4">
-            We're growing our mentor network. Check back soon or adjust your preferences to broaden your search.
+            We're growing our mentor network. Check back soon or adjust your
+            preferences to broaden your search.
           </p>
           <Button onClick={() => navigate("/mentorship-matching")}>
             Update Matching Preferences
@@ -118,16 +149,21 @@ export const SuggestedMentors = ({
       </Card>
     );
   }
-  
+
   return (
     <Card className="w-full mb-6">
       <CardHeader>
         <div className="flex justify-between items-center">
           <div>
             <CardTitle className="text-lg">Suggested Mentors</CardTitle>
-            <CardDescription>Based on your startup profile and preferences</CardDescription>
+            <CardDescription>
+              Based on your startup profile and preferences
+            </CardDescription>
           </div>
-          <Button variant="outline" onClick={() => navigate("/mentorship-matching")}>
+          <Button
+            variant="outline"
+            onClick={() => navigate("/mentorship-matching")}
+          >
             View All Matches
           </Button>
         </div>
@@ -135,8 +171,8 @@ export const SuggestedMentors = ({
       <CardContent>
         <div className="space-y-4">
           {suggestedMentors.map(({ mentor, matchScore }) => (
-            <div 
-              key={mentor.id} 
+            <div
+              key={mentor.id}
               className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-lg border border-stargaze-100 dark:border-stargaze-800 hover:bg-stargaze-50 dark:hover:bg-stargaze-900/50 transition-colors"
             >
               <div className="flex-shrink-0">
@@ -145,7 +181,7 @@ export const SuggestedMentors = ({
                   <AvatarFallback>{mentor.name.charAt(0)}</AvatarFallback>
                 </Avatar>
               </div>
-              
+
               <div className="flex-grow min-w-0">
                 <div className="flex flex-wrap justify-between items-start gap-2 mb-1">
                   <h4 className="font-medium text-base">{mentor.name}</h4>
@@ -165,11 +201,11 @@ export const SuggestedMentors = ({
                     </TooltipProvider>
                   </div>
                 </div>
-                
+
                 <p className="text-sm text-stargaze-600 dark:text-stargaze-400 mb-2">
                   {mentor.role} at {mentor.company}
                 </p>
-                
+
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {mentor.expertise.slice(0, 3).map((skill, index) => (
                     <Badge key={index} variant="secondary" className="text-xs">
@@ -182,11 +218,13 @@ export const SuggestedMentors = ({
                     </Badge>
                   )}
                 </div>
-                
+
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-stargaze-600 dark:text-stargaze-400">
                   <div className="flex items-center">
                     <Star className="h-3 w-3 text-amber-500 mr-1" />
-                    <span>{mentor.rating} ({mentor.reviews} reviews)</span>
+                    <span>
+                      {mentor.rating} ({mentor.reviews} reviews)
+                    </span>
                   </div>
                   <div className="flex items-center">
                     <Calendar className="h-3 w-3 text-green-500 mr-1" />
@@ -198,7 +236,7 @@ export const SuggestedMentors = ({
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex-shrink-0 self-end sm:self-center mt-2 sm:mt-0">
                 <Button
                   onClick={() => handleViewProfile(mentor.id)}
@@ -220,7 +258,10 @@ export const SuggestedMentors = ({
               Matches updated based on your latest preferences
             </span>
           </div>
-          <Button variant="link" onClick={() => navigate("/mentorship-matching")}>
+          <Button
+            variant="link"
+            onClick={() => navigate("/mentorship-matching")}
+          >
             Adjust Preferences
           </Button>
         </div>

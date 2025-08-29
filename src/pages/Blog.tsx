@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
@@ -7,220 +6,254 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Search, Clock, User, ArrowRight, Calendar } from "lucide-react";
-import { blogPosts, blogCategories } from "@/data/blogs";
+import {
+  blogPosts,
+  blogCategories,
+  getBlogPostsByCategory,
+} from "@/data/blogs";
 import { useState } from "react";
 
-const staticBlogPosts = [
-  {
-    id: "1",
-    title: "10 Essential Tips for Finding the Right Mentor for Your Startup",
-    excerpt: "Finding the right mentor can make all the difference in your startup journey. Learn how to identify and connect with mentors who can truly help your business grow.",
-    image: "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-    author: "Sarah Johnson",
-    date: "June 15, 2023",
-    readTime: "8 min read",
-    category: "Mentorship"
-  },
-  {
-    id: "2",
-    title: "How to Create a Compelling Pitch Deck That Attracts Investors",
-    excerpt: "Your pitch deck is often your first impression with potential investors. Learn the key elements that make a pitch deck stand out and attract funding.",
-    image: "https://images.unsplash.com/photo-1552581234-26160f608093?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    author: "Michael Chen",
-    date: "May 22, 2023",
-    readTime: "10 min read",
-    category: "Fundraising"
-  },
-  {
-    id: "3",
-    title: "Building a Strong Company Culture in a Remote-First World",
-    excerpt: "Remote work presents unique challenges for building company culture. Discover strategies for fostering connection and engagement with distributed teams.",
-    image: "https://images.unsplash.com/photo-1528901166007-3784c7dd3653?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    author: "Priya Patel",
-    date: "April 10, 2023",
-    readTime: "7 min read",
-    category: "Culture"
-  },
-  {
-    id: "4",
-    title: "From Idea to MVP: A Practical Guide for First-Time Founders",
-    excerpt: "Turning your idea into a minimum viable product is a critical first step. Learn the practical steps to validate your concept and build your first MVP.",
-    image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    author: "David Rodriguez",
-    date: "March 5, 2023",
-    readTime: "12 min read",
-    category: "Product Development"
-  },
-  {
-    id: "5",
-    title: "Navigating Startup Legal Challenges: What Every Founder Should Know",
-    excerpt: "Legal issues can sink a promising startup. Understand the key legal considerations for your business to avoid common pitfalls.",
-    image: "https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
-    author: "Jennifer Lee",
-    date: "February 18, 2023",
-    readTime: "9 min read",
-    category: "Legal"
-  }
-];
-
-const categories = [
-  "All",
-  "Mentorship",
-  "Fundraising",
-  "Product Development",
-  "Marketing",
-  "Legal",
-  "Culture",
-  "Growth",
-  "Strategy"
-];
-
 const Blog = () => {
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
-  // Filter blog posts based on search and category
+  // Filter posts based on category and search query
   const filteredPosts = blogPosts.filter((post) => {
-    const matchesSearch = 
+    const matchesCategory =
+      selectedCategory === "All" || post.category === selectedCategory;
+    const matchesSearch =
+      searchQuery === "" ||
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesCategory = 
-      selectedCategory === "All Categories" || post.category === selectedCategory;
-    
-    return matchesSearch && matchesCategory && post.status === "published";
+      post.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+    return matchesCategory && matchesSearch && post.status === "published";
   });
+
+  const featuredPost = blogPosts.find(
+    (post) => post.featured && post.status === "published"
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      
       <main className="pt-24 pb-16">
-        <div className="container mx-auto px-6">
-          <AnimatedSection className="mb-12 max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-stargaze-900 dark:text-white mb-6">
-              Startup Insights Blog
-            </h1>
-            <p className="text-xl text-stargaze-600 dark:text-stargaze-300">
-              Expert advice, founder stories, and resources to help you build a successful startup.
-            </p>
-          </AnimatedSection>
-          
-          <AnimatedSection animation="fade-up" delay={100} className="mb-12">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <div className="relative w-full max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-stargaze-400 h-4 w-4" />
-                <Input 
-                  placeholder="Search articles..." 
+        {/* Hero Section */}
+        <AnimatedSection className="py-12 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl sm:text-5xl font-bold text-stargaze-900 dark:text-white mb-6">
+                Startup Insights & Stories
+              </h1>
+              <p className="text-xl text-stargaze-600 dark:text-stargaze-300 max-w-3xl mx-auto">
+                Discover the latest trends, success stories, and actionable
+                insights from India's thriving startup ecosystem.
+              </p>
+            </div>
+
+            {/* Search and Filter */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-12 max-w-4xl mx-auto">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-stargaze-400" />
+                <Input
+                  placeholder="Search articles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
                 />
               </div>
-              
-              <div className="flex flex-wrap gap-2 justify-center md:justify-end">
-                {categories.map((category) => (
-                  <Badge
+              <div className="flex gap-2 overflow-x-auto">
+                {blogCategories.map((category) => (
+                  <Button
                     key={category}
-                    variant={category === "All" ? "default" : "outline"}
-                    className="cursor-pointer hover:bg-primary/10"
+                    variant={
+                      selectedCategory === category ? "default" : "outline"
+                    }
+                    size="sm"
+                    onClick={() => setSelectedCategory(category)}
+                    className="whitespace-nowrap"
                   >
                     {category}
-                  </Badge>
+                  </Button>
                 ))}
               </div>
             </div>
-          </AnimatedSection>
-          
-          {/* Featured Article */}
-          <AnimatedSection animation="fade-up" delay={150} className="mb-12">
-            <div className="bg-white dark:bg-stargaze-900 rounded-xl shadow-subtle overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-2">
-                <div className="h-64 lg:h-auto">
-                  <img 
-                    src={filteredPosts[0]?.image} 
-                    alt={filteredPosts[0]?.title}
-                    className="w-full h-full object-cover"
-                  />
+          </div>
+        </AnimatedSection>
+
+        {/* Featured Article */}
+        {featuredPost && (
+          <AnimatedSection className="py-8 px-4 sm:px-6">
+            <div className="max-w-7xl mx-auto">
+              <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 mb-12">
+                <div className="flex items-center gap-2 mb-4">
+                  <Badge variant="default">Featured</Badge>
+                  <Badge variant="outline">{featuredPost.category}</Badge>
                 </div>
-                <div className="p-6 md:p-10 flex flex-col justify-between">
+                <div className="grid md:grid-cols-2 gap-8 items-center">
                   <div>
-                    <Badge>{filteredPosts[0]?.category}</Badge>
-                    <h2 className="text-2xl md:text-3xl font-bold text-stargaze-900 dark:text-white mt-4 mb-3">
-                      {filteredPosts[0]?.title}
+                    <h2 className="text-3xl font-bold text-stargaze-900 dark:text-white mb-4">
+                      {featuredPost.title}
                     </h2>
-                    <p className="text-stargaze-600 dark:text-stargaze-300 mb-4">
-                      {filteredPosts[0]?.excerpt}
+                    <p className="text-stargaze-600 dark:text-stargaze-300 mb-6">
+                      {featuredPost.excerpt}
                     </p>
-                  </div>
-                  
-                  <div>
-                    <div className="flex items-center text-sm text-stargaze-500 dark:text-stargaze-400 mb-4">
-                      <User className="h-4 w-4 mr-2" />
-                      <span>{filteredPosts[0]?.author.name}</span>
-                      <span className="mx-2">•</span>
-                      <Calendar className="h-4 w-4 mr-2" />
-                      <span>{filteredPosts[0] ? new Date(filteredPosts[0].publishedAt).toLocaleDateString() : ''}</span>
-                      <span className="mx-2">•</span>
-                      <Clock className="h-4 w-4 mr-2" />
-                      <span>{filteredPosts[0]?.readTime} min read</span>
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={featuredPost.author.avatar}
+                          alt={featuredPost.author.name}
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <span className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                          {featuredPost.author.name}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-stargaze-500">
+                        <Calendar className="h-4 w-4" />
+                        {new Date(
+                          featuredPost.publishedAt
+                        ).toLocaleDateString()}
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-stargaze-500">
+                        <Clock className="h-4 w-4" />
+                        {featuredPost.readTime} min read
+                      </div>
                     </div>
-                    
-                    <Link to={`/blog/${filteredPosts[0]?.id}`}>
+                    <Link to={`/blog/${featuredPost.id}`}>
                       <Button className="gap-2">
-                        Read Article <ArrowRight className="h-4 w-4" />
+                        Read Article
+                        <ArrowRight className="h-4 w-4" />
                       </Button>
                     </Link>
+                  </div>
+                  <div>
+                    <img
+                      src={featuredPost.image}
+                      alt={featuredPost.title}
+                      className="w-full h-64 object-cover rounded-lg"
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </AnimatedSection>
-          
-          {/* Article Grid */}
-          <AnimatedSection animation="fade-up" delay={200} className="mb-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.slice(1).map((post) => (
-                <Link 
-                  key={post.id} 
-                  to={`/blog/${post.id}`}
-                  className="bg-white dark:bg-stargaze-900 rounded-xl shadow-subtle overflow-hidden hover:-translate-y-1 transition-all border border-stargaze-100 dark:border-stargaze-800"
-                >
-                  <div className="h-48 overflow-hidden">
-                    <img 
-                      src={post.image} 
+        )}
+
+        {/* Blog Grid */}
+        <AnimatedSection className="py-8 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-stargaze-900 dark:text-white">
+                Latest Articles
+              </h2>
+              <p className="text-stargaze-600 dark:text-stargaze-400">
+                {filteredPosts.length} articles found
+              </p>
+            </div>
+
+            {filteredPosts.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-stargaze-600 dark:text-stargaze-400 text-lg">
+                  No articles found matching your criteria.
+                </p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="bg-white dark:bg-stargaze-900 rounded-xl overflow-hidden shadow-sm border border-stargaze-100 dark:border-stargaze-800 hover:shadow-md transition-shadow"
+                  >
+                    <img
+                      src={post.image}
                       alt={post.title}
-                      className="w-full h-full object-cover transition-transform hover:scale-105"
+                      className="w-full h-48 object-cover"
                     />
-                  </div>
-                  <div className="p-6">
-                    <Badge>{post.category}</Badge>
-                    <h3 className="text-xl font-bold text-stargaze-900 dark:text-white mt-3 mb-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-stargaze-600 dark:text-stargaze-300 mb-4 line-clamp-3">
-                      {post.excerpt}
-                    </p>
-                    <div className="flex items-center text-sm text-stargaze-500 dark:text-stargaze-400">
-                      <User className="h-3 w-3 mr-1" />
-                      <span>{post.author}</span>
-                      <span className="mx-2">•</span>
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>{post.readTime}</span>
+                    <div className="p-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge variant="outline" className="text-xs">
+                          {post.category}
+                        </Badge>
+                        {post.featured && (
+                          <Badge variant="default" className="text-xs">
+                            Featured
+                          </Badge>
+                        )}
+                      </div>
+                      <h3 className="text-xl font-semibold text-stargaze-900 dark:text-white mb-3 line-clamp-2">
+                        {post.title}
+                      </h3>
+                      <p className="text-stargaze-600 dark:text-stargaze-300 mb-4 line-clamp-3">
+                        {post.excerpt}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={post.author.avatar}
+                            alt={post.author.name}
+                            className="w-6 h-6 rounded-full"
+                          />
+                          <span className="text-sm text-stargaze-600 dark:text-stargaze-400">
+                            {post.author.name}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 text-sm text-stargaze-500">
+                          <Clock className="h-3 w-3" />
+                          {post.readTime}m
+                        </div>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-stargaze-100 dark:border-stargaze-800">
+                        <Link to={`/blog/${post.id}`}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full gap-2"
+                          >
+                            Read More
+                            <ArrowRight className="h-3 w-3" />
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </Link>
-              ))}
+                ))}
+              </div>
+            )}
+          </div>
+        </AnimatedSection>
+
+        {/* Newsletter Subscription */}
+        <AnimatedSection className="py-16 px-4 sm:px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-primary/10 dark:bg-primary/20 rounded-2xl p-8">
+              <h2 className="text-3xl font-bold text-stargaze-900 dark:text-white mb-4">
+                Stay Updated
+              </h2>
+              <p className="text-stargaze-600 dark:text-stargaze-300 mb-6">
+                Get the latest startup insights and stories delivered to your
+                inbox weekly.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <Input
+                  placeholder="Enter your email"
+                  type="email"
+                  className="flex-1"
+                />
+                <Button className="gap-2">
+                  Subscribe
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-stargaze-500 mt-3">
+                No spam, unsubscribe at any time.
+              </p>
             </div>
-          </AnimatedSection>
-          
-          <AnimatedSection animation="fade-up" delay={300} className="text-center">
-            <Button variant="outline" size="lg">
-              Load More Articles
-            </Button>
-          </AnimatedSection>
-        </div>
+          </div>
+        </AnimatedSection>
       </main>
-      
       <Footer />
     </div>
   );
