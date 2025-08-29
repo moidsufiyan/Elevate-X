@@ -289,6 +289,20 @@ export const Navbar = () => {
                   Startups
                 </Link>
               </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <Link
+                  to="/investors"
+                  className={cn(
+                    "px-3 py-2 text-sm font-medium transition-colors",
+                    isActive("/investors")
+                      ? "text-primary"
+                      : "text-stargaze-600 dark:text-stargaze-300 hover:text-stargaze-900 dark:hover:text-white"
+                  )}
+                >
+                  Investors
+                </Link>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
@@ -404,7 +418,77 @@ export const Navbar = () => {
                 Mentors
               </Link>
 
-              {/* Add other mobile menu items... */}
+              <Link
+                to="/resources"
+                className={cn(
+                  "block px-4 py-2 text-sm font-medium rounded-lg",
+                  isActive("/resources")
+                    ? "text-primary bg-primary/10"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
+                )}
+              >
+                Resources
+              </Link>
+
+              <Link
+                to="/community"
+                className={cn(
+                  "block px-4 py-2 text-sm font-medium rounded-lg",
+                  isActive("/community")
+                    ? "text-primary bg-primary/10"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
+                )}
+              >
+                Community
+              </Link>
+
+              <Link
+                to="/startup-showcase"
+                className={cn(
+                  "block px-4 py-2 text-sm font-medium rounded-lg",
+                  isActive("/startup-showcase")
+                    ? "text-primary bg-primary/10"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
+                )}
+              >
+                Startups
+              </Link>
+
+              <Link
+                to="/investors"
+                className={cn(
+                  "block px-4 py-2 text-sm font-medium rounded-lg",
+                  isActive("/investors")
+                    ? "text-primary bg-primary/10"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
+                )}
+              >
+                Investors
+              </Link>
+
+              <Link
+                to="/about"
+                className={cn(
+                  "block px-4 py-2 text-sm font-medium rounded-lg",
+                  isActive("/about")
+                    ? "text-primary bg-primary/10"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
+                )}
+              >
+                About
+              </Link>
+
+              <Link
+                to="/contact"
+                className={cn(
+                  "block px-4 py-2 text-sm font-medium rounded-lg",
+                  isActive("/contact")
+                    ? "text-primary bg-primary/10"
+                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
+                )}
+              >
+                Contact
+              </Link>
 
               <div className="pt-4 border-t border-stargaze-200 dark:border-stargaze-800">
                 <div className="flex items-center justify-between px-4">

@@ -10,19 +10,39 @@ const CookiePolicy = () => {
       
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
-          <AnimatedSection className="mb-8 max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold text-stargaze-900 dark:text-white mb-4">
+          <AnimatedSection className="mb-8 max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold text-stargaze-900 dark:text-white mb-4">
               Cookie Policy
             </h1>
-            <p className="text-stargaze-600 dark:text-stargaze-300">
-              Last updated: January 1, 2023
+            <p className="text-lg text-stargaze-600 dark:text-stargaze-300 mb-2">
+              How ElevateX uses cookies to enhance your experience on our platform.
+            </p>
+            <p className="text-sm text-stargaze-500 dark:text-stargaze-400">
+              Last updated: December 15, 2024 | Effective Date: January 1, 2024
             </p>
           </AnimatedSection>
           
           <AnimatedSection animation="fade-up" delay={100} className="bg-white dark:bg-stargaze-900 rounded-xl shadow-subtle p-8 max-w-4xl mx-auto">
             <div className="prose dark:prose-invert max-w-none">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-8">
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">Cookie Overview</h3>
+                <p className="text-blue-800 dark:text-blue-200 text-sm mb-0">
+                  ElevateX uses cookies to improve your experience, remember your preferences, and analyze platform usage. 
+                  You have full control over cookie settings and can manage them at any time.
+                </p>
+              </div>
+
+              <p className="text-lg">
+                This Cookie Policy explains how ElevateX Private Limited ("we", "us", and "our") uses cookies and similar 
+                technologies when you visit our platform at elevatex.in ("Platform"). This policy describes what these 
+                technologies are, why we use them, and your rights to control them.
+              </p>
+
               <p>
-                This Cookie Policy explains how Startup Stargaze ("we", "us", and "our") uses cookies and similar technologies to recognize you when you visit our website at startupstargaze.com ("Website"). It explains what these technologies are and why we use them, as well as your rights to control our use of them.
+                <strong>Company Details:</strong><br/>
+                ElevateX Private Limited<br/>
+                Registered Office: Bangalore, Karnataka, India<br/>
+                Email: privacy@elevatex.in
               </p>
               
               <h2>What are cookies?</h2>
@@ -95,17 +115,22 @@ const CookiePolicy = () => {
                 The date at the top of this Cookie Policy indicates when it was last updated.
               </p>
               
-              <h2>Where can you find more information?</h2>
+              <h2>Contact Information</h2>
               
               <p>
-                If you have any questions about our use of cookies or other technologies, please contact us at:
+                If you have any questions about our use of cookies or other technologies, please contact us:
               </p>
               
-              <p>
-                Startup Stargaze<br />
-                123 Startup Avenue<br />
-                San Francisco, CA 94107<br />
-                Email: privacy@startupstargaze.com
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mt-4">
+                <p className="mb-2"><strong>ElevateX Private Limited</strong></p>
+                <p className="mb-2">Data Protection Officer</p>
+                <p className="mb-2">Address: [Office Address], Bangalore, Karnataka 560001, India</p>
+                <p className="mb-2">Email: privacy@elevatex.in</p>
+                <p className="mb-0">Response Time: We aim to respond within 72 hours</p>
+              </div>
+
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-8 pt-4 border-t">
+                This Cookie Policy is governed by Indian law and complies with applicable data protection regulations.
               </p>
             </div>
           </AnimatedSection>

@@ -41,6 +41,8 @@ import CookiePolicy from "./pages/legal/CookiePolicy";
 import DataProcessing from "./pages/legal/DataProcessing";
 import FileUploadGuide from "./pages/FileUploadGuide";
 import Messaging from "./pages/Messaging";
+import Investors from "./pages/Investors";
+import InvestorDetail from "./pages/InvestorDetail";
 
 // Import new resource pages
 import Documentation from "./pages/resources/Documentation";
@@ -66,6 +68,8 @@ function App() {
             <Route path="/resource/:id" element={<ResourceDetail />} />
             <Route path="/discussion/:id" element={<DiscussionDetail />} />
             <Route path="/resources" element={<Resources />} />
+            <Route path="/investors" element={<Investors />} />
+            <Route path="/investor/:id" element={<InvestorDetail />} />
             <Route path="/community" element={<Community />} />
             <Route path="/communities" element={<Communities />} />
             <Route path="/auth" element={<Auth />} />
