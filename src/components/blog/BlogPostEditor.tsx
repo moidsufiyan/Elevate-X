@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "@/components/blog/RichTextEditor";
 // Removed useBlogPosts hook - using static data
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Save, Eye, Send, ImageIcon, Tag as TagIcon } from "lucide-react";
 import { BlogPost } from "@/data/blogs";
 

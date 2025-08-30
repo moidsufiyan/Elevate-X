@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { MentorCard } from "@/components/cards/MentorCard";
+import { MentorCard } from "@/components/MentorCard";
 import {
   Search,
   Filter,

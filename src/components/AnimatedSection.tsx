@@ -43,13 +43,14 @@ export const AnimatedSection = ({
       }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [threshold, staggerChildren, delay]);
@@ -58,7 +59,7 @@ export const AnimatedSection = ({
     <div
       ref={ref}
       className={cn(
-        "opacity-0",
+        "opacity-100",
         animation === "fade-in" && "translate-y-0",
         animation === "fade-up" && "translate-y-4",
         animation === "slide-in" && "translate-x-4",

@@ -19,7 +19,7 @@ import {
   Clock,
   Tag,
 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { blogPosts } from "@/data/blogs";
 import {
   AlertDialog,
