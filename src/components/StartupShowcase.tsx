@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatedSection } from "./AnimatedSection";
-import { StartupCard } from "./startup/StartupCard";
+import { StartupCard } from "./cards/StartupCard";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Loader, Building } from "lucide-react";

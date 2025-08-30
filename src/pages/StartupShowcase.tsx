@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { StartupCard } from "@/components/startup/StartupCard";
+import { StartupCard } from "@/components/cards/StartupCard";
 import { Button } from "@/components/ui/button";
 import { Search, Filter, MapPin } from "lucide-react";
 import {

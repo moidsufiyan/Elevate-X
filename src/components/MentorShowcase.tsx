@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatedSection } from "./AnimatedSection";
-import { MentorCard } from "./MentorCard";
+import { MentorCard } from "./cards/MentorCard";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Loader, Users } from "lucide-react";
