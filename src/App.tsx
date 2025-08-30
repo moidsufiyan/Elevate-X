@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { ScrollToTopWrapper } from "@/components/ScrollToTopWrapper";
+import { Suspense, lazy, useEffect } from "react";
 
 // Import pages from the new directory structure when possible
 import Index from "./pages/Index";
@@ -51,7 +52,31 @@ import FAQs from "./pages/resources/FAQs";
 import SuccessStories from "./pages/resources/SuccessStories";
 import Events from "./pages/resources/Events";
 
+// Loading component for better UX
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+  </div>
+);
+
 function App() {
+  // Performance optimization: Prevent unnecessary re-renders
+  useEffect(() => {
+    // Preload critical resources
+    const preloadCriticalResources = () => {
+      // Preload fonts
+      const fontLink = document.createElement("link");
+      fontLink.rel = "preload";
+      fontLink.href = "/fonts/inter-var.woff2";
+      fontLink.as = "font";
+      fontLink.type = "font/woff2";
+      fontLink.crossOrigin = "anonymous";
+      document.head.appendChild(fontLink);
+    };
+
+    preloadCriticalResources();
+  }, []);
+
   return (
     <TooltipProvider>
       <SEO /> {/* Default SEO tags */}
@@ -59,74 +84,79 @@ function App() {
       <Sonner />
       <BrowserRouter>
         <ScrollToTopWrapper>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/mentors" element={<Mentors />} />
-            <Route path="/mentor/:id" element={<MentorDetail />} />
-            <Route path="/startup/:id" element={<StartupDetail />} />
-            <Route path="/resource/:id" element={<ResourceDetail />} />
-            <Route path="/discussion/:id" element={<DiscussionDetail />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/investors" element={<Investors />} />
-            <Route path="/investor/:id" element={<InvestorDetail />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/communities" element={<Communities />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/startup-showcase" element={<StartupShowcase />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/mentors" element={<Mentors />} />
+              <Route path="/mentor/:id" element={<MentorDetail />} />
+              <Route path="/startup/:id" element={<StartupDetail />} />
+              <Route path="/resource/:id" element={<ResourceDetail />} />
+              <Route path="/discussion/:id" element={<DiscussionDetail />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/investors" element={<Investors />} />
+              <Route path="/investor/:id" element={<InvestorDetail />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/communities" element={<Communities />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/startup-showcase" element={<StartupShowcase />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
 
-            {/* New Resources Subpages */}
-            <Route
-              path="/resources/documentation"
-              element={<Documentation />}
-            />
-            <Route path="/resources/guides" element={<Guides />} />
-            <Route path="/resources/faqs" element={<FAQs />} />
-            <Route
-              path="/resources/success-stories"
-              element={<SuccessStories />}
-            />
-            <Route path="/resources/events" element={<Events />} />
+              {/* New Resources Subpages */}
+              <Route
+                path="/resources/documentation"
+                element={<Documentation />}
+              />
+              <Route path="/resources/guides" element={<Guides />} />
+              <Route path="/resources/faqs" element={<FAQs />} />
+              <Route
+                path="/resources/success-stories"
+                element={<SuccessStories />}
+              />
+              <Route path="/resources/events" element={<Events />} />
 
-            {/* All Routes are now Public */}
-            <Route path="/mentor/:id/book" element={<MentorBooking />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/startup-profile" element={<StartupProfile />} />
-            <Route path="/mentor-profile" element={<MentorProfile />} />
-            <Route path="/mentor-dashboard" element={<MentorDashboard />} />
-            <Route path="/blog-management" element={<BlogManagement />} />
-            <Route path="/founder-dashboard" element={<FounderDashboard />} />
-            <Route
-              path="/mentorship-matching"
-              element={<MentorshipMatching />}
-            />
-            <Route path="/messaging" element={<Messaging />} />
-            <Route path="/file-upload-guide" element={<FileUploadGuide />} />
+              {/* All Routes are now Public */}
+              <Route path="/mentor/:id/book" element={<MentorBooking />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/startup-profile" element={<StartupProfile />} />
+              <Route path="/mentor-profile" element={<MentorProfile />} />
+              <Route path="/mentor-dashboard" element={<MentorDashboard />} />
+              <Route path="/blog-management" element={<BlogManagement />} />
+              <Route path="/founder-dashboard" element={<FounderDashboard />} />
+              <Route
+                path="/mentorship-matching"
+                element={<MentorshipMatching />}
+              />
+              <Route path="/messaging" element={<Messaging />} />
+              <Route path="/file-upload-guide" element={<FileUploadGuide />} />
 
-            {/* Blog Routes */}
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:id" element={<BlogPost />} />
+              {/* Blog Routes */}
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:id" element={<BlogPost />} />
 
-            {/* Page Routes */}
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/press" element={<Press />} />
-            <Route path="/sitemap" element={<Sitemap />} />
+              {/* Page Routes */}
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/press" element={<Press />} />
+              <Route path="/sitemap" element={<Sitemap />} />
 
-            {/* Legal Pages */}
-            <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
-            <Route
-              path="/legal/terms-of-service"
-              element={<TermsOfService />}
-            />
-            <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
-            <Route path="/legal/data-processing" element={<DataProcessing />} />
+              {/* Legal Pages */}
+              <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
+              <Route
+                path="/legal/terms-of-service"
+                element={<TermsOfService />}
+              />
+              <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
+              <Route
+                path="/legal/data-processing"
+                element={<DataProcessing />}
+              />
 
-            {/* Catch-all route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              {/* Catch-all route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </ScrollToTopWrapper>
       </BrowserRouter>
     </TooltipProvider>

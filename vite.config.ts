@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist",
     sourcemap: false,
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -27,9 +28,19 @@ export default defineConfig(({ mode }) => ({
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
           forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
           utils: ['clsx', 'class-variance-authority', 'tailwind-merge'],
+          icons: ['lucide-react'],
+        },
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.');
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            return `assets/images/[name]-[hash][extname]`;
+          }
+          return `assets/[name]-[hash][extname]`;
         },
       },
     },
     chunkSizeWarningLimit: 1000,
+    target: 'es2015',
   },
 }));

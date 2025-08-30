@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface AnimatedSectionProps {
@@ -19,15 +19,16 @@ export const AnimatedSection = ({
   animation = "fade-in",
 }: AnimatedSectionProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("animate-in");
-            if (staggerChildren) {
-              const children = entry.target.children;
+            setIsVisible(true);
+            if (staggerChildren && ref.current) {
+              const children = ref.current.children;
               Array.from(children).forEach((child, index) => {
                 (child as HTMLElement).style.animationDelay = `${
                   index * 100 + delay
@@ -59,7 +60,8 @@ export const AnimatedSection = ({
     <div
       ref={ref}
       className={cn(
-        "opacity-100",
+        "will-change-transform",
+        isVisible ? "animate-in" : "animate-out",
         animation === "fade-in" && "translate-y-0",
         animation === "fade-up" && "translate-y-4",
         animation === "slide-in" && "translate-x-4",
@@ -68,6 +70,9 @@ export const AnimatedSection = ({
       )}
       style={{
         animationDelay: `${delay}ms`,
+        transform: isVisible ? "none" : "translateY(20px)",
+        opacity: isVisible ? 1 : 0,
+        transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
       }}
     >
       {children}

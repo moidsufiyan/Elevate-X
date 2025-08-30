@@ -65,13 +65,12 @@ const Index = () => {
       />
       <Navbar />
       <main>
-        <AnimatedSection animation="fade-in" duration="normal" delay={100}>
+        <AnimatedSection animation="fade-in" delay={100}>
           <Hero />
         </AnimatedSection>
 
         <AnimatedSection
           animation="fade-up"
-          duration="normal"
           delay={200}
           id="features"
         >
@@ -79,7 +78,7 @@ const Index = () => {
         </AnimatedSection>
 
         {/* Implemented Features Showcase */}
-        <AnimatedSection animation="fade-up" duration="normal" delay={250}>
+        <AnimatedSection animation="fade-up" delay={250}>
           <section className="py-24 px-4 sm:px-6 bg-white dark:bg-stargaze-950 border-t border-stargaze-100 dark:border-stargaze-800">
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-16">
@@ -191,7 +190,7 @@ const Index = () => {
         </AnimatedSection>
 
         {/* Call to Action Section */}
-        <AnimatedSection animation="fade-up" duration="normal" delay={250}>
+        <AnimatedSection animation="fade-up" delay={250}>
           <section className="relative bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 py-24 px-4 sm:px-6 overflow-hidden">
             <div className="absolute inset-0 z-0 opacity-30">
               <svg
@@ -247,7 +246,6 @@ const Index = () => {
 
         <AnimatedSection
           animation="fade-up"
-          duration="normal"
           delay={300}
           staggerChildren
           id="mentors"
@@ -264,7 +262,7 @@ const Index = () => {
         </AnimatedSection>
 
         {/* Testimonial Section */}
-        <AnimatedSection animation="fade-up" duration="normal" delay={350}>
+        <AnimatedSection animation="fade-up" delay={350}>
           <section className="py-20 px-4 sm:px-6 bg-white dark:bg-stargaze-950 border-y border-stargaze-100 dark:border-stargaze-800">
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-12">
@@ -403,7 +401,7 @@ const Index = () => {
         </AnimatedSection>
 
         {/* Benefits Section */}
-        <AnimatedSection animation="fade-up" duration="normal" delay={400}>
+        <AnimatedSection animation="fade-up" delay={400}>
           <section className="py-20 px-4 sm:px-6">
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-16">
@@ -546,7 +544,6 @@ const Index = () => {
 
         <AnimatedSection
           animation="fade-up"
-          duration="normal"
           delay={400}
           staggerChildren
           id="startups"
@@ -563,7 +560,7 @@ const Index = () => {
         </AnimatedSection>
 
         {/* Testimonials Section */}
-        <AnimatedSection animation="fade-up" duration="normal" delay={450}>
+        <AnimatedSection animation="fade-up" delay={450}>
           <section className="py-20 px-4 sm:px-6">
             <div className="max-w-6xl mx-auto text-center">
               <h2 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-4">
@@ -614,7 +611,7 @@ const Index = () => {
         </AnimatedSection>
 
         {/* Final CTA */}
-        <AnimatedSection animation="fade-up" duration="normal" delay={500}>
+        <AnimatedSection animation="fade-up" delay={500}>
           <section className="bg-primary/10 dark:bg-primary/20 py-20 px-4 sm:px-6">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl sm:text-4xl font-bold text-stargaze-900 dark:text-white mb-6">
@@ -642,7 +639,7 @@ const Index = () => {
         </AnimatedSection>
       </main>
 
-      <AnimatedSection animation="fade-in" duration="slow" delay={500}>
+      <AnimatedSection animation="fade-in" delay={500}>
         <Footer />
       </AnimatedSection>
     </div>
