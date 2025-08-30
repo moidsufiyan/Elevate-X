@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatedSection } from "./AnimatedSection";
-import { MentorCard } from "./cards/MentorCard";
+import { MentorCard } from "./MentorCard";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Loader, Users } from "lucide-react";
@@ -114,9 +114,9 @@ export const MentorShowcase = () => {
             >
               <EmptyState
                 icon={<Users className="h-10 w-10 text-primary/60" />}
-                title={mentorEmptyStates.noMentorsAvailable.title}
-                description={mentorEmptyStates.noMentorsAvailable.description}
-                actionLabel={mentorEmptyStates.noMentorsAvailable.actionLabel}
+                title={mentorEmptyStates.noMentors.title}
+                description={mentorEmptyStates.noMentors.description}
+                actionLabel={mentorEmptyStates.noMentors.action}
                 onAction={() => (window.location.href = "/apply-as-mentor")}
               />
             </AnimatedSection>
