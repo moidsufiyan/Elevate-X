@@ -2,7 +2,7 @@
 
 > **🚀 Connecting ambitious founders with expert mentors to build successful startups across India**
 
-ElevateX is a comprehensive, frontend-only entrepreneurship platform designed specifically for the Indian startup ecosystem. It connects entrepreneurs with experienced mentors, investors, and resources to accelerate business growth and success.
+Elevate X is a comprehensive, frontend-only entrepreneurship platform designed specifically for the Indian startup ecosystem. It connects entrepreneurs with experienced mentors, investors, and resources to accelerate business growth and success.
 
 ## ✨ Features
 
