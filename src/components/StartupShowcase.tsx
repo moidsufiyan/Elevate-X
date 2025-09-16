@@ -104,13 +104,11 @@ export const StartupShowcase = () => {
             className="bg-white dark:bg-stargaze-900 rounded-xl p-8 shadow-sm border border-stargaze-100 dark:border-stargaze-800"
           >
             <EmptyState
-              icon={Building}
+              icon={<Building className="h-10 w-10 text-primary/60" />}
               title="No startups available"
               description="Check back later for new startup showcases."
-              action={{
-                label: "Refresh Page",
-                onClick: () => window.location.reload(),
-              }}
+              actionLabel="Refresh Page"
+              onAction={() => window.location.reload()}
             />
           </AnimatedSection>
         ) : (
@@ -126,19 +124,6 @@ export const StartupShowcase = () => {
                 </AnimatedSection>
               ))}
             </div>
-
-            <AnimatedSection
-              threshold={0.1}
-              delay={400}
-              className="text-center mt-12"
-            >
-              <Link to="/startup-showcase">
-                <Button className="flex items-center gap-2">
-                  View All Startups ({startups ? startups.length : 0})
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-            </AnimatedSection>
           </>
         )}
       </div>
