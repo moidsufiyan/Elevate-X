@@ -1,7 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,8 +21,8 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { getMentorById } from "@/data/mentors";
-import { AnimatedSection } from "@/components/AnimatedSection";
-import { SEO } from "@/components/SEO";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
+import { SEO } from "@/components/common/SEO";
 
 const MentorDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -37,36 +35,31 @@ const MentorDetail = () => {
 
   if (!mentor) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar />
-        <main className="pt-24 pb-16">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-            <h1 className="text-3xl font-bold text-stargaze-900 dark:text-white mb-4">
-              Mentor Not Found
-            </h1>
-            <p className="text-stargaze-600 dark:text-stargaze-400 mb-8">
-              The mentor you're looking for doesn't exist or has been removed.
-            </p>
-            <Button onClick={() => navigate("/mentors")} className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Mentors
-            </Button>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <main className="pt-24 pb-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <h1 className="text-3xl font-bold text-stargaze-900 dark:text-white mb-4">
+            Mentor Not Found
+          </h1>
+          <p className="text-stargaze-600 dark:text-stargaze-400 mb-8">
+            The mentor you're looking for doesn't exist or has been removed.
+          </p>
+          <Button onClick={() => navigate("/mentors")} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Mentors
+          </Button>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
       <SEO
         title={`${mentor.name} - Expert Mentor | ElevateX`}
         description={`Connect with ${mentor.name}, ${mentor.role} at ${
           mentor.company
         }. Expert in ${mentor.expertise.join(", ")}. ${mentor.bio}`}
       />
-      <Navbar />
       <main className="pt-24 pb-16">
         {/* Hero Section */}
         <AnimatedSection className="py-12 px-4 sm:px-6 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5">
@@ -415,8 +408,7 @@ const MentorDetail = () => {
           </div>
         </AnimatedSection>
       </main>
-      <Footer />
-    </div>
+    </>
   );
 };
 

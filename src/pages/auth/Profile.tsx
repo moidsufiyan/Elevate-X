@@ -1,8 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { AnimatedSection } from "@/components/AnimatedSection";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -230,9 +228,7 @@ const Profile = () => {
   const unreadCount = userNotifications.filter(n => !n.read).length;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
-      
+    <>
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <AnimatedSection className="max-w-6xl mx-auto">
@@ -715,10 +711,8 @@ const Profile = () => {
           </AnimatedSection>
         </div>
       </main>
-      
-      <Footer />
-    </div>
-  );
+    </>);
 };
 
 export default Profile;
+

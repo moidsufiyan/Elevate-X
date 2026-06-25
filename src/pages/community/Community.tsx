@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { AnimatedSection } from "@/components/AnimatedSection";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -81,8 +79,7 @@ const Community = () => {
   const pinnedDiscussions = getPinnedDiscussions();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
+    <>
       <main className="pt-24 pb-16">
         {/* Hero Section */}
         <AnimatedSection className="py-12 px-4 sm:px-6 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5">
@@ -439,9 +436,8 @@ const Community = () => {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
-  );
+    </>);
 };
 
 export default Community;
+

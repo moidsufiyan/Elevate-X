@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,8 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AnimatedSection } from "@/components/AnimatedSection";
-import { SEO } from "@/components/SEO";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
+import { SEO } from "@/components/common/SEO";
 import {
   Target,
   Heart,
@@ -180,8 +178,6 @@ const About = () => {
         description="Learn about ElevateX's mission to transform India's entrepreneurial landscape through mentorship, community, and innovation. Our story, values, and team."
         keywords="about elevateX, Indian startup ecosystem, entrepreneurship, mentorship platform, startup community India"
       />
-
-      <Navbar />
 
       <main className="pt-20">
         {/* Hero Section */}
@@ -677,10 +673,9 @@ const About = () => {
           </section>
         </AnimatedSection>
       </main>
-
-      <Footer />
     </div>
   );
 };
 
 export default About;
+

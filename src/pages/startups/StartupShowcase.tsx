@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { AnimatedSection } from "@/components/AnimatedSection";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
 import { StartupCard } from "@/components/cards/StartupCard";
 import { Button } from "@/components/ui/button";
 import { Search, Filter, MapPin } from "lucide-react";
@@ -114,9 +112,7 @@ const StartupShowcase = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
-
+    <>
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <AnimatedSection className="mb-8 text-center">
@@ -310,10 +306,8 @@ const StartupShowcase = () => {
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
-  );
+    </>);
 };
 
 export default StartupShowcase;
+

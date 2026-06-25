@@ -1,7 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,8 +25,8 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { getStartupById } from "@/data/startups";
-import { AnimatedSection } from "@/components/AnimatedSection";
-import { SEO } from "@/components/SEO";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
+import { SEO } from "@/components/common/SEO";
 
 const StartupDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -41,37 +39,32 @@ const StartupDetail = () => {
 
   if (!startup) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar />
-        <main className="pt-24 pb-16">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-            <h1 className="text-3xl font-bold text-stargaze-900 dark:text-white mb-4">
-              Startup Not Found
-            </h1>
-            <p className="text-stargaze-600 dark:text-stargaze-400 mb-8">
-              The startup you're looking for doesn't exist or has been removed.
-            </p>
-            <Button
-              onClick={() => navigate("/startup-showcase")}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Startups
-            </Button>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <main className="pt-24 pb-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <h1 className="text-3xl font-bold text-stargaze-900 dark:text-white mb-4">
+            Startup Not Found
+          </h1>
+          <p className="text-stargaze-600 dark:text-stargaze-400 mb-8">
+            The startup you're looking for doesn't exist or has been removed.
+          </p>
+          <Button
+            onClick={() => navigate("/startup-showcase")}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Startups
+          </Button>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
       <SEO
         title={`${startup.name} - ${startup.industry} Startup | ElevateX`}
         description={`${startup.shortPitch} Learn about ${startup.name}'s journey, founders, and growth story.`}
       />
-      <Navbar />
       <main className="pt-24 pb-16">
         {/* Hero Section */}
         <AnimatedSection className="py-12 px-4 sm:px-6 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5">
@@ -502,8 +495,7 @@ const StartupDetail = () => {
           </AnimatedSection>
         </div>
       </main>
-      <Footer />
-    </div>
+    </>
   );
 };
 

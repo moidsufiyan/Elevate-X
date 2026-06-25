@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { AnimatedSection } from "@/components/AnimatedSection";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SEO } from "@/components/SEO";
+import { SEO } from "@/components/common/SEO";
 import {
   Mail,
   MapPin,
@@ -186,15 +184,11 @@ const Contact = () => {
     },
   ];
 
-  return (
-    <div className="min-h-screen bg-background">
-      <SEO
+  return (<><SEO
         title="Contact Us | ElevateX - Get in Touch"
         description="Contact ElevateX for partnerships, mentorship opportunities, investor relations, or general inquiries. We're here to support your entrepreneurial journey."
         keywords="contact elevatex, startup support, mentorship inquiries, partnership opportunities, investor relations"
       />
-
-      <Navbar />
 
       <main className="pt-20">
         {/* Hero Section */}
@@ -636,10 +630,8 @@ const Contact = () => {
           </section>
         </AnimatedSection>
       </main>
-
-      <Footer />
-    </div>
-  );
+    </>);
 };
 
 export default Contact;
+

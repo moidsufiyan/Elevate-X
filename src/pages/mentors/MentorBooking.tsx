@@ -1,9 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { AnimatedSection } from "@/components/AnimatedSection";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { format, addDays, isAfter, isBefore, startOfDay } from "date-fns";
@@ -228,9 +226,7 @@ const MentorBooking = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
-      
+    <>
       <main className="container mx-auto px-4 pt-24 pb-16">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
@@ -487,10 +483,9 @@ const MentorBooking = () => {
           </div>
         )}
       </main>
-      
-      <Footer />
-    </div>
+    </>
   );
 };
 
 export default MentorBooking;
+

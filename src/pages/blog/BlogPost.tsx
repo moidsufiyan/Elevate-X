@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { AnimatedSection } from "@/components/AnimatedSection";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { blogPosts } from "@/data/blogs";
 import { ArrowLeft, Calendar, User, Clock, Tag as TagIcon } from "lucide-react";
-import { NotFound } from "./NotFound";
+import { NotFound } from "../NotFound";
 
 const BlogPost = () => {
   const { id } = useParams<{ id: string }>();
@@ -66,9 +64,7 @@ const BlogPost = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
-
+    <>
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <AnimatedSection className="mb-6">
@@ -136,9 +132,7 @@ const BlogPost = () => {
           </AnimatedSection>
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </>
   );
 };
 

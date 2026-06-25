@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { AnimatedSection } from "@/components/AnimatedSection";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { MentorCard } from "@/components/MentorCard";
+import { MentorCard } from "@/components/cards/MentorCard";
 import {
   Search,
   Filter,
@@ -184,9 +182,7 @@ const Mentors = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
-
+    <>
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <AnimatedSection className="mb-8 text-center">
@@ -431,8 +427,8 @@ const Mentors = () => {
             <div className="bg-white dark:bg-stargaze-900 border border-stargaze-100 dark:border-stargaze-800 rounded-xl p-8 shadow-sm max-w-5xl mx-auto">
               <EmptyState
                 icon={<Users className="h-10 w-10 text-primary/60" />}
-                title={mentorEmptyStates.noMentorsMatching.title}
-                description={mentorEmptyStates.noMentorsMatching.description}
+                title={mentorEmptyStates.noResults.title}
+                description={mentorEmptyStates.noResults.description}
                 actionLabel="Clear All Filters"
                 onAction={() => {
                   setSearchQuery("");
@@ -445,9 +441,7 @@ const Mentors = () => {
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </>
   );
 };
 

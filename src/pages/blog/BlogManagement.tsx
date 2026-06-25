@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { PageTemplate } from "@/components/ui/page-template";
-import { AnimatedSection } from "@/components/AnimatedSection";
+import { AnimatedSection } from "@/components/common/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BlogPostList } from "@/components/blog/BlogPostList";
@@ -115,3 +115,4 @@ const BlogManagement = () => {
 };
 
 export default BlogManagement;
+
