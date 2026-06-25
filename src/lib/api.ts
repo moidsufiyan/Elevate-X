@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+
 // Create base Axios instance
 const api = axios.create({
-  baseURL: "http://localhost:5000/api/v1",
+  baseURL: API_URL,
   withCredentials: true, // Important for sending/receiving httpOnly cookies
   headers: {
     "Content-Type": "application/json",
@@ -25,7 +27,7 @@ api.interceptors.response.use(
         // Attempt to refresh token
         // The backend uses the refreshToken httpOnly cookie automatically
         await axios.post(
-          "http://localhost:5000/api/v1/auth/refresh",
+          `${API_URL}/auth/refresh`,
           {},
           { withCredentials: true }
         );
