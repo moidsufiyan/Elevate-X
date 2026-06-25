@@ -42,7 +42,11 @@ export default function Auth() {
   const location = useLocation();
   const { refetchUser } = useAuth();
 
-  const from = (location.state as any)?.from?.pathname || "/profile";
+  const getRoleDashboard = (role: string) => {
+    if (role === "founder") return "/founder-dashboard";
+    if (role === "mentor") return "/mentor-dashboard";
+    return "/profile";
+  };
 
   const loginMutation = useMutation({
     mutationFn: async () => {
@@ -50,12 +54,16 @@ export default function Auth() {
       return data;
     },
     onSuccess: async (data) => {
-      toast({
-        title: "Login Successful",
-        description: "Welcome back!",
-      });
       await refetchUser();
-      navigate(from, { replace: true });
+      const user = data?.data?.user;
+      const role = user?.role || "founder";
+      toast({
+        title: "Welcome back!",
+        description: `Logged in as ${user?.name || "user"}.`,
+      });
+      // If user was redirected here from a protected page, send them back. Otherwise, go to their dashboard.
+      const redirectTarget = (location.state as any)?.from?.pathname;
+      navigate(redirectTarget || getRoleDashboard(role), { replace: true });
     },
     onError: (error: any) => {
       toast({

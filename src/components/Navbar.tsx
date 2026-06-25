@@ -10,6 +10,15 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Search,
   Bell,
@@ -24,8 +33,12 @@ import {
   ChevronRight,
   FileUp,
   Calendar,
+  LogOut,
+  LayoutDashboard,
+  Settings,
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/context/AuthContext";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -33,9 +46,7 @@ export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Static user for frontend-only demo (always null since no auth)
-  const user = null;
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,6 +75,21 @@ export const Navbar = () => {
 
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const getDashboardLink = () => {
+    if (user?.role === "founder") return "/founder-dashboard";
+    if (user?.role === "mentor") return "/mentor-dashboard";
+    return "/profile";
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   return (
@@ -329,25 +355,59 @@ export const Navbar = () => {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-stargaze-600 dark:text-stargaze-300"
-              aria-label="Notifications"
-            >
-              <Bell className="h-5 w-5" />
-            </Button>
             <ThemeToggle />
-            <Link to={user ? "/profile" : "/auth"}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-stargaze-600 dark:text-stargaze-300"
-                aria-label="Profile"
-              >
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
+
+            {user ? (
+              // ── Authenticated: avatar dropdown ──
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full p-0 h-9 w-9"
+                    aria-label="User menu"
+                  >
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback className="bg-primary/20 text-primary text-sm font-semibold">
+                        {getInitials(user.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-52">
+                  <DropdownMenuLabel className="font-normal">
+                    <p className="font-semibold text-sm truncate">{user.name}</p>
+                    <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="cursor-pointer">
+                      <User className="h-4 w-4 mr-2" /> My Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to={getDashboardLink()} className="cursor-pointer">
+                      <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive cursor-pointer"
+                    onClick={logout}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" /> Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              // ── Unauthenticated: sign in button ──
+              <Link to="/auth">
+                <Button size="sm" className="rounded-full px-5">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -369,8 +429,24 @@ export const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-16 bg-white dark:bg-stargaze-950 z-40">
+        <div className="lg:hidden fixed inset-0 top-16 bg-white dark:bg-stargaze-950 z-40 overflow-y-auto">
           <div className="container mx-auto px-4 py-6">
+            {/* Mobile User Info */}
+            {user && (
+              <div className="flex items-center gap-3 mb-6 p-3 bg-stargaze-50 dark:bg-stargaze-900 rounded-xl">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarFallback className="bg-primary/20 text-primary font-semibold">
+                    {getInitials(user.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-semibold text-sm">{user.name}</p>
+                  <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSearch} className="mb-6">
               <div className="relative">
                 <input
@@ -393,102 +469,41 @@ export const Navbar = () => {
               </div>
             </form>
 
-            <nav className="space-y-4">
-              <Link
-                to="/"
-                className={cn(
-                  "block px-4 py-2 text-sm font-medium rounded-lg",
-                  isActive("/")
-                    ? "text-primary bg-primary/10"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
-                )}
-              >
-                Home
-              </Link>
+            <nav className="space-y-1">
+              <Link to="/" className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive("/") ? "text-primary bg-primary/10" : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900")}>Home</Link>
+              <Link to="/mentors" className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive("/mentors") ? "text-primary bg-primary/10" : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900")}>Mentors</Link>
+              <Link to="/resources" className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive("/resources") ? "text-primary bg-primary/10" : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900")}>Resources</Link>
+              <Link to="/community" className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive("/community") ? "text-primary bg-primary/10" : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900")}>Community</Link>
+              <Link to="/startup-showcase" className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive("/startup-showcase") ? "text-primary bg-primary/10" : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900")}>Startups</Link>
+              <Link to="/investors" className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive("/investors") ? "text-primary bg-primary/10" : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900")}>Investors</Link>
+              <Link to="/about" className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive("/about") ? "text-primary bg-primary/10" : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900")}>About</Link>
+              <Link to="/contact" className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive("/contact") ? "text-primary bg-primary/10" : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900")}>Contact</Link>
 
-              <Link
-                to="/mentors"
-                className={cn(
-                  "block px-4 py-2 text-sm font-medium rounded-lg",
-                  isActive("/mentors")
-                    ? "text-primary bg-primary/10"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
-                )}
-              >
-                Mentors
-              </Link>
-
-              <Link
-                to="/resources"
-                className={cn(
-                  "block px-4 py-2 text-sm font-medium rounded-lg",
-                  isActive("/resources")
-                    ? "text-primary bg-primary/10"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
-                )}
-              >
-                Resources
-              </Link>
-
-              <Link
-                to="/community"
-                className={cn(
-                  "block px-4 py-2 text-sm font-medium rounded-lg",
-                  isActive("/community")
-                    ? "text-primary bg-primary/10"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
-                )}
-              >
-                Community
-              </Link>
-
-              <Link
-                to="/startup-showcase"
-                className={cn(
-                  "block px-4 py-2 text-sm font-medium rounded-lg",
-                  isActive("/startup-showcase")
-                    ? "text-primary bg-primary/10"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
-                )}
-              >
-                Startups
-              </Link>
-
-              <Link
-                to="/investors"
-                className={cn(
-                  "block px-4 py-2 text-sm font-medium rounded-lg",
-                  isActive("/investors")
-                    ? "text-primary bg-primary/10"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
-                )}
-              >
-                Investors
-              </Link>
-
-              <Link
-                to="/about"
-                className={cn(
-                  "block px-4 py-2 text-sm font-medium rounded-lg",
-                  isActive("/about")
-                    ? "text-primary bg-primary/10"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
-                )}
-              >
-                About
-              </Link>
-
-              <Link
-                to="/contact"
-                className={cn(
-                  "block px-4 py-2 text-sm font-medium rounded-lg",
-                  isActive("/contact")
-                    ? "text-primary bg-primary/10"
-                    : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900"
-                )}
-              >
-                Contact
-              </Link>
+              {user ? (
+                <>
+                  <div className="pt-4 pb-1 border-t border-stargaze-200 dark:border-stargaze-800">
+                    <p className="px-4 text-xs font-semibold text-stargaze-400 uppercase tracking-wider">Account</p>
+                  </div>
+                  <Link to="/profile" className={cn("block px-4 py-2 text-sm font-medium rounded-lg", isActive("/profile") ? "text-primary bg-primary/10" : "text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900")}>
+                    <User className="inline h-4 w-4 mr-2" />My Profile
+                  </Link>
+                  <Link to={getDashboardLink()} className="block px-4 py-2 text-sm font-medium rounded-lg text-stargaze-600 dark:text-stargaze-300 hover:bg-stargaze-50 dark:hover:bg-stargaze-900">
+                    <LayoutDashboard className="inline h-4 w-4 mr-2" />Dashboard
+                  </Link>
+                  <button
+                    onClick={logout}
+                    className="w-full text-left block px-4 py-2 text-sm font-medium rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30"
+                  >
+                    <LogOut className="inline h-4 w-4 mr-2" />Logout
+                  </button>
+                </>
+              ) : (
+                <div className="pt-4 border-t border-stargaze-200 dark:border-stargaze-800">
+                  <Link to="/auth" className="block w-full">
+                    <Button className="w-full">Sign In / Register</Button>
+                  </Link>
+                </div>
+              )}
 
               <div className="pt-4 border-t border-stargaze-200 dark:border-stargaze-800">
                 <div className="flex items-center justify-between px-4">
