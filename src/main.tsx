@@ -1,4 +1,3 @@
-// Update the main.tsx file to import the new CSS location
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
