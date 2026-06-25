@@ -84,7 +84,7 @@ export const Hero = () => {
             staggerChildren={true}
           >
             {statistics.slice(0, 3).map((stat, index) => (
-              <div key={index} className="appear-animation">
+              <div key={index}>
                 <div
                   className={cn(
                     "glass rounded-xl py-5 px-3 h-full",

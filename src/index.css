@@ -87,30 +87,32 @@
   }
 }
 
-/* Animation Classes - Optimized for Performance */
-.animate-in {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.animate-out {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Optimized keyframes for smooth animations */
-@keyframes animateIn {
-  0% {
+/* Keyframe animations used by tailwindcss-animate and CSS transitions */
+@keyframes fadeUp {
+  from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -209,49 +211,15 @@
   @apply scale-x-100;
 }
 
-/* Custom animations */
-.appear-animation {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.appear-animation.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Staggered delays for children - Performance Optimized */
-.stagger-children > * {
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-  transform: translateZ(0);
-}
-
-.stagger-children > *:nth-child(1) {
-  transition-delay: 0.1s;
-}
-.stagger-children > *:nth-child(2) {
-  transition-delay: 0.2s;
-}
-.stagger-children > *:nth-child(3) {
-  transition-delay: 0.3s;
-}
-.stagger-children > *:nth-child(4) {
-  transition-delay: 0.4s;
-}
-.stagger-children > *:nth-child(5) {
-  transition-delay: 0.5s;
-}
-.stagger-children > *:nth-child(6) {
-  transition-delay: 0.6s;
-}
-.stagger-children > *:nth-child(7) {
-  transition-delay: 0.7s;
-}
-.stagger-children > *:nth-child(8) {
-  transition-delay: 0.8s;
-}
+/* Staggered child animation delays — applied via AnimatedSection's staggerChildren prop */
+.stagger-children > *:nth-child(1) { transition-delay: 0.08s; }
+.stagger-children > *:nth-child(2) { transition-delay: 0.16s; }
+.stagger-children > *:nth-child(3) { transition-delay: 0.24s; }
+.stagger-children > *:nth-child(4) { transition-delay: 0.32s; }
+.stagger-children > *:nth-child(5) { transition-delay: 0.40s; }
+.stagger-children > *:nth-child(6) { transition-delay: 0.48s; }
+.stagger-children > *:nth-child(7) { transition-delay: 0.56s; }
+.stagger-children > *:nth-child(8) { transition-delay: 0.64s; }
 
 /* Performance optimizations */
 .performance-optimized {
