@@ -4,71 +4,72 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { ScrollToTopWrapper } from "@/components/ScrollToTopWrapper";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, lazy } from "react";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // ─── Pages ───────────────────────────────────────────────────────────────────
-import Index from "./pages/Index";
+const Index = lazy(() => import("./pages/Index"));
 
 // Auth
-import Auth from "./pages/auth/Auth";
-import Profile from "./pages/auth/Profile";
+const Auth = lazy(() => import("./pages/auth/Auth"));
+const Profile = lazy(() => import("./pages/auth/Profile"));
 
 // Mentors
-import Mentors from "./pages/mentors/Mentors";
-import MentorDetail from "./pages/mentors/MentorDetail";
-import MentorBooking from "./pages/mentors/MentorBooking";
-import MentorProfile from "./pages/mentors/MentorProfile";
-import MentorDashboard from "./pages/mentors/MentorDashboard";
-import MentorshipMatching from "./pages/mentors/MentorshipMatching";
+const Mentors = lazy(() => import("./pages/mentors/Mentors"));
+const MentorDetail = lazy(() => import("./pages/mentors/MentorDetail"));
+const MentorBooking = lazy(() => import("./pages/mentors/MentorBooking"));
+const MentorProfile = lazy(() => import("./pages/mentors/MentorProfile"));
+const MentorDashboard = lazy(() => import("./pages/mentors/MentorDashboard"));
+const MentorshipMatching = lazy(() => import("./pages/mentors/MentorshipMatching"));
 
 // Startups
-import StartupDetail from "./pages/startups/StartupDetail";
-import StartupProfile from "./pages/startups/StartupProfile";
-import StartupShowcase from "./pages/startups/StartupShowcase";
+const StartupDetail = lazy(() => import("./pages/startups/StartupDetail"));
+const StartupProfile = lazy(() => import("./pages/startups/StartupProfile"));
+const StartupShowcase = lazy(() => import("./pages/startups/StartupShowcase"));
 
 // Dashboards
-import FounderDashboard from "./pages/dashboards/FounderDashboard";
+const FounderDashboard = lazy(() => import("./pages/dashboards/FounderDashboard"));
 
 // Community
-import Community from "./pages/community/Community";
-import Communities from "./pages/community/Communities";
+const Community = lazy(() => import("./pages/community/Community"));
+const Communities = lazy(() => import("./pages/community/Communities"));
 
 // Company
-import About from "./pages/company/About";
-import Contact from "./pages/company/Contact";
-import Careers from "./pages/company/Careers";
-import Press from "./pages/company/Press";
+const About = lazy(() => import("./pages/company/About"));
+const Contact = lazy(() => import("./pages/company/Contact"));
+const Careers = lazy(() => import("./pages/company/Careers"));
+const Press = lazy(() => import("./pages/company/Press"));
 
 // Blog
-import Blog from "./pages/blog/Blog";
-import BlogPost from "./pages/blog/BlogPost";
-import BlogManagement from "./pages/blog/BlogManagement";
+const Blog = lazy(() => import("./pages/blog/Blog"));
+const BlogPost = lazy(() => import("./pages/blog/BlogPost"));
+const BlogManagement = lazy(() => import("./pages/blog/BlogManagement"));
 
 // Resources
-import Resources from "./pages/Resources";
-import ResourceDetail from "./pages/ResourceDetail";
-import Documentation from "./pages/resources/Documentation";
-import Guides from "./pages/resources/Guides";
-import FAQs from "./pages/resources/FAQs";
-import SuccessStories from "./pages/resources/SuccessStories";
-import Events from "./pages/resources/Events";
+const Resources = lazy(() => import("./pages/Resources"));
+const ResourceDetail = lazy(() => import("./pages/ResourceDetail"));
+const Documentation = lazy(() => import("./pages/resources/Documentation"));
+const Guides = lazy(() => import("./pages/resources/Guides"));
+const FAQs = lazy(() => import("./pages/resources/FAQs"));
+const SuccessStories = lazy(() => import("./pages/resources/SuccessStories"));
+const Events = lazy(() => import("./pages/resources/Events"));
 
 // Investors
-import Investors from "./pages/Investors";
-import InvestorDetail from "./pages/InvestorDetail";
+const Investors = lazy(() => import("./pages/Investors"));
+const InvestorDetail = lazy(() => import("./pages/InvestorDetail"));
 
 // Legal
-import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
-import TermsOfService from "./pages/legal/TermsOfService";
-import CookiePolicy from "./pages/legal/CookiePolicy";
-import DataProcessing from "./pages/legal/DataProcessing";
+const PrivacyPolicy = lazy(() => import("./pages/legal/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/legal/TermsOfService"));
+const CookiePolicy = lazy(() => import("./pages/legal/CookiePolicy"));
+const DataProcessing = lazy(() => import("./pages/legal/DataProcessing"));
 
 // Misc
-import DiscussionDetail from "./pages/DiscussionDetail";
-import FileUploadGuide from "./pages/FileUploadGuide";
-import Messaging from "./pages/Messaging";
-import SessionHistory from "./pages/SessionHistory";
-import Sitemap from "./pages/Sitemap";
+const DiscussionDetail = lazy(() => import("./pages/DiscussionDetail"));
+const FileUploadGuide = lazy(() => import("./pages/FileUploadGuide"));
+const Messaging = lazy(() => import("./pages/Messaging"));
+const SessionHistory = lazy(() => import("./pages/SessionHistory"));
+const Sitemap = lazy(() => import("./pages/Sitemap"));
 import { NotFound } from "./pages/NotFound";
 import { Unauthorized } from "./pages/Unauthorized";
 
@@ -109,19 +110,43 @@ function App() {
               {/* ── Mentors ── */}
               <Route path="/mentors" element={<Mentors />} />
               <Route path="/mentor/:id" element={<MentorDetail />} />
-              <Route path="/mentor/:id/book" element={<MentorBooking />} />
-              <Route path="/mentor-profile" element={<MentorProfile />} />
-              <Route path="/mentor-dashboard" element={<MentorDashboard />} />
+              <Route path="/mentor/:id/book" element={
+                <ProtectedRoute>
+                  <MentorBooking />
+                </ProtectedRoute>
+              } />
+              <Route path="/mentor-profile" element={
+                <ProtectedRoute allowedRoles={["mentor"]}>
+                  <MentorProfile />
+                </ProtectedRoute>
+              } />
+              <Route path="/mentor-dashboard" element={
+                <ProtectedRoute allowedRoles={["mentor"]}>
+                  <MentorDashboard />
+                </ProtectedRoute>
+              } />
               <Route path="/mentorship-matching" element={<MentorshipMatching />} />
 
               {/* ── Startups ── */}
               <Route path="/startup/:id" element={<StartupDetail />} />
-              <Route path="/startup-profile" element={<StartupProfile />} />
+              <Route path="/startup-profile" element={
+                <ProtectedRoute allowedRoles={["founder"]}>
+                  <StartupProfile />
+                </ProtectedRoute>
+              } />
               <Route path="/startup-showcase" element={<StartupShowcase />} />
 
               {/* ── Dashboards ── */}
-              <Route path="/founder-dashboard" element={<FounderDashboard />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/founder-dashboard" element={
+                <ProtectedRoute allowedRoles={["founder"]}>
+                  <FounderDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
 
               {/* ── Community ── */}
               <Route path="/community" element={<Community />} />
@@ -144,7 +169,11 @@ function App() {
               {/* ── Blog ── */}
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:id" element={<BlogPost />} />
-              <Route path="/blog-management" element={<BlogManagement />} />
+              <Route path="/blog-management" element={
+                <ProtectedRoute>
+                  <BlogManagement />
+                </ProtectedRoute>
+              } />
 
               {/* ── Company ── */}
               <Route path="/about" element={<About />} />
@@ -153,9 +182,17 @@ function App() {
               <Route path="/press" element={<Press />} />
 
               {/* ── Misc ── */}
-              <Route path="/messaging" element={<Messaging />} />
+              <Route path="/messaging" element={
+                <ProtectedRoute>
+                  <Messaging />
+                </ProtectedRoute>
+              } />
               <Route path="/file-upload-guide" element={<FileUploadGuide />} />
-              <Route path="/session-history" element={<SessionHistory />} />
+              <Route path="/session-history" element={
+                <ProtectedRoute>
+                  <SessionHistory />
+                </ProtectedRoute>
+              } />
               <Route path="/sitemap" element={<Sitemap />} />
 
               {/* ── Legal ── */}

@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
+import api from "@/lib/api";
 import { AnimatedSection } from "@/components/common/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +24,7 @@ import {
   MailIcon,
   LinkedinIcon,
   ArrowLeft,
+  Loader2,
 } from "lucide-react";
 
 export default function Auth() {
@@ -35,29 +39,76 @@ export default function Auth() {
   
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { refetchUser } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Static demo - show success message and redirect
-    toast({
-      title: isLogin ? "Demo Login" : "Demo Signup",
-      description: "This is a frontend-only demo. No actual authentication occurs.",
-    });
+  const from = (location.state as any)?.from?.pathname || "/profile";
 
-    // Redirect based on account type for demo purposes
-    if (isLogin) {
-      navigate("/profile");
-    } else {
-      if (accountType === "founder") {
-        navigate("/startup-profile");
-      } else if (accountType === "mentor") {
-        navigate("/mentor-profile");
-      } else {
-        navigate("/profile");
+  const loginMutation = useMutation({
+    mutationFn: async () => {
+      const { data } = await api.post("/auth/login", { email, password });
+      return data;
+    },
+    onSuccess: async (data) => {
+      toast({
+        title: "Login Successful",
+        description: "Welcome back!",
+      });
+      await refetchUser();
+      navigate(from, { replace: true });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Login Failed",
+        description: error.response?.data?.message || "Invalid credentials",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const registerMutation = useMutation({
+    mutationFn: async () => {
+      if (password !== confirmPassword) {
+        throw new Error("Passwords do not match");
       }
+      const { data } = await api.post("/auth/register", {
+        name,
+        email,
+        password,
+        role: accountType,
+      });
+      return data;
+    },
+    onSuccess: async (data) => {
+      toast({
+        title: "Registration Successful",
+        description: "Welcome to Elevate-X! Please log in.",
+      });
+      setIsLogin(true);
+      setPassword("");
+      setConfirmPassword("");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Registration Failed",
+        description: error.message === "Passwords do not match" 
+          ? error.message 
+          : error.response?.data?.message || "An error occurred",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isLogin) {
+      loginMutation.mutate();
+    } else {
+      registerMutation.mutate();
     }
   };
+
+
 
   return (
     <div className="min-h-screen flex flex-col bg-stargaze-50 dark:bg-stargaze-950">
@@ -71,12 +122,12 @@ export default function Auth() {
           <Card className="border-stargaze-200 dark:border-stargaze-800 shadow-lg">
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-bold text-center">
-                {isLogin ? "Demo Sign In" : "Demo Sign Up"}
+                {isLogin ? "Sign In to Elevate-X" : "Join Elevate-X"}
               </CardTitle>
               <CardDescription className="text-center">
                 {isLogin
-                  ? "Frontend-only demo - no real authentication"
-                  : "Create a demo account (frontend-only)"}
+                  ? "Welcome back to the ecosystem"
+                  : "Create an account to get started"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -133,8 +184,15 @@ export default function Auth() {
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full">
-                      Demo Sign In
+                    <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+                      {loginMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Signing In...
+                        </>
+                      ) : (
+                        "Sign In"
+                      )}
                     </Button>
 
                     <div className="relative my-4">
@@ -259,8 +317,15 @@ export default function Auth() {
                       </select>
                     </div>
 
-                    <Button type="submit" className="w-full">
-                      Demo Sign Up
+                    <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
+                      {registerMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Creating Account...
+                        </>
+                      ) : (
+                        "Sign Up"
+                      )}
                     </Button>
 
                     <div className="relative my-4">
