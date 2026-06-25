@@ -29,31 +29,46 @@ export const timeFromNow = (date: string | Date): string => {
 
 export const useSessionHistory = (userId: string, userType: string) => {
   // Mock session history hook
-  return {
-    data: {
-      upcomingSessions: [
-        {
-          id: "1",
-          mentorName: "Dr. Priya Sharma",
-          founderName: "Rahul Gupta",
-          scheduledDate: "2024-01-25T10:00:00Z",
-          duration: 60,
-          status: "confirmed",
-          topic: "Product Strategy",
-        },
-      ],
-      completedSessions: [
-        {
-          id: "2",
-          mentorName: "Arjun Mehta",
-          founderName: "Priya Sharma",
-          scheduledDate: "2024-01-20T14:00:00Z",
-          duration: 45,
-          status: "completed",
-          topic: "Fundraising",
-        },
-      ],
+  const mockSessions = [
+    {
+      id: "1",
+      title: "Product Strategy Discussion",
+      mentorName: "Dr. Priya Sharma",
+      founderName: "Rahul Gupta",
+      date: "2024-01-25T10:00:00Z",
+      scheduledDate: "2024-01-25T10:00:00Z",
+      duration: 60,
+      status: "scheduled",
+      topic: "Product Strategy",
+      summary: "Discuss product roadmap and strategy for initial launch.",
+      founderNotes: "Need to ask about pricing strategy.",
+      mentorNotes: "Review their user onboarding flow before the session.",
     },
+    {
+      id: "2",
+      title: "Fundraising & Pitching",
+      mentorName: "Arjun Mehta",
+      founderName: "Priya Sharma",
+      date: "2024-01-20T14:00:00Z",
+      scheduledDate: "2024-01-20T14:00:00Z",
+      duration: 45,
+      status: "completed",
+      topic: "Fundraising",
+      summary: "Review pitch deck and discuss potential investor targets.",
+      founderNotes: "Pitch deck draft is ready.",
+      mentorNotes: "Founder needs to refine their valuation slide.",
+    },
+  ];
+
+  const data = [...mockSessions] as any;
+  data.sessions = mockSessions;
+  data.upcomingSessions = mockSessions.filter(s => s.status === "scheduled" || s.status === "confirmed");
+  data.completedSessions = mockSessions.filter(s => s.status === "completed");
+
+  return {
+    data,
+    isLoading: false,
+    error: null,
   };
 };
 

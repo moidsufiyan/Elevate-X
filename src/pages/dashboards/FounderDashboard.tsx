@@ -72,11 +72,10 @@ const FounderDashboard = () => {
                       <Calendar className="h-5 w-5 mr-2 text-primary" />
                       Upcoming Sessions
                     </h3>
-                    {sessionHistory?.filter((s) => s.status === "scheduled")
-                      ?.length ? (
+                    {Array.isArray(sessionHistory) && sessionHistory.filter((s) => s.status === "scheduled" || s.status === "confirmed").length ? (
                       <div className="space-y-4">
                         {sessionHistory
-                          .filter((s) => s.status === "scheduled")
+                          .filter((s) => s.status === "scheduled" || s.status === "confirmed")
                           .slice(0, 2)
                           .map((session) => (
                             <div
@@ -84,9 +83,9 @@ const FounderDashboard = () => {
                               className="flex justify-between items-center border-b border-stargaze-100 dark:border-stargaze-800 pb-3"
                             >
                               <div>
-                                <h4 className="font-medium">{session.title}</h4>
+                                <h4 className="font-medium">{session.title || session.topic}</h4>
                                 <p className="text-sm text-stargaze-500 dark:text-stargaze-400">
-                                  {new Date(session.date).toLocaleDateString()}{" "}
+                                  {new Date(session.date || session.scheduledDate).toLocaleDateString()}{" "}
                                   • {session.duration} min
                                 </p>
                               </div>
